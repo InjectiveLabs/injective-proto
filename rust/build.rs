@@ -1,5 +1,4 @@
 use std::{ io, path::Path, fs};
-
 use protobuf_codegen_pure::Customize;
 
 fn list_files(dir: &Path, path_vec: &mut Vec<String>) -> io::Result<()> {
@@ -19,7 +18,7 @@ fn list_files(dir: &Path, path_vec: &mut Vec<String>) -> io::Result<()> {
 }
 
 fn main() {
-    for dir in fs::read_dir("../proto/injective").unwrap() {
+    for dir in fs::read_dir("../proto/chain/injective").unwrap() {
         let customizer = Customize {
             gen_mod_rs: Some(true),
             lite_runtime: Some(true),
@@ -27,8 +26,8 @@ fn main() {
         };
 
         let dir_name = String::from(dir.unwrap().file_name().to_str().unwrap());
-        let main_dir = format!("../proto/injective/{}", dir_name);
-        let out_dir = format!("src/proto/injective/{}", dir_name);
+        let main_dir = format!("../proto/chain/injective/{}", dir_name);
+        let out_dir = format!("src/chain/injective/{}", dir_name);
         let mut sub_dirs: Vec<String> = Vec::new();
 
         let _ = list_files(Path::new(main_dir.as_str()), &mut sub_dirs);
@@ -37,7 +36,7 @@ fn main() {
         protobuf_codegen_pure::Codegen::new()
         .out_dir(out_dir)
         .inputs(sub_dirs)
-        .includes(["../proto", "../proto/third_party/proto"])
+        .includes(["../proto/chain", "../proto/chain/injective"])
         .customize(customizer)
         .run()
         .expect("Protobuf codegen failed");
@@ -51,7 +50,7 @@ fn main() {
     // generate indexer rpc
     let mut sub_dirs: Vec<String> = Vec::new();
     let _ = list_files(Path::new("../proto/indexer"), &mut sub_dirs);
-    let out_dir = String::from("src/proto/indexer");
+    let out_dir = String::from("src/indexer");
     let _ = fs::create_dir(out_dir.clone());
     protobuf_codegen_pure::Codegen::new()
     .out_dir(out_dir)
