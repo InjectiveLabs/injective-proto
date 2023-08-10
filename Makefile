@@ -32,12 +32,17 @@ define clean_repos
 	rm -Rf injective-indexer
 endef
 
+define clean_packed
+	rm -f *_protos.zip
+endef
+
 .PHONY: clean-all
 
 clean-all:
 	$(call clean_protos)
 	$(call clean_generated)
 	$(call clean_repos)
+	$(call clean_packed)
 
 clone-injective-core:
 	git clone https://github.com/InjectiveLabs/injective-core.git -b master --depth 1 --single-branch
@@ -75,7 +80,13 @@ generate-csharp:
 		--plugin=protoc-gen-grpc=${GRPC_CSHARP_PLUGIN}; \
 	done; \
 
+pack:
+	zip -r cpp_protos.zip cpp 
+	zip -r csharp_protos.zip csharp
+	zip -r python_protos.zip python 
+	zip -r rust_protos.zip rust
 
-run-full: clean-all clone-all download-protos generate
+run-full: clean-all clone-all download-protos generate pack
 	$(call clean_repos)
 	$(call clean_protos)
+	$(call clean_generated)
