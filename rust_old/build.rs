@@ -1,5 +1,5 @@
-use std::{ io, path::Path, fs};
 use protobuf_codegen_pure::Customize;
+use std::{env, fs, io, path::Path};
 
 fn list_files(dir: &Path, path_vec: &mut Vec<String>) -> io::Result<()> {
     if dir.is_dir() {
@@ -18,6 +18,11 @@ fn list_files(dir: &Path, path_vec: &mut Vec<String>) -> io::Result<()> {
 }
 
 fn main() {
+    let should_generate = env::var_os("CARGO_FEATURE_PROTO").is_some();
+    if !should_generate {
+        return;
+    }
+
     for dir in fs::read_dir("../proto/chain/injective").unwrap() {
         let customizer = Customize {
             gen_mod_rs: Some(true),
@@ -34,12 +39,12 @@ fn main() {
         let _ = fs::create_dir(out_dir.clone());
 
         protobuf_codegen_pure::Codegen::new()
-        .out_dir(out_dir)
-        .inputs(sub_dirs)
-        .includes(["../proto/chain", "../proto/chain/injective"])
-        .customize(customizer)
-        .run()
-        .expect("Protobuf codegen failed");
+            .out_dir(out_dir)
+            .inputs(sub_dirs)
+            .includes(["../proto/chain", "../proto/chain/injective"])
+            .customize(customizer)
+            .run()
+            .expect("Protobuf codegen failed");
     }
 
     let customizer = Customize {
@@ -53,10 +58,10 @@ fn main() {
     let out_dir = String::from("src/indexer");
     let _ = fs::create_dir(out_dir.clone());
     protobuf_codegen_pure::Codegen::new()
-    .out_dir(out_dir)
-    .inputs(sub_dirs)
-    .includes(["../proto/indexer"])
-    .customize(customizer)
-    .run()
-    .expect("Protobuf codegen for indexer failed");
+        .out_dir(out_dir)
+        .inputs(sub_dirs)
+        .includes(["../proto/indexer"])
+        .customize(customizer)
+        .run()
+        .expect("Protobuf codegen for indexer failed");
 }
