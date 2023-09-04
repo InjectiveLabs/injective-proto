@@ -13,6 +13,9 @@ else
 	endif
 endif
 
+GRPC_PROST_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-prost
+GRPC_TONIC_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-tonic
+
 define clean_protos
 	echo "Cleaning protos"
 	rm -Rf proto
@@ -66,7 +69,7 @@ download-protos:
 	cp -r third_party/* proto/
 	find ./injective-indexer/api/gen/grpc -type f -name "*.proto" -exec cp {} ./proto/exchange/ \; 
 
-generate: generate-csharp
+generate: generate-rust generate-csharp
 	cd ./proto && buf generate --template ../buf.gen.yaml
 
 generate-csharp:
@@ -78,6 +81,18 @@ generate-csharp:
 		--grpc_out=./csharp/$${dir} \
 		$$(find ./$${dir} -type f -name '*.proto') \
 		--plugin=protoc-gen-grpc=${GRPC_CSHARP_PLUGIN}; \
+	done; \
+	
+generate-rust:
+	@for dir in $(shell find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq); do \
+		mkdir -p ./rust/$${dir}; \
+		protoc \
+		--proto_path=proto \
+		--prost_out=./rust/$${dir} \
+		--tonic_out=./rust/$${dir} \
+		$$(find ./$${dir} -type f -name '*.proto') \
+		--plugin=protoc-gen-prost=${GRPC_PROST_PLUGIN} \
+		--plugin=protoc-gen-tonic=${GRPC_TONIC_PLUGIN}; \
 	done; \
 
 pack:
