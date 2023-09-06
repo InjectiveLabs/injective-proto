@@ -13,6 +13,9 @@ else
 	endif
 endif
 
+GRPC_PROST_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-prost
+GRPC_TONIC_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-tonic
+
 define clean_protos
 	echo "Cleaning protos"
 	rm -Rf proto
@@ -66,10 +69,11 @@ download-protos:
 	cp -r third_party/* proto/
 	find ./injective-indexer/api/gen/grpc -type f -name "*.proto" -exec cp {} ./proto/exchange/ \; 
 
-generate: generate-csharp
+generate: generate-rust generate-csharp
 	cd ./proto && buf generate --template ../buf.gen.yaml
 
 generate-csharp:
+	rm -rf ./csharp
 	@for dir in $(shell find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq); do \
 		mkdir -p ./csharp/$${dir}; \
 		protoc \
@@ -79,6 +83,25 @@ generate-csharp:
 		$$(find ./$${dir} -type f -name '*.proto') \
 		--plugin=protoc-gen-grpc=${GRPC_CSHARP_PLUGIN}; \
 	done; \
+	
+generate-rust:
+	rm -rf ./rust; 
+	@for dir in $(shell find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq); do \
+		mkdir -p ./rust/$${dir}; \
+		protoc \
+		--proto_path=proto \
+		--prost_out=./rust/$${dir} \
+		--tonic_out=./rust/$${dir} \
+		$$(find ./$${dir} -type f -name '*.proto') \
+		--plugin=protoc-gen-prost=${GRPC_PROST_PLUGIN} \
+		--plugin=protoc-gen-tonic=${GRPC_TONIC_PLUGIN}; \
+	done; \
+	PHOME="./rust/proto"; \
+	protoc --proto_path=proto --prost-crate_out=$${PHOME} --prost-crate_opt=include_file=mod.rs --prost-crate_opt=no_features -I $$(find ./proto -name '*.proto' | grep -v "proto/exchange"); \
+	perl -i -pe 's|\"([\w\.]+).rs\"|"$$1/$$1.rs"|g;' -pe 's|\.+(?=[\w+.]+\/)|/|g' rust/proto/mod.rs ; \
+	touch $${PHOME}/amino/amino.rs $${PHOME}/cosmos/msg/v1/cosmos.msg.v1.rs $${PHOME}/cosmos/query/v1/cosmos.query.v1.rs $${PHOME}/gogoproto/gogoproto.rs ; \
+	perl -i -pe 's|pub enum Validators|pub enum EnumValidators|g;' -pe 's|stake_authorization::Validators|stake_authorization::EnumValidators|g' "rust/proto/cosmos/staking/v1beta1/cosmos.staking.v1beta1.rs"; \
+	protoc --proto_path=proto/exchange --prost-crate_out=$${PHOME}/exchange --prost-crate_opt=include_file=mod.rs --prost-crate_opt=no_features $$(find ./proto/exchange -name '*.proto'); \
 
 pack:
 	zip -r cpp_protos.zip cpp 
