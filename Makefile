@@ -31,6 +31,7 @@ define clean_generated
 endef
 
 define clean_repos
+	rm -Rf wasmd
 	rm -Rf cometbft
 	rm -Rf injective-core
 	rm -Rf injective-indexer
@@ -57,14 +58,17 @@ clone-injective-indexer:
 clone-cometbft:
 	git clone https://github.com/cometbft/cometbft.git -b v0.37.2 --depth 1 --single-branch
 
-clone-all: clone-injective-core clone-injective-indexer clone-cometbft
+clone-wasmd:
+	git clone https://github.com/InjectiveLabs/wasmd.git -b v0.40.2-inj --depth 1 --single-branch
+
+clone-all: clone-injective-core clone-injective-indexer clone-cometbft clone-wasmd
 
 download-protos:
 	mkdir -p proto/exchange
 	buf export buf.build/cosmos/cosmos-sdk:v0.47.0 --output=third_party
 	buf export https://github.com/cosmos/ibc-go.git --exclude-imports --output=third_party
 	buf export ./cometbft --exclude-imports --output=third_party
-	buf export https://github.com/CosmWasm/wasmd.git --exclude-imports --output=third_party
+	buf export ./wasmd --exclude-imports --output=third_party
 	buf export https://github.com/cosmos/ics23.git --exclude-imports --output=third_party
 	cp -r injective-core/proto/injective proto/
 	cp -r third_party/* proto/
