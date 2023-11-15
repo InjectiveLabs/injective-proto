@@ -110,11 +110,10 @@ generate-rust:
 		--plugin=protoc-gen-prost-crate=${GRPC_PROST_CRATE_PLUGIN} \
 		--plugin=protoc-gen-tonic=${GRPC_TONIC_PLUGIN}; \
 	done; \
-	echo "Done 1"; \
 	export PATH=$(PATH):./rust_plugins; \
 	PHOME="./rust/proto"; \
 	protoc --proto_path=proto --prost-crate_out=$${PHOME} --prost-crate_opt=include_file=mod.rs --prost-crate_opt=no_features -I $$(find ./proto -name '*.proto' | grep -v "proto/exchange"); \
-#	perl -i -pe 's|\"([\w\.]+).rs\"|"$$1/$$1.rs"|g;' -pe 's|\.+(?=[\w+.]+\/)|/|g' rust/proto/mod.rs ; \
+	perl -i -pe 's|\"([\w\.]+).rs\"|"$$1/$$1.rs"|g;' -pe 's|\.+(?=[\w+.]+\/)|/|g' rust/proto/mod.rs ; \
 	touch $${PHOME}/amino/amino.rs $${PHOME}/cosmos/msg/v1/cosmos.msg.v1.rs $${PHOME}/cosmos/query/v1/cosmos.query.v1.rs $${PHOME}/gogoproto/gogoproto.rs ; \
 	perl -i -pe 's|pub enum Validators|pub enum EnumValidators|g;' -pe 's|stake_authorization::Validators|stake_authorization::EnumValidators|g' "rust/proto/cosmos/staking/v1beta1/cosmos.staking.v1beta1.rs"; \
 	protoc --proto_path=proto/exchange --prost-crate_out=$${PHOME}/exchange --prost-crate_opt=include_file=mod.rs --prost-crate_opt=no_features $$(find ./proto/exchange -name '*.proto'); \
