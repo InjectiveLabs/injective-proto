@@ -31,8 +31,10 @@ define clean_generated
 endef
 
 define clean_repos
-	rm -Rf wasmd
+	rm -Rf cosmos-sdk
+	rm -Rf ibc-go
 	rm -Rf cometbft
+	rm -Rf wasmd
 	rm -Rf injective-core
 	rm -Rf injective-indexer
 endef
@@ -61,12 +63,18 @@ clone-cometbft:
 clone-wasmd:
 	git clone https://github.com/InjectiveLabs/wasmd.git -b v0.40.2-inj --depth 1 --single-branch
 
-clone-all: clone-injective-core clone-injective-indexer clone-cometbft clone-wasmd
+clone-cosmos-sdk:
+	git clone https://github.com/InjectiveLabs/cosmos-sdk.git -b v0.47.3-inj-6 --depth 1 --single-branch
+
+clone-ibc-go:
+	git clone https://github.com/InjectiveLabs/ibc-go.git -b v7.2.0-inj --depth 1 --single-branch
+
+clone-all: clone-cosmos-sdk clone-cometbft clone-ibc-go clone-wasmd clone-injective-core clone-injective-indexer
 
 download-protos:
 	mkdir -p proto/exchange
-	buf export buf.build/cosmos/cosmos-sdk:v0.47.0 --output=third_party
-	buf export https://github.com/cosmos/ibc-go.git --exclude-imports --output=third_party
+	buf export ./cosmos-sdk --output=third_party
+	buf export ./ibc-go --exclude-imports --output=third_party
 	buf export ./cometbft --exclude-imports --output=third_party
 	buf export ./wasmd --exclude-imports --output=third_party
 	buf export https://github.com/cosmos/ics23.git --exclude-imports --output=third_party
