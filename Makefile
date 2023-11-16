@@ -1,4 +1,11 @@
-# These two variables are required by the csharp proto generation logic
+COSMOS_SDK_VERSION_TAG=v0.47.3-inj-6
+IBC_GO_VERSION_TAG=v7.2.0-inj
+COMETBFT_VERSION_TAG=v0.37.2
+WASMD_VERSION_TAG=v0.40.2-inj
+INJECTIVE_CORE_VERSION_TAG=v1.12.5-testnet
+INJECTIVE_INDEXER_VERSION_TAG=v1.12.45-rc5
+
+# These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
 OS_NAME=$(shell uname -s)
 OS_ARCH=$(shell uname -p)
@@ -26,6 +33,7 @@ endef
 define clean_generated
 	rm -Rf rust
 	rm -Rf cpp
+	rm -Rf java
 	rm -Rf python
 	rm -Rf csharp
 endef
@@ -51,23 +59,23 @@ clean-all:
 	$(call clean_repos)
 	$(call clean_packed)
 
-clone-injective-core:
-	git clone https://github.com/InjectiveLabs/injective-core.git -b v1.12.5-testnet --depth 1 --single-branch
-
-clone-injective-indexer:
-	git clone https://github.com/InjectiveLabs/injective-indexer.git -b v1.12.45-rc5 --depth 1 --single-branch
-
-clone-cometbft:
-	git clone https://github.com/cometbft/cometbft.git -b v0.37.2 --depth 1 --single-branch
-
-clone-wasmd:
-	git clone https://github.com/InjectiveLabs/wasmd.git -b v0.40.2-inj --depth 1 --single-branch
-
 clone-cosmos-sdk:
-	git clone https://github.com/InjectiveLabs/cosmos-sdk.git -b v0.47.3-inj-6 --depth 1 --single-branch
+	git clone https://github.com/InjectiveLabs/cosmos-sdk.git -b $(COSMOS_SDK_VERSION_TAG) --depth 1 --single-branch
 
 clone-ibc-go:
-	git clone https://github.com/InjectiveLabs/ibc-go.git -b v7.2.0-inj --depth 1 --single-branch
+	git clone https://github.com/InjectiveLabs/ibc-go.git -b $(IBC_GO_VERSION_TAG) --depth 1 --single-branch
+
+clone-cometbft:
+	git clone https://github.com/cometbft/cometbft.git -b $(COMETBFT_VERSION_TAG) --depth 1 --single-branch
+
+clone-wasmd:
+	git clone https://github.com/InjectiveLabs/wasmd.git -b $(WASMD_VERSION_TAG) --depth 1 --single-branch
+
+clone-injective-core:
+	git clone https://github.com/InjectiveLabs/injective-core.git -b $(INJECTIVE_CORE_VERSION_TAG) --depth 1 --single-branch
+
+clone-injective-indexer:
+	git clone https://github.com/InjectiveLabs/injective-indexer.git -b $(INJECTIVE_INDEXER_VERSION_TAG) --depth 1 --single-branch
 
 clone-all: clone-cosmos-sdk clone-cometbft clone-ibc-go clone-wasmd clone-injective-core clone-injective-indexer
 
@@ -121,6 +129,7 @@ generate-rust:
 pack:
 	zip -r cpp_protos.zip cpp 
 	zip -r csharp_protos.zip csharp
+	zip -r java_protos.zip java
 	zip -r python_protos.zip python 
 	zip -r rust_protos.zip rust
 
