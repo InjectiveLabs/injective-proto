@@ -1,9 +1,9 @@
-COSMOS_SDK_VERSION_TAG=v0.47.3-inj-6
+COSMOS_SDK_VERSION_TAG=v0.47.3-inj-9
 IBC_GO_VERSION_TAG=v7.2.0-inj
-COMETBFT_VERSION_TAG=v0.37.2
-WASMD_VERSION_TAG=v0.40.2-inj
-INJECTIVE_CORE_VERSION_TAG=v1.12.5-testnet
-INJECTIVE_INDEXER_VERSION_TAG=v1.12.45-rc5
+COMETBFT_VERSION_TAG=v0.37.2-inj
+WASMD_VERSION_TAG=v0.45.0-inj
+INJECTIVE_CORE_VERSION_TAG=v1.12.0
+INJECTIVE_INDEXER_VERSION_TAG=v1.12.72
 
 # These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
@@ -66,7 +66,7 @@ clone-ibc-go:
 	git clone https://github.com/InjectiveLabs/ibc-go.git -b $(IBC_GO_VERSION_TAG) --depth 1 --single-branch
 
 clone-cometbft:
-	git clone https://github.com/cometbft/cometbft.git -b $(COMETBFT_VERSION_TAG) --depth 1 --single-branch
+	git clone https://github.com/InjectiveLabs/cometbft.git -b $(COMETBFT_VERSION_TAG) --depth 1 --single-branch
 
 clone-wasmd:
 	git clone https://github.com/InjectiveLabs/wasmd.git -b $(WASMD_VERSION_TAG) --depth 1 --single-branch
