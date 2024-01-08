@@ -14,3 +14,7 @@ plugins:
     out: ../python/
   - plugin: buf.build/grpc/python
     out: ../python/
+  - plugin: buf.build/protocolbuffers/java
+    out: ../java/
+  - plugin: buf.build/grpc/java
+    out: ../java/

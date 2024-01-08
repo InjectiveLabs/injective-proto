@@ -1,4 +1,11 @@
-# These two variables are required by the csharp proto generation logic
+COSMOS_SDK_VERSION_TAG=v0.47.3-inj-9
+IBC_GO_VERSION_TAG=v7.2.0-inj
+COMETBFT_VERSION_TAG=v0.37.2-inj
+WASMD_VERSION_TAG=v0.45.0-inj
+INJECTIVE_CORE_VERSION_TAG=v1.12.0
+INJECTIVE_INDEXER_VERSION_TAG=v1.12.72
+
+# These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
 OS_NAME=$(shell uname -s)
 OS_ARCH=$(shell uname -p)
@@ -15,6 +22,7 @@ endif
 
 GRPC_PROST_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-prost
 GRPC_TONIC_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-tonic
+GRPC_PROST_CRATE_PLUGIN=$(WORK_DIR)/rust_plugins/protoc-gen-prost-crate
 
 define clean_protos
 	echo "Cleaning protos"
@@ -25,12 +33,16 @@ endef
 define clean_generated
 	rm -Rf rust
 	rm -Rf cpp
+	rm -Rf java
 	rm -Rf python
 	rm -Rf csharp
 endef
 
 define clean_repos
+	rm -Rf cosmos-sdk
+	rm -Rf ibc-go
 	rm -Rf cometbft
+	rm -Rf wasmd
 	rm -Rf injective-core
 	rm -Rf injective-indexer
 endef
@@ -47,23 +59,32 @@ clean-all:
 	$(call clean_repos)
 	$(call clean_packed)
 
-clone-injective-core:
-	git clone https://github.com/InjectiveLabs/injective-core.git -b master --depth 1 --single-branch
+clone-cosmos-sdk:
+	git clone https://github.com/InjectiveLabs/cosmos-sdk.git -b $(COSMOS_SDK_VERSION_TAG) --depth 1 --single-branch
 
-clone-injective-indexer:
-	git clone https://github.com/InjectiveLabs/injective-indexer.git -b master --depth 1 --single-branch
+clone-ibc-go:
+	git clone https://github.com/InjectiveLabs/ibc-go.git -b $(IBC_GO_VERSION_TAG) --depth 1 --single-branch
 
 clone-cometbft:
-	git clone https://github.com/cometbft/cometbft.git -b v0.37.0 --depth 1 --single-branch
+	git clone https://github.com/InjectiveLabs/cometbft.git -b $(COMETBFT_VERSION_TAG) --depth 1 --single-branch
 
-clone-all: clone-injective-core clone-injective-indexer clone-cometbft
+clone-wasmd:
+	git clone https://github.com/InjectiveLabs/wasmd.git -b $(WASMD_VERSION_TAG) --depth 1 --single-branch
+
+clone-injective-core:
+	git clone https://github.com/InjectiveLabs/injective-core.git -b $(INJECTIVE_CORE_VERSION_TAG) --depth 1 --single-branch
+
+clone-injective-indexer:
+	git clone https://github.com/InjectiveLabs/injective-indexer.git -b $(INJECTIVE_INDEXER_VERSION_TAG) --depth 1 --single-branch
+
+clone-all: clone-cosmos-sdk clone-cometbft clone-ibc-go clone-wasmd clone-injective-core clone-injective-indexer
 
 download-protos:
 	mkdir -p proto/exchange
-	buf export buf.build/cosmos/cosmos-sdk:v0.47.0 --output=third_party
-	buf export https://github.com/cosmos/ibc-go.git --exclude-imports --output=third_party
+	buf export ./cosmos-sdk --output=third_party
+	buf export ./ibc-go --exclude-imports --output=third_party
 	buf export ./cometbft --exclude-imports --output=third_party
-	buf export https://github.com/CosmWasm/wasmd.git --exclude-imports --output=third_party
+	buf export ./wasmd --exclude-imports --output=third_party
 	buf export https://github.com/cosmos/ics23.git --exclude-imports --output=third_party
 	cp -r injective-core/proto/injective proto/
 	cp -r third_party/* proto/
@@ -94,8 +115,10 @@ generate-rust:
 		--tonic_out=./rust/$${dir} \
 		$$(find ./$${dir} -type f -name '*.proto') \
 		--plugin=protoc-gen-prost=${GRPC_PROST_PLUGIN} \
+		--plugin=protoc-gen-prost-crate=${GRPC_PROST_CRATE_PLUGIN} \
 		--plugin=protoc-gen-tonic=${GRPC_TONIC_PLUGIN}; \
 	done; \
+	export PATH=$(PATH):./rust_plugins; \
 	PHOME="./rust/proto"; \
 	protoc --proto_path=proto --prost-crate_out=$${PHOME} --prost-crate_opt=include_file=mod.rs --prost-crate_opt=no_features -I $$(find ./proto -name '*.proto' | grep -v "proto/exchange"); \
 	perl -i -pe 's|\"([\w\.]+).rs\"|"$$1/$$1.rs"|g;' -pe 's|\.+(?=[\w+.]+\/)|/|g' rust/proto/mod.rs ; \
@@ -106,6 +129,7 @@ generate-rust:
 pack:
 	zip -r cpp_protos.zip cpp 
 	zip -r csharp_protos.zip csharp
+	zip -r java_protos.zip java
 	zip -r python_protos.zip python 
 	zip -r rust_protos.zip rust
 
