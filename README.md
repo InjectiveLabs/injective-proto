@@ -1,15 +1,13 @@
 # Injective protobuf generated in different programming languages
 
-To generate the proto files for all the supported languajes run `make run-full`
 The current supported languajes are:
-- C++
-- C#
-- Java
-- Python
-- Rust
+- C++ (proto files in cpp_protos.zip)
+- C# (proto files in csharp_protos.zip)
+- Java (proto files in java_protos.zip)
+- Python (proto files in python_protos.zip)
+- Rust (proto files in rust_protos.zip)
 
-The script required `buf` installed to generate the proto files for C++, Java and Python.
-For the C# and Rust proto generation, the script requires `protoc` installed. It then uses the GrpTools plugin to generate the Grpc components. Please make sure that the plugin in grpc.tools/tools/<os_specific_folder> has execution permission
+Use the components in the ZIP files for each of the different languajes.
 
 
 ## Maven dependencies for Java
@@ -59,3 +57,11 @@ If you are using the Injective proto components in Java you might want to use th
 
 </project>
 ```
+
+
+## Update the proto components in the repository
+
+To generate the proto files for all the supported languajes run `make run-full`
+
+The script required `buf` installed to generate the proto files for C++, Java and Python.
+For the C# and Rust proto generation, the script requires `protoc` installed. It then uses the GrpTools plugin to generate the Grpc components. Please make sure that the plugin in grpc.tools/tools/<os_specific_folder> has execution permission
