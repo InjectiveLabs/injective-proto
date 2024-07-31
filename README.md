@@ -9,6 +9,9 @@ The current supported languajes are:
 
 Use the components in the ZIP files for each of the different languajes.
 
+## Original proto files
+All original proto files can be found in the `all_protos` folder
+
 
 ## Maven dependencies for Java
 If you are using the Injective proto components in Java you might want to use the following Maven dependencies (or use it as the base for your own Maven configuration):

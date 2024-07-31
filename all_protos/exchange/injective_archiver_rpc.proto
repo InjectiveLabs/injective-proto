@@ -1,0 +1,76 @@
+// Code generated with goa v3.7.0, DO NOT EDIT.
+//
+// InjectiveArchiverRPC protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/InjectiveLabs/injective-indexer/api/design -o ../
+
+syntax = "proto3";
+
+package injective_archiver_rpc;
+
+option go_package = "/injective_archiver_rpcpb";
+
+// InjectiveArchiverRPC defines gRPC API of Archiver provider.
+service InjectiveArchiverRPC {
+	// Provide historical balance data for a given account address.
+	rpc Balance (BalanceRequest) returns (BalanceResponse);
+	// Provide historical realized profit and loss data for a given account address.
+	rpc Rpnl (RpnlRequest) returns (RpnlResponse);
+	// Provide historical volumes for a given account address.
+	rpc Volumes (VolumesRequest) returns (VolumesResponse);
+}
+
+message BalanceRequest {
+	// Account address
+	string account = 1;
+	// Symbol resolution. Possible resolutions are 1D,1W,1M
+	string resolution = 2;
+}
+
+message BalanceResponse {
+	HistoricalBalance historical_balance = 1;
+}
+
+message HistoricalBalance {
+	// Time, Unix timestamp (UTC)
+	repeated sint32 t = 1;
+	// Balance value
+	repeated double v = 2;
+}
+
+message RpnlRequest {
+	// Account address
+	string account = 1;
+	// Symbol resolution. Possible resolutions are 1D,1W,1M
+	string resolution = 2;
+}
+
+message RpnlResponse {
+	HistoricalRPNL historical_rpnl = 1;
+}
+
+message HistoricalRPNL {
+	// Time, Unix timestamp (UTC)
+	repeated sint32 t = 1;
+	// Realized Profit and Loss value
+	repeated double v = 2;
+}
+
+message VolumesRequest {
+	// Account address
+	string account = 1;
+	// Symbol resolution. Possible resolutions are 1D,1W,1M
+	string resolution = 2;
+}
+
+message VolumesResponse {
+	HistoricalVolumes historical_volumes = 1;
+}
+
+message HistoricalVolumes {
+	// Time, Unix timestamp (UTC)
+	repeated sint32 t = 1;
+	// Volume value
+	repeated double v = 2;
+}

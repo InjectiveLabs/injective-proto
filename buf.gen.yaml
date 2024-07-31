@@ -1,4 +1,4 @@
-version: v1
+version: v2
 managed:
   enabled: true
 plugins:
@@ -6,15 +6,36 @@ plugins:
   #   out: ../rust/
   # - plugin: buf.build/community/neoeinstein-tonic
   #   out: ../rust/
-  - plugin: buf.build/protocolbuffers/cpp
-    out: ../cpp/
-  - plugin: buf.build/grpc/cpp
-    out: ../cpp/
-  - plugin: buf.build/protocolbuffers/python
-    out: ../python/
-  - plugin: buf.build/grpc/python
-    out: ../python/
-  - plugin: buf.build/protocolbuffers/java
-    out: ../java/
-  - plugin: buf.build/grpc/java
-    out: ../java/
+  - remote: buf.build/protocolbuffers/cpp
+    out: ./cpp/
+  - remote: buf.build/grpc/cpp
+    out: ./cpp/
+  - remote: buf.build/protocolbuffers/python
+    out: ./python/
+  - remote: buf.build/grpc/python
+    out: ./python/
+  - remote: buf.build/protocolbuffers/java
+    out: ./java/
+  - remote: buf.build/grpc/java
+    out: ./java/
+inputs:
+  - module: buf.build/cosmos/cosmos-proto
+  - module: buf.build/cosmos/gogo-proto
+  - module: buf.build/googleapis/googleapis
+  - module: buf.build/cosmos/ics23
+  - git_repo: https://github.com/InjectiveLabs/cosmos-sdk
+    tag: v0.50.8-inj-0
+  - git_repo: https://github.com/InjectiveLabs/ibc-go
+    tag: v8.3.2-inj-0
+  - git_repo: https://github.com/InjectiveLabs/wasmd
+    tag: v0.51.0-inj-0
+#  - git_repo: https://github.com/InjectiveLabs/wasmd
+#    branch: v0.51.x-inj
+#    subdir: proto
+  - git_repo: https://github.com/InjectiveLabs/injective-core
+    tag: v1.13.0
+    subdir: proto
+#  - git_repo: https://github.com/InjectiveLabs/injective-core
+#    branch: master
+#    subdir: proto
+  - directory: proto
