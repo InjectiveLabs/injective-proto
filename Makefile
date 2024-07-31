@@ -1,9 +1,8 @@
-COSMOS_SDK_VERSION_TAG=v0.47.3-inj-9
-IBC_GO_VERSION_TAG=v7.2.0-inj
-COMETBFT_VERSION_TAG=v0.37.2-inj
-WASMD_VERSION_TAG=v0.45.0-inj
-INJECTIVE_CORE_VERSION_TAG=v1.12.1
-INJECTIVE_INDEXER_VERSION_TAG=v1.12.79.1
+COSMOS_SDK_VERSION_TAG=v0.50.8-inj-0
+IBC_GO_VERSION_TAG=v8.3.2-inj-0
+WASMD_VERSION_TAG=v0.51.0-inj-0
+INJECTIVE_CORE_VERSION_TAG=v1.13.0
+INJECTIVE_INDEXER_VERSION_TAG=v1.13.4
 
 # These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
@@ -65,9 +64,6 @@ clone-cosmos-sdk:
 clone-ibc-go:
 	git clone https://github.com/InjectiveLabs/ibc-go.git -b $(IBC_GO_VERSION_TAG) --depth 1 --single-branch
 
-clone-cometbft:
-	git clone https://github.com/InjectiveLabs/cometbft.git -b $(COMETBFT_VERSION_TAG) --depth 1 --single-branch
-
 clone-wasmd:
 	git clone https://github.com/InjectiveLabs/wasmd.git -b $(WASMD_VERSION_TAG) --depth 1 --single-branch
 
@@ -77,21 +73,27 @@ clone-injective-core:
 clone-injective-indexer:
 	git clone https://github.com/InjectiveLabs/injective-indexer.git -b $(INJECTIVE_INDEXER_VERSION_TAG) --depth 1 --single-branch
 
-clone-all: clone-cosmos-sdk clone-cometbft clone-ibc-go clone-wasmd clone-injective-core clone-injective-indexer
+clone-all: clone-cosmos-sdk clone-ibc-go clone-wasmd clone-injective-core clone-injective-indexer
 
 download-protos:
-	mkdir -p proto/exchange
 	buf export ./cosmos-sdk --output=third_party
 	buf export ./ibc-go --exclude-imports --output=third_party
-	buf export ./cometbft --exclude-imports --output=third_party
 	buf export ./wasmd --exclude-imports --output=third_party
 	buf export https://github.com/cosmos/ics23.git --exclude-imports --output=third_party
 	cp -r injective-core/proto/injective proto/
 	cp -r third_party/* proto/
+
+download-indexer-protos:
+	mkdir -p proto/exchange
 	find ./injective-indexer/api/gen/grpc -type f -name "*.proto" -exec cp {} ./proto/exchange/ \; 
 
-generate: generate-rust generate-csharp
-	cd ./proto && buf generate --template ../buf.gen.yaml
+generate:
+	buf generate --template buf.gen.yaml
+	$(MAKE) download-protos
+	$(MAKE) generate-rust
+	$(MAKE) generate-csharp
+	rm -Rf all_protos
+	cp -r proto all_protos
 
 generate-csharp:
 	rm -rf ./csharp
@@ -133,7 +135,7 @@ pack:
 	zip -r python_protos.zip python 
 	zip -r rust_protos.zip rust
 
-run-full: clean-all clone-all download-protos generate pack
+run-full: clean-all clone-all download-indexer-protos generate pack
 	$(call clean_repos)
 	$(call clean_protos)
 	$(call clean_generated)
