@@ -1,0 +1,96 @@
+// Code generated with goa v3.7.0, DO NOT EDIT.
+//
+// InjectiveChartRPC protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/InjectiveLabs/injective-indexer/api/design -o ../
+
+syntax = "proto3";
+
+package injective_chart_rpc;
+
+option go_package = "/injective_chart_rpcpb";
+
+// InjectiveChartRPC implements historical chart data retrieval.
+service InjectiveChartRPC {
+	// Request for history bars of spotMarket for TradingView.
+	rpc SpotMarketHistory (SpotMarketHistoryRequest) returns (SpotMarketHistoryResponse);
+	// Request for history bars of derivativeMarket for TradingView.
+	rpc DerivativeMarketHistory (DerivativeMarketHistoryRequest) returns (DerivativeMarketHistoryResponse);
+}
+
+message SpotMarketHistoryRequest {
+	// Specify unique ticker to search
+	string symbol = 1;
+	// As an alternative is possible to provide a marketId
+	string market_id = 2;
+	// Symbol resolution. Possible resolutions are daily (D or 1D, 2D ... ), weekly
+// (1W, 2W ...), monthly (1M, 2M...) and an intra-day resolution – minutes(1, 2
+// ...).
+	string resolution = 3;
+	// Unix timestamp (UTC) of the leftmost required bar, including from
+	sint32 from = 4;
+	// Unix timestamp (UTC) of the rightmost required bar, including to. It can be
+// in the future. In this case, the rightmost required bar is the latest
+// available bar.
+	sint32 to = 5;
+	// Number of bars (higher priority than from) starting with to. If countback is
+// set, from should be ignored.
+	sint32 countback = 6;
+}
+
+message SpotMarketHistoryResponse {
+	// Bar time, Unix timestamp (UTC). Daily bars should only have the date part,
+// time should be 0.
+	repeated sint32 t = 1;
+	// Open price.
+	repeated double o = 2;
+	// High price.
+	repeated double h = 3;
+	// Low price.
+	repeated double l = 4;
+	// Close price.
+	repeated double c = 5;
+	// Volume.
+	repeated double v = 6;
+	// Status of the request.
+	string s = 7;
+}
+
+message DerivativeMarketHistoryRequest {
+	// Specify unique ticker to search.
+	string symbol = 1;
+	// As an alternative is possible to provide a marketId
+	string market_id = 2;
+	// Symbol resolution. Possible resolutions are daily (D or 1D, 2D ... ), weekly
+// (1W, 2W ...), monthly (1M, 2M...) and an intra-day resolution – minutes(1, 2
+// ...).
+	string resolution = 3;
+	// Unix timestamp (UTC) of the leftmost required bar, including from
+	sint32 from = 4;
+	// Unix timestamp (UTC) of the rightmost required bar, including to. It can be
+// in the future. In this case, the rightmost required bar is the latest
+// available bar.
+	sint32 to = 5;
+	// Number of bars (higher priority than from) starting with to. If countback is
+// set, from should be ignored.
+	sint32 countback = 6;
+}
+
+message DerivativeMarketHistoryResponse {
+	// Bar time, Unix timestamp (UTC). Daily bars should only have the date part,
+// time should be 0.
+	repeated sint32 t = 1;
+	// Open price.
+	repeated double o = 2;
+	// High price.
+	repeated double h = 3;
+	// Low price.
+	repeated double l = 4;
+	// Close price.
+	repeated double c = 5;
+	// Volume.
+	repeated double v = 6;
+	// Status of the request.
+	string s = 7;
+}
