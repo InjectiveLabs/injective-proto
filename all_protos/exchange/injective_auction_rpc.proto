@@ -19,6 +19,8 @@ service InjectiveAuctionRPC {
 	rpc Auctions (AuctionsRequest) returns (AuctionsResponse);
 	// StreamBids streams new bids of an auction.
 	rpc StreamBids (StreamBidsRequest) returns (stream StreamBidsResponse);
+	// InjBurntEndpoint returns the total amount of INJ burnt in auctions.
+	rpc InjBurntEndpoint (InjBurntEndpointRequest) returns (InjBurntEndpointResponse);
 }
 
 message AuctionEndpointRequest {
@@ -78,4 +80,11 @@ message StreamBidsResponse {
 	uint64 round = 3;
 	// Operation timestamp in UNIX millis.
 	sint64 timestamp = 4;
+}
+
+message InjBurntEndpointRequest {
+}
+
+message InjBurntEndpointResponse {
+	string total_inj_burnt = 1;
 }

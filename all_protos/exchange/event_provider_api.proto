@@ -23,6 +23,8 @@ service EventProviderAPI {
 	rpc GetCustomEventsRPC (GetCustomEventsRPCRequest) returns (GetCustomEventsRPCResponse);
 	// Get raw block events for selected height
 	rpc GetABCIBlockEvents (GetABCIBlockEventsRequest) returns (GetABCIBlockEventsResponse);
+	// Get all raw block events for selected height
+	rpc GetABCIBlockEventsAtHeight (GetABCIBlockEventsAtHeightRequest) returns (GetABCIBlockEventsAtHeightResponse);
 }
 
 message GetLatestHeightRequest {
@@ -40,6 +42,7 @@ message GetLatestHeightResponse {
 // Latest block height from event provider db
 message LatestBlockHeight {
 	uint64 height = 1;
+	sint64 time = 2;
 }
 
 message StreamBlockEventsRequest {
@@ -68,12 +71,15 @@ message BlockEvent {
 	bytes value = 2;
 	// TX hash
 	bytes tx_hash = 3;
+	// Set only if it's a BeginBlock or EndBlock event
+	string mode = 4;
 }
 
 message GetBlockEventsRPCRequest {
 	// Select backend processor
 	string backend = 1;
 	sint32 height = 2;
+	bool human_readable = 3;
 }
 
 message GetBlockEventsRPCResponse {
@@ -158,4 +164,18 @@ message ABCIEvent {
 message ABCIAttribute {
 	string key = 1;
 	string value = 2;
+}
+
+message GetABCIBlockEventsAtHeightRequest {
+	sint32 height = 1;
+}
+
+message GetABCIBlockEventsAtHeightResponse {
+	// Response version.
+	string v = 1;
+	// Status of the response.
+	string s = 2;
+	// Error message.
+	string e = 3;
+	RawBlock raw_block = 4;
 }

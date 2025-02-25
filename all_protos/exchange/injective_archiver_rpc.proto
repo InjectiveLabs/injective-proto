@@ -19,6 +19,18 @@ service InjectiveArchiverRPC {
 	rpc Rpnl (RpnlRequest) returns (RpnlResponse);
 	// Provide historical volumes for a given account address.
 	rpc Volumes (VolumesRequest) returns (VolumesResponse);
+	// Provide pnl leaderboard data.
+	rpc PnlLeaderboard (PnlLeaderboardRequest) returns (PnlLeaderboardResponse);
+	// Provide volume leaderboard data.
+	rpc VolLeaderboard (VolLeaderboardRequest) returns (VolLeaderboardResponse);
+	// Provide pnl leaderboard data.
+	rpc PnlLeaderboardFixedResolution (PnlLeaderboardFixedResolutionRequest) returns (PnlLeaderboardFixedResolutionResponse);
+	// Provide volume leaderboard data.
+	rpc VolLeaderboardFixedResolution (VolLeaderboardFixedResolutionRequest) returns (VolLeaderboardFixedResolutionResponse);
+	// Provide a list of addresses holding a specific denom
+	rpc DenomHolders (DenomHoldersRequest) returns (DenomHoldersResponse);
+	// Provide historical trades data.
+	rpc HistoricalTrades (HistoricalTradesRequest) returns (HistoricalTradesResponse);
 }
 
 message BalanceRequest {
@@ -73,4 +85,191 @@ message HistoricalVolumes {
 	repeated sint32 t = 1;
 	// Volume value
 	repeated double v = 2;
+}
+
+message PnlLeaderboardRequest {
+	// Start date of the leaderboard period in unix time (ms)
+	sint64 start_date = 1;
+	// End date of the leaderboard period in unix time (ms)
+	sint64 end_date = 2;
+	// Number of leaderboard entries to return
+	sint32 limit = 3;
+	// Account address that's querying the leaderboard
+	string account = 4;
+}
+
+message PnlLeaderboardResponse {
+	// First date of snapshots used for the leaderboard period
+	string first_date = 1;
+	// Last date of snapshots used for the leaderboard period
+	string last_date = 2;
+	// Leaderboard entries
+	repeated LeaderboardRow leaders = 3;
+	// Leaderboard entry for the querying account
+	LeaderboardRow account_row = 4;
+}
+
+message LeaderboardRow {
+	// Account address
+	string account = 1;
+	// Realized profit and loss (USD)
+	double pnl = 2;
+	// Trade volume (USD)
+	double volume = 3;
+	// Rank in leaderboard
+	sint32 rank = 4;
+}
+
+message VolLeaderboardRequest {
+	// Start date of the leaderboard period in unix time (ms)
+	sint64 start_date = 1;
+	// End date of the leaderboard period in unix time (ms)
+	sint64 end_date = 2;
+	// Number of leaderboard entries to return
+	sint32 limit = 3;
+	// Account address that's querying the leaderboard
+	string account = 4;
+}
+
+message VolLeaderboardResponse {
+	// First date of snapshots used for the leaderboard period
+	string first_date = 1;
+	// Last date of snapshots used for the leaderboard period
+	string last_date = 2;
+	// Leaderboard entries
+	repeated LeaderboardRow leaders = 3;
+	// Leaderboard entry for the querying account
+	LeaderboardRow account_row = 4;
+}
+
+message PnlLeaderboardFixedResolutionRequest {
+	// Leaderboard resolution. Possible resolutions are 1D,1W,1M,6M,ALL
+	string resolution = 1;
+	// Number of leaderboard entries to return
+	sint32 limit = 2;
+	// Account address that's querying the leaderboard
+	string account = 3;
+}
+
+message PnlLeaderboardFixedResolutionResponse {
+	// First date of snapshots used for the leaderboard period
+	string first_date = 1;
+	// Last date of snapshots used for the leaderboard period
+	string last_date = 2;
+	// Leaderboard entries
+	repeated LeaderboardRow leaders = 3;
+	// Leaderboard entry for the querying account
+	LeaderboardRow account_row = 4;
+}
+
+message VolLeaderboardFixedResolutionRequest {
+	// Leaderboard resolution. Possible resolutions are 1D,1W,1M,6M,ALL
+	string resolution = 1;
+	// Number of leaderboard entries to return
+	sint32 limit = 2;
+	// Account address that's querying the leaderboard
+	string account = 3;
+}
+
+message VolLeaderboardFixedResolutionResponse {
+	// First date of snapshots used for the leaderboard period
+	string first_date = 1;
+	// Last date of snapshots used for the leaderboard period
+	string last_date = 2;
+	// Leaderboard entries
+	repeated LeaderboardRow leaders = 3;
+	// Leaderboard entry for the querying account
+	LeaderboardRow account_row = 4;
+}
+
+message DenomHoldersRequest {
+	// Denom address
+	string denom = 1;
+	// Token for pagination
+	string token = 2;
+	sint32 limit = 3;
+}
+
+message DenomHoldersResponse {
+	repeated Holder holders = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
+	// Total number of holders
+	sint32 total = 3;
+}
+
+message Holder {
+	// Account address for the holder
+	string account_address = 1;
+	// The balance of the holder
+	string balance = 2;
+}
+
+message HistoricalTradesRequest {
+	// The starting block height that the trades must be equal or older than
+	uint64 from_block = 1;
+	// The ending block height that the trades must be equal or older than
+	uint64 end_block = 2;
+	// The starting timestamp in UNIX milliseconds that the trades must be equal or
+// older than
+	sint64 from_time = 3;
+	// The ending timestamp in UNIX milliseconds that the trades must be equal or
+// older than
+	sint64 end_time = 4;
+	// The number of trades to return per page
+	sint32 per_page = 5;
+	// Token for pagination
+	string token = 6;
+	// Account address
+	string account = 7;
+}
+
+message HistoricalTradesResponse {
+	repeated HistoricalTrade trades = 1;
+	// The last block height available in the service
+	uint64 last_height = 2;
+	// The timestamp of the last block available in the service
+	sint64 last_time = 3;
+	// Next token for pagination
+	repeated string next = 4;
+}
+
+message HistoricalTrade {
+	// Account address
+	string account = 1;
+	// The subaccountId that executed the trade
+	string subaccount_id = 2;
+	// The ID of the market that this trade is in
+	string market_id = 3;
+	// The direction the trade
+	string trade_direction = 4;
+	// Price level at which trade has been executed
+	PriceLevel price = 5;
+	// The fee associated with the trade (quote asset denom)
+	string fee = 6;
+	// Timestamp of trade execution in UNIX millis
+	sint64 executed_at = 7;
+	// Block height of trade execution
+	uint64 executed_height = 8;
+	// Fee recipient address
+	string fee_recipient = 9;
+	// Trade's execution side, maker/taker
+	string execution_side = 10;
+	// USD value of the trade at the time of execution
+	string usd_value = 11;
+	// A list of flag assigned to the trade
+	repeated string flags = 12;
+	// Type of market
+	string market_type = 13;
+	// Unique trade ID
+	string trade_id = 14;
+}
+
+message PriceLevel {
+	// Price number of the price level.
+	string price = 1;
+	// Quantity of the price level.
+	string quantity = 2;
+	// Price level last updated timestamp in UNIX millis.
+	sint64 timestamp = 3;
 }
