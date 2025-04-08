@@ -730,4 +730,5 @@ message Coin {
 	// Denom of the coin
 	string denom = 1;
 	string amount = 2;
+	string usd_value = 3;
 }
