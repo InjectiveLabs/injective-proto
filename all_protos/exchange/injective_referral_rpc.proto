@@ -1,0 +1,78 @@
+// Code generated with goa v3.7.0, DO NOT EDIT.
+//
+// InjectiveReferralRPC protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/InjectiveLabs/injective-indexer/api/design -o ../
+
+syntax = "proto3";
+
+package injective_referral_rpc;
+
+option go_package = "/injective_referral_rpcpb";
+
+// InjectiveReferralRPC defines gRPC API for referral system
+service InjectiveReferralRPC {
+	// Get referrer details including their invitees, commissions and trading
+// volumes
+	rpc GetReferrerDetails (GetReferrerDetailsRequest) returns (GetReferrerDetailsResponse);
+	// Get invitee details including their referrer, trading volume and join date
+	rpc GetInviteeDetails (GetInviteeDetailsRequest) returns (GetInviteeDetailsResponse);
+	// Get referrer details by their referral code
+	rpc GetReferrerByCode (GetReferrerByCodeRequest) returns (GetReferrerByCodeResponse);
+}
+
+message GetReferrerDetailsRequest {
+	// Address of the referrer
+	string referrer_address = 1;
+}
+
+message GetReferrerDetailsResponse {
+	// List of invitees
+	repeated ReferralInvitee invitees = 1;
+	// Total commission earned
+	string total_commission = 2;
+	// Total trading volume
+	string total_trading_volume = 3;
+	// Referrer code
+	string referrer_code = 4;
+}
+
+message ReferralInvitee {
+	// Address of the invitee
+	string address = 1;
+	// Commission earned from this invitee
+	string commission = 2;
+	// Trading volume of this invitee
+	string trading_volume = 3;
+	// Join date in ISO 8601 format
+	string join_date = 4;
+}
+
+message GetInviteeDetailsRequest {
+	// Address of the invitee
+	string invitee_address = 1;
+}
+
+message GetInviteeDetailsResponse {
+	// Address of the referrer
+	string referrer = 1;
+	// Referral code used
+	string used_code = 2;
+	// Total trading volume
+	string trading_volume = 3;
+	// Join date in ISO 8601 format
+	string joined_at = 4;
+	// Whether the referral is still active
+	bool active = 5;
+}
+
+message GetReferrerByCodeRequest {
+	// Referral code to look up
+	string referral_code = 1;
+}
+
+message GetReferrerByCodeResponse {
+	// Address of the referrer
+	string referrer_address = 1;
+}

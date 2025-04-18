@@ -69,6 +69,7 @@ message Coin {
 	// Denom of the coin
 	string denom = 1;
 	string amount = 2;
+	string usd_value = 3;
 }
 
 message SubaccountBalanceV2 {
@@ -82,6 +83,8 @@ message SubaccountBalanceV2 {
 message SubaccountDeposit {
 	string total_balance = 1;
 	string available_balance = 2;
+	string total_balance_usd = 3;
+	string available_balance_usd = 4;
 }
 
 message PositionsWithUPNL {
@@ -120,6 +123,8 @@ message DerivativePosition {
 message AccountPortfolioBalancesRequest {
 	// Account address
 	string account_address = 1;
+	// Whether to return USD values for the balances
+	bool usd = 2;
 }
 
 message AccountPortfolioBalancesResponse {
@@ -134,6 +139,8 @@ message PortfolioBalances {
 	repeated Coin bank_balances = 2;
 	// Subaccounts list
 	repeated SubaccountBalanceV2 subaccounts = 3;
+	// USD value of the portfolio
+	string total_usd = 4;
 }
 
 message StreamAccountPortfolioRequest {

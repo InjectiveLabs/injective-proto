@@ -17,6 +17,16 @@ service InjectiveChartRPC {
 	rpc SpotMarketHistory (SpotMarketHistoryRequest) returns (SpotMarketHistoryResponse);
 	// Request for history bars of derivativeMarket for TradingView.
 	rpc DerivativeMarketHistory (DerivativeMarketHistoryRequest) returns (DerivativeMarketHistoryResponse);
+	// Gets spot market summary for the latest interval (hour, day, month)
+	rpc SpotMarketSummary (SpotMarketSummaryRequest) returns (SpotMarketSummaryResponse);
+	// Gets batch summary for all active markets, for the latest interval (hour,
+// day, month)
+	rpc AllSpotMarketSummary (AllSpotMarketSummaryRequest) returns (AllSpotMarketSummaryResponse);
+	// Gets derivative market summary for the latest interval (hour, day, month)
+	rpc DerivativeMarketSummary (DerivativeMarketSummaryRequest) returns (DerivativeMarketSummaryResponse);
+	// Gets batch summary for all active markets, for the latest interval (hour,
+// day, month)
+	rpc AllDerivativeMarketSummary (AllDerivativeMarketSummaryRequest) returns (AllDerivativeMarketSummaryResponse);
 }
 
 message SpotMarketHistoryRequest {
@@ -93,4 +103,89 @@ message DerivativeMarketHistoryResponse {
 	repeated double v = 6;
 	// Status of the request.
 	string s = 7;
+}
+
+message SpotMarketSummaryRequest {
+	// Market ID of the spot market
+	string market_id = 1;
+	// Specify the resolution
+	string resolution = 2;
+}
+
+message SpotMarketSummaryResponse {
+	// Market ID of the derivativeMarket market
+	string market_id = 1;
+	// Open price.
+	double open = 2;
+	// High price.
+	double high = 3;
+	// Low price.
+	double low = 4;
+	// Volume.
+	double volume = 5;
+	// Current price based on latest fill event.
+	double price = 6;
+	// Change percent from opening price.
+	double change = 7;
+}
+
+message AllSpotMarketSummaryRequest {
+	// Specify the resolution
+	string resolution = 1;
+}
+
+message AllSpotMarketSummaryResponse {
+	repeated MarketSummaryResp field = 1;
+}
+
+message MarketSummaryResp {
+	// Market ID of the derivativeMarket market
+	string market_id = 1;
+	// Open price.
+	double open = 2;
+	// High price.
+	double high = 3;
+	// Low price.
+	double low = 4;
+	// Volume.
+	double volume = 5;
+	// Current price based on latest fill event.
+	double price = 6;
+	// Change percent from opening price.
+	double change = 7;
+}
+
+message DerivativeMarketSummaryRequest {
+	// Market ID of the derivative market
+	string market_id = 1;
+	// Request the summary of index price feed
+	bool index_price = 2;
+	// Specify the resolution
+	string resolution = 3;
+}
+
+message DerivativeMarketSummaryResponse {
+	// Market ID of the derivativeMarket market
+	string market_id = 1;
+	// Open price.
+	double open = 2;
+	// High price.
+	double high = 3;
+	// Low price.
+	double low = 4;
+	// Volume.
+	double volume = 5;
+	// Current price based on latest fill event.
+	double price = 6;
+	// Change percent from opening price.
+	double change = 7;
+}
+
+message AllDerivativeMarketSummaryRequest {
+	// Specify the resolution
+	string resolution = 1;
+}
+
+message AllDerivativeMarketSummaryResponse {
+	repeated MarketSummaryResp field = 1;
 }

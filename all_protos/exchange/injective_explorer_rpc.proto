@@ -222,6 +222,8 @@ message BlockInfo {
 	sint64 num_txs = 7;
 	repeated TxDataRPC txs = 8;
 	string timestamp = 9;
+	// Block timestamp in unix milli
+	uint64 block_unix_timestamp = 10;
 }
 // TxData wraps tx data
 message TxDataRPC {
@@ -284,6 +286,8 @@ message BlockDetailInfo {
 	sint64 total_txs = 8;
 	repeated TxData txs = 9;
 	string timestamp = 10;
+	// Block timestamp in unix milli
+	uint64 block_unix_timestamp = 11;
 }
 // TxData wraps tx data
 message TxData {
@@ -303,6 +307,8 @@ message TxData {
 	// peggy bridge claim id, non-zero if tx contains MsgDepositClaim
 	repeated sint64 claim_ids = 12;
 	repeated Signature signatures = 13;
+	// Block timestamp in unix milli
+	uint64 block_unix_timestamp = 14;
 }
 
 message GetValidatorsRequest {
@@ -880,6 +886,7 @@ message Coin {
 	// Denom of the coin
 	string denom = 1;
 	string amount = 2;
+	string usd_value = 3;
 }
 
 message StreamTxsRequest {
@@ -913,6 +920,8 @@ message StreamBlocksResponse {
 	sint64 num_txs = 7;
 	repeated TxDataRPC txs = 8;
 	string timestamp = 9;
+	// Block timestamp in unix milli
+	uint64 block_unix_timestamp = 10;
 }
 
 message GetStatsRequest {

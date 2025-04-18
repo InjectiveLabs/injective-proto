@@ -149,18 +149,26 @@ message TradingStrategy {
 	string performance = 43;
 	// Return on investment of the trading strategy
 	string roi = 44;
-	// Initial base price of the trading strategy
+	// Initial base price of the trading strategy from asset price service
+// Use strategyFinalData if available to have more accurate data
 	string initial_base_price = 45;
-	// Initial quote price of the trading strategy
+	// Initial quote price of the trading strategy from asset price service
+// Use strategyFinalData if available to have more accurate data
 	string initial_quote_price = 46;
-	// Current base price of the trading strategy
+	// Current base price of the trading strategy from asset price service
+// Use strategyFinalData if available to have more accurate data
 	string current_base_price = 47;
-	// Current quote price of the trading strategy
+	// Current quote price of the trading strategy from asset price service
+// Use strategyFinalData if available to have more accurate data
 	string current_quote_price = 48;
-	// Final base price of the trading strategy
+	// Final base price of the trading strategy from asset price service
+// Use strategyFinalData if available to have more accurate data
 	string final_base_price = 49;
-	// Final quote price of the trading strategy
+	// Final quote price of the trading strategy from asset price service
+// Use strategyFinalData if available to have more accurate data
 	string final_quote_price = 50;
+	// Final data of the trading strategy. This is present from contract v0.8.4.
+	StrategyFinalData final_data = 51;
 }
 
 message ExitConfig {
@@ -168,6 +176,25 @@ message ExitConfig {
 	string exit_type = 1;
 	// strategy stopLoss/takeProfit price
 	string exit_price = 2;
+}
+
+message StrategyFinalData {
+	// Initial base amount
+	string initial_base_amount = 1;
+	// Initial quote amount
+	string initial_quote_amount = 2;
+	// Final base amount
+	string final_base_amount = 3;
+	// Final quote amount
+	string final_quote_amount = 4;
+	// Initial base price
+	string initial_base_price = 5;
+	// Initial quote price
+	string initial_quote_price = 6;
+	// Final base price
+	string final_base_price = 7;
+	// Final quote price
+	string final_quote_price = 8;
 }
 // Paging defines the structure for required params for handling pagination
 message Paging {
