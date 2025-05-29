@@ -69,6 +69,8 @@ service InjectiveDerivativeExchangeRPC {
 	rpc OrdersHistory (OrdersHistoryRequest) returns (OrdersHistoryResponse);
 	// Stream updates to historical orders of a derivative Market
 	rpc StreamOrdersHistory (StreamOrdersHistoryRequest) returns (stream StreamOrdersHistoryResponse);
+	// OpenInterest gets the open interest for a derivative market.
+	rpc OpenInterest (OpenInterestRequest) returns (OpenInterestResponse);
 }
 
 message MarketsRequest {
@@ -129,6 +131,8 @@ message DerivativeMarketInfo {
 	ExpiryFuturesMarketInfo expiry_futures_market_info = 20;
 	// Minimum notional value for the order
 	string min_notional = 21;
+	// Defines the reduce margin ratio of a derivative market
+	string reduce_margin_ratio = 22;
 }
 
 message TokenMeta {
@@ -168,6 +172,8 @@ message PerpetualMarketFunding {
 	// Defines the last funding timestamp in seconds of a perpetual market in UNIX
 // seconds.
 	sint64 last_timestamp = 3;
+	// Defines the last funding rate of a perpetual market.
+	string last_funding_rate = 4;
 }
 
 message ExpiryFuturesMarketInfo {
@@ -285,6 +291,8 @@ message BinaryOptionsMarketResponse {
 message OrderbookV2Request {
 	// MarketId of the market's orderbook we want to fetch
 	string market_id = 1;
+	// Depth of the orderbook
+	sint32 depth = 2;
 }
 
 message OrderbookV2Response {
@@ -315,6 +323,8 @@ message PriceLevel {
 message OrderbooksV2Request {
 	// MarketIds of the markets
 	repeated string market_ids = 1;
+	// Depth of the orderbook
+	sint32 depth = 2;
 }
 
 message OrderbooksV2Response {
@@ -1099,4 +1109,21 @@ message StreamOrdersHistoryResponse {
 	string operation_type = 2;
 	// Operation timestamp in UNIX millis.
 	sint64 timestamp = 3;
+}
+
+message OpenInterestRequest {
+	// Specify multiple marketIDs to search.
+	repeated string market_i_ds = 1;
+}
+
+message OpenInterestResponse {
+	// Open interest of the markets
+	repeated MarketOpenInterest open_interests = 1;
+}
+
+message MarketOpenInterest {
+	// MarketId of the market we want to fetch open interest from
+	string market_id = 1;
+	// Open interest of the market
+	string open_interest = 2;
 }

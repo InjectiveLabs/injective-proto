@@ -138,6 +138,8 @@ message StreamMarketsResponse {
 message OrderbookV2Request {
 	// MarketId of the market's orderbook we want to fetch
 	string market_id = 1;
+	// Depth of the orderbook
+	sint32 depth = 2;
 }
 
 message OrderbookV2Response {
@@ -168,6 +170,8 @@ message PriceLevel {
 message OrderbooksV2Request {
 	// MarketIds of the markets
 	repeated string market_ids = 1;
+	// Depth of the orderbook
+	sint32 depth = 2;
 }
 
 message OrderbooksV2Response {

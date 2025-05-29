@@ -1,8 +1,9 @@
-COSMOS_SDK_VERSION_TAG=v0.50.9-inj.5
-IBC_GO_VERSION_TAG=v8.7.0-inj
-WASMD_VERSION_TAG=v0.53.2-inj.2
-INJECTIVE_CORE_VERSION_TAG=v1.15.0
-INJECTIVE_INDEXER_VERSION_TAG=v1.15.6
+COMETBFT_VERSION_TAG=v1.0.1-inj.2
+COSMOS_SDK_VERSION_TAG=v0.50.13-evm-comet1-inj.3
+IBC_GO_VERSION_TAG=v8.7.0-evm-comet1-inj
+WASMD_VERSION_TAG=v0.53.2-evm-comet1-inj
+INJECTIVE_CORE_VERSION_TAG=v1.16.0-beta.2
+INJECTIVE_INDEXER_VERSION_TAG=v1.16.3
 
 # These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
@@ -58,27 +59,19 @@ clean-all:
 	$(call clean_repos)
 	$(call clean_packed)
 
-clone-cosmos-sdk:
-	git clone https://github.com/InjectiveLabs/cosmos-sdk.git -b $(COSMOS_SDK_VERSION_TAG) --depth 1 --single-branch
-
-clone-ibc-go:
-	git clone https://github.com/InjectiveLabs/ibc-go.git -b $(IBC_GO_VERSION_TAG) --depth 1 --single-branch
-
-clone-wasmd:
-	git clone https://github.com/InjectiveLabs/wasmd.git -b $(WASMD_VERSION_TAG) --depth 1 --single-branch
-
 clone-injective-core:
 	git clone https://github.com/InjectiveLabs/injective-core.git -b $(INJECTIVE_CORE_VERSION_TAG) --depth 1 --single-branch
 
 clone-injective-indexer:
 	git clone https://github.com/InjectiveLabs/injective-indexer.git -b $(INJECTIVE_INDEXER_VERSION_TAG) --depth 1 --single-branch
 
-clone-all: clone-cosmos-sdk clone-ibc-go clone-wasmd clone-injective-core clone-injective-indexer
+clone-all: clone-injective-core clone-injective-indexer
 
 download-protos:
-	buf export ./cosmos-sdk --output=third_party
-	buf export ./ibc-go --exclude-imports --output=third_party
-	buf export ./wasmd --exclude-imports --output=third_party
+	buf export https://github.com/InjectiveLabs/cosmos-sdk.git#tag=$(COSMOS_SDK_VERSION_TAG) --output=third_party
+	buf export https://github.com/InjectiveLabs/ibc-go.git#tag=$(IBC_GO_VERSION_TAG) --exclude-imports --output=third_party
+	buf export https://github.com/InjectiveLabs/wasmd.git#tag=$(WASMD_VERSION_TAG) --exclude-imports --output=third_party
+	buf export https://github.com/InjectiveLabs/cometbft.git#tag=$(COMETBFT_VERSION_TAG) --exclude-imports --output=third_party
 	buf export https://github.com/cosmos/ics23.git --exclude-imports --output=third_party
 	cp -r injective-core/proto/injective proto/
 	cp -r third_party/* proto/
