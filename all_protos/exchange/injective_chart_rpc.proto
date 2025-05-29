@@ -27,6 +27,8 @@ service InjectiveChartRPC {
 	// Gets batch summary for all active markets, for the latest interval (hour,
 // day, month)
 	rpc AllDerivativeMarketSummary (AllDerivativeMarketSummaryRequest) returns (AllDerivativeMarketSummaryResponse);
+	// Request for cached markets history bars. Max age is 1h.
+	rpc MarketSnapshot (MarketSnapshotRequest) returns (MarketSnapshotResponse);
 }
 
 message SpotMarketHistoryRequest {
@@ -188,4 +190,37 @@ message AllDerivativeMarketSummaryRequest {
 
 message AllDerivativeMarketSummaryResponse {
 	repeated MarketSummaryResp field = 1;
+}
+
+message MarketSnapshotRequest {
+	// Specify multiple marketIDs to search.
+	repeated string market_i_ds = 1;
+	// Symbols resolution(minutes). Default is 1
+	string resolution = 2;
+	// Number of bars returned, starting from the recent ones.
+	sint32 countback = 3;
+}
+
+message MarketSnapshotResponse {
+	repeated MarketSnapshotHistoryResponse field = 1;
+}
+
+message MarketSnapshotHistoryResponse {
+	// Market identifier.
+	string market_id = 1;
+	// Symbol resolution
+	string resolution = 2;
+	// Bar time, Unix timestamp (UTC). Daily bars should only have the date part,
+// time should be 0.
+	repeated sint32 t = 3;
+	// Open price.
+	repeated double o = 4;
+	// High price.
+	repeated double h = 5;
+	// Low price.
+	repeated double l = 6;
+	// Close price.
+	repeated double c = 7;
+	// Volume.
+	repeated double v = 8;
 }
