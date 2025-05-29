@@ -59,15 +59,6 @@ clean-all:
 	$(call clean_repos)
 	$(call clean_packed)
 
-clone-cosmos-sdk:
-	git clone https://github.com/InjectiveLabs/cosmos-sdk.git -b $(COSMOS_SDK_VERSION_TAG) --depth 1 --single-branch
-
-clone-ibc-go:
-	git clone https://github.com/InjectiveLabs/ibc-go.git -b $(IBC_GO_VERSION_TAG) --depth 1 --single-branch
-
-clone-wasmd:
-	git clone https://github.com/InjectiveLabs/wasmd.git -b $(WASMD_VERSION_TAG) --depth 1 --single-branch
-
 clone-injective-core:
 	git clone https://github.com/InjectiveLabs/injective-core.git -b $(INJECTIVE_CORE_VERSION_TAG) --depth 1 --single-branch
 
