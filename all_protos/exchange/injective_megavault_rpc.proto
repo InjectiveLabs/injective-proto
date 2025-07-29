@@ -1,0 +1,66 @@
+// Code generated with goa v3.7.0, DO NOT EDIT.
+//
+// InjectiveMegavaultRPC protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/InjectiveLabs/injective-indexer/api/design -o ../
+
+syntax = "proto3";
+
+package injective_megavault_rpc;
+
+option go_package = "/injective_megavault_rpcpb";
+
+// InjectiveMegavaultRPC defined a gRPC service for Injective Megavault.
+service InjectiveMegavaultRPC {
+	// Get the vault information
+	rpc GetVault (GetVaultRequest) returns (GetVaultResponse);
+}
+
+message GetVaultRequest {
+}
+
+message GetVaultResponse {
+	// The vault
+	Vault vault = 1;
+}
+
+message Vault {
+	// Contract address
+	string contract_address = 1;
+	// Contract name
+	string contract_name = 2;
+	// Contract version
+	string contract_version = 3;
+	// Admin
+	string admin = 4;
+	// LP denom
+	string lp_denom = 5;
+	// Quote denom
+	string quote_denom = 6;
+	// Total amount
+	string total_amount = 7;
+	// Total amount of LP token
+	string total_lp_amount = 8;
+	// Operators
+	repeated Operator operators = 9;
+	// Block height when the vault was created.
+	sint64 created_height = 10;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 created_at = 11;
+	// Block height when the vault was updated.
+	sint64 updated_height = 12;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 13;
+}
+
+message Operator {
+	// Operator address
+	string address = 1;
+	// Contract name
+	string amount = 2;
+	// Block height when the operator was updated.
+	sint64 updated_height = 3;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 4;
+}

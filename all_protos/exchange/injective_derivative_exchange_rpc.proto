@@ -825,6 +825,8 @@ message DerivativeTrade {
 	string execution_side = 12;
 	// Custom client order ID
 	string cid = 13;
+	// Profit and loss of the trade
+	string pnl = 14;
 }
 
 message PositionDelta {

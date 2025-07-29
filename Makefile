@@ -1,9 +1,9 @@
 COMETBFT_VERSION_TAG=v1.0.1-inj.2
 COSMOS_SDK_VERSION_TAG=v0.50.13-evm-comet1-inj.3
 IBC_GO_VERSION_TAG=v8.7.0-evm-comet1-inj
-WASMD_VERSION_TAG=v0.53.2-evm-comet1-inj
-INJECTIVE_CORE_VERSION_TAG=v1.16.0-beta.2
-INJECTIVE_INDEXER_VERSION_TAG=v1.16.3
+WASMD_VERSION_TAG=v0.53.3-evm-comet1-inj
+INJECTIVE_CORE_VERSION_TAG=v1.16.0
+INJECTIVE_INDEXER_VERSION_TAG=v1.16.54
 
 # These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
