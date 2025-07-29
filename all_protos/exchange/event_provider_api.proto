@@ -15,6 +15,8 @@ option go_package = "/event_provider_apipb";
 service EventProviderAPI {
 	// Get latest block from event provider
 	rpc GetLatestHeight (GetLatestHeightRequest) returns (GetLatestHeightResponse);
+	// Stream latest block information
+	rpc StreamLatestHeight (StreamLatestHeightRequest) returns (stream StreamLatestHeightResponse);
 	// Stream processed block events for selected backend
 	rpc StreamBlockEvents (StreamBlockEventsRequest) returns (stream StreamBlockEventsResponse);
 	// Get processed block events for selected backend
@@ -41,6 +43,14 @@ message GetLatestHeightResponse {
 }
 // Latest block height from event provider db
 message LatestBlockHeight {
+	uint64 height = 1;
+	sint64 time = 2;
+}
+
+message StreamLatestHeightRequest {
+}
+
+message StreamLatestHeightResponse {
 	uint64 height = 1;
 	sint64 time = 2;
 }
@@ -90,6 +100,7 @@ message GetBlockEventsRPCResponse {
 	// Error message.
 	string e = 3;
 	BlockEventsRPC data = 4;
+	BasicBlockInfo block = 5;
 }
 // Processed block events for backend processor to consume
 message BlockEventsRPC {
@@ -99,6 +110,15 @@ message BlockEventsRPC {
 	repeated bytes events = 2;
 	// Map of event index - tx hash
 	map<sint32, bytes> tx_hashes = 3;
+}
+// Block info
+message BasicBlockInfo {
+	// Block height
+	sint64 height = 1;
+	// Block timestamp in UNIX millis.
+	sint64 timestamp = 2;
+	// Block time in RFC3339 format.
+	string time = 3;
 }
 
 message GetCustomEventsRPCRequest {
@@ -117,6 +137,7 @@ message GetCustomEventsRPCResponse {
 	// Error message.
 	string e = 3;
 	BlockEventsRPC data = 4;
+	BasicBlockInfo block = 5;
 }
 
 message GetABCIBlockEventsRequest {

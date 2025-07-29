@@ -15,6 +15,8 @@ option go_package = "/injective_explorer_rpcpb";
 service InjectiveExplorerRPC {
 	// GetAccountTxs returns tranctions involving in an account based upon params.
 	rpc GetAccountTxs (GetAccountTxsRequest) returns (GetAccountTxsResponse);
+	// GetAccountTxs returns tranctions involving in an account based upon params.
+	rpc GetAccountTxsV2 (GetAccountTxsV2Request) returns (GetAccountTxsV2Response);
 	// GetContractTxs returns contract-related transactions
 	rpc GetContractTxs (GetContractTxsRequest) returns (GetContractTxsResponse);
 	// GetContractTxs returns contract-related transactions
@@ -164,6 +166,33 @@ message Signature {
 	string signature = 4;
 }
 
+message GetAccountTxsV2Request {
+	// Address of account
+	string address = 1;
+	// Comma-separated list of msg types
+	string type = 2;
+	// The starting timestamp in UNIX milliseconds that the txs must be equal or
+// older than
+	sint64 start_time = 3;
+	// The ending timestamp in UNIX milliseconds that the txs must be equal or
+// younger than
+	sint64 end_time = 4;
+	sint32 per_page = 5;
+	// Pagination token
+	string token = 6;
+}
+
+message GetAccountTxsV2Response {
+	Cursor paging = 1;
+	repeated TxDetailData data = 2;
+}
+// Cursor Pagination defines the structure for required params for handling
+// pagination
+message Cursor {
+	// array of tokens to navigate to the next pages
+	repeated string next = 1;
+}
+
 message GetContractTxsRequest {
 	// Address of contract
 	string address = 1;
@@ -187,13 +216,15 @@ message GetContractTxsV2Request {
 	sint64 from = 3;
 	// Unix timestamp (UTC) in milliseconds
 	sint64 to = 4;
-	sint32 limit = 5;
+	sint32 per_page = 5;
 	// Pagination token
 	string token = 6;
+	// The status of the txs to be returned
+	string status = 7;
 }
 
 message GetContractTxsV2Response {
-	repeated string next = 1;
+	Cursor paging = 1;
 	repeated TxDetailData data = 2;
 }
 
@@ -249,18 +280,6 @@ message GetBlocksV2Request {
 message GetBlocksV2Response {
 	Cursor paging = 1;
 	repeated BlockInfo data = 2;
-}
-// Cursor Pagination defines the structure for required params for handling
-// pagination
-message Cursor {
-	// can be either block height or index num
-	sint32 from = 1;
-	// can be either block height or index num
-	sint32 to = 2;
-	// array of tokens to navigate to the next pages
-	repeated string next = 3;
-	// total number of txs saved in database
-	sint64 total = 4;
 }
 
 message GetBlockRequest {
@@ -423,6 +442,7 @@ message GetTxsResponse {
 }
 
 message GetTxsV2Request {
+	// Comma-separated list of msg types
 	string type = 1;
 	// The starting timestamp in UNIX milliseconds that the txs must be equal or
 // older than
@@ -432,6 +452,9 @@ message GetTxsV2Request {
 	sint64 end_time = 3;
 	sint32 per_page = 4;
 	string token = 5;
+	// The status of the txs to be returned
+	string status = 6;
+	uint64 block_number = 7;
 }
 
 message GetTxsV2Response {
@@ -683,6 +706,10 @@ message GetWasmContractsRequest {
 	sint64 skip = 6;
 	// Label of the contract
 	string label = 7;
+	// Token name or symbol to filter by
+	string token = 8;
+	// Text to lookup by
+	string lookup = 9;
 }
 
 message GetWasmContractsResponse {

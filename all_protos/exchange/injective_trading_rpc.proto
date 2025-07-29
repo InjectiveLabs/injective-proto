@@ -18,6 +18,8 @@ service InjectiveTradingRPC {
 	rpc ListTradingStrategies (ListTradingStrategiesRequest) returns (ListTradingStrategiesResponse);
 	// GetStats returns global statistics in the last 24hs
 	rpc GetTradingStats (GetTradingStatsRequest) returns (GetTradingStatsResponse);
+	// StreamStrategy streams the trading strategies on state change
+	rpc StreamStrategy (StreamStrategyRequest) returns (stream StreamStrategyResponse);
 }
 
 message ListTradingStrategiesRequest {
@@ -169,6 +171,16 @@ message TradingStrategy {
 	string final_quote_price = 50;
 	// Final data of the trading strategy. This is present from contract v0.8.4.
 	StrategyFinalData final_data = 51;
+	// Margin ratio of the trading strategy
+	string margin_ratio = 52;
+	// Lower trailing bound of the trading strategy
+	string lower_trailing_bound = 53;
+	// Upper trailing bound of the trading strategy
+	string upper_trailing_bound = 54;
+	// New upper bound of the trading strategy
+	string new_upper_bound = 55;
+	// New lower bound of the trading strategy
+	string new_lower_bound = 56;
 }
 
 message ExitConfig {
@@ -229,4 +241,18 @@ message Market {
 	string market_id = 1;
 	// Total of unique active trading strategies
 	uint64 active_trading_strategies = 2;
+}
+
+message StreamStrategyRequest {
+	// Account addresses
+	repeated string account_addresses = 1;
+	// MarketId of the trading strategy
+	string market_id = 2;
+}
+
+message StreamStrategyResponse {
+	// The trading strategy
+	TradingStrategy trading_strategy = 1;
+	// Timestamp in UNIX millis
+	sint64 timestamp = 2;
 }
