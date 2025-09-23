@@ -309,6 +309,8 @@ message DerivativeLimitOrderbookV2 {
 	uint64 sequence = 3;
 	// Last update timestamp in UNIX millis.
 	sint64 timestamp = 4;
+	// Block height at which the orderbook was last updated.
+	sint64 height = 5;
 }
 
 message PriceLevel {

@@ -15,9 +15,23 @@ option go_package = "/injective_megavault_rpcpb";
 service InjectiveMegavaultRPC {
 	// Get the vault information
 	rpc GetVault (GetVaultRequest) returns (GetVaultResponse);
+	// Get the user information for a vault
+	rpc GetUser (GetUserRequest) returns (GetUserResponse);
+	// List the subscriptions for a vault
+	rpc ListSubscriptions (ListSubscriptionsRequest) returns (ListSubscriptionsResponse);
+	// List the redemptions for a vault
+	rpc ListRedemptions (ListRedemptionsRequest) returns (ListRedemptionsResponse);
+	// Get the redemptions buckets for an operator
+	rpc GetOperatorRedemptionBuckets (GetOperatorRedemptionBucketsRequest) returns (GetOperatorRedemptionBucketsResponse);
+	// Provide historical TVL data.
+	rpc TvlHistory (TvlHistoryRequest) returns (TvlHistoryResponse);
+	// Provide historical PnL data.
+	rpc PnlHistory (PnlHistoryRequest) returns (PnlHistoryResponse);
 }
 
 message GetVaultRequest {
+	// Vault address
+	string vault_address = 1;
 }
 
 message GetVaultResponse {
@@ -38,29 +52,319 @@ message Vault {
 	string lp_denom = 5;
 	// Quote denom
 	string quote_denom = 6;
-	// Total amount
-	string total_amount = 7;
-	// Total amount of LP token
-	string total_lp_amount = 8;
 	// Operators
-	repeated Operator operators = 9;
+	repeated Operator operators = 7;
+	// Incentives
+	Incentives incentives = 8;
+	// TargetApr
+	TargetApr target_apr = 9;
+	// Operators
+	VaultStats stats = 10;
 	// Block height when the vault was created.
-	sint64 created_height = 10;
-	// UpdatedAt timestamp in UNIX millis.
-	sint64 created_at = 11;
+	sint64 created_height = 11;
+	// CreatedAt timestamp in UNIX millis.
+	sint64 created_at = 12;
 	// Block height when the vault was updated.
-	sint64 updated_height = 12;
+	sint64 updated_height = 13;
 	// UpdatedAt timestamp in UNIX millis.
-	sint64 updated_at = 13;
+	sint64 updated_at = 14;
 }
 
 message Operator {
 	// Operator address
 	string address = 1;
-	// Contract name
-	string amount = 2;
+	// Total amount
+	string total_amount = 2;
+	// Total liquid amount
+	string total_liquid_amount = 3;
 	// Block height when the operator was updated.
+	sint64 updated_height = 4;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 5;
+}
+
+message Incentives {
+	// Operator address
+	string address = 1;
+	// Amount
+	string amount = 2;
+	// Block height when the target APR was updated.
 	sint64 updated_height = 3;
 	// UpdatedAt timestamp in UNIX millis.
 	sint64 updated_at = 4;
+}
+
+message TargetApr {
+	// APR
+	string apr = 1;
+	// Upper threshold
+	string upper_threshold = 2;
+	// Lower threshold
+	string lower_threshold = 3;
+	// Block height when the target APR was updated.
+	sint64 updated_height = 4;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 5;
+}
+
+message VaultStats {
+	// Total subscribed amount in the vault
+	string total_subscribed_amount = 1;
+	// Total redeemed amount in the vault
+	string total_redeemed_amount = 2;
+	// Current amount in the vault
+	string current_amount = 3;
+	// Current amount in the vault without taking into account the incentives
+	string current_amount_without_incentives = 4;
+	// Current amount of LP tokens in the vault
+	string current_lp_amount = 5;
+	// Current LP price
+	string current_lp_price = 6;
+	// PnL statistics
+	PnlStats pnl = 7;
+	// Volatility statistics
+	VolatilityStats volatility = 8;
+	// APR statistics
+	AprStats apr = 9;
+	// Max drawdown
+	MaxDrawdown max_drawdown = 10;
+}
+
+message PnlStats {
+	// Unrealized PnL
+	UnrealizedPnl unrealized = 1;
+	// All-time PnL
+	Pnl all_time = 2;
+}
+
+message UnrealizedPnl {
+	// Unrealized PnL value
+	string value = 1;
+	// Unrealized PnL percentage
+	string percentage = 2;
+}
+
+message Pnl {
+	// PnL value
+	string value = 1;
+	// PnL percentage
+	string percentage = 2;
+	// Total amount subscribed
+	string total_amount_subscribed = 3;
+	// Total amount redeemed
+	string total_amount_redeemed = 4;
+	// Current amount
+	string current_amount = 5;
+}
+
+message VolatilityStats {
+	// 30-days volatility
+	Volatility thirty_days = 1;
+}
+
+message Volatility {
+	// Volatility value
+	string value = 1;
+}
+
+message AprStats {
+	// 30-day APR
+	Apr thirty_days = 1;
+}
+
+message Apr {
+	// APR value
+	string value = 1;
+	// Original LP price
+	string original_lp_price = 2;
+	// Current LP price
+	string current_lp_price = 3;
+}
+
+message MaxDrawdown {
+	// Max drawdown value
+	string value = 1;
+	// Latest PnL peak
+	string latest_pn_l_peak = 2;
+}
+
+message GetUserRequest {
+	// Vault address
+	string vault_address = 1;
+	// User address
+	string user_address = 2;
+}
+
+message GetUserResponse {
+	// The user
+	User user = 1;
+}
+
+message User {
+	// User address
+	string address = 1;
+	// Contract address
+	string contract_address = 2;
+	// User stats
+	UserStats stats = 3;
+	// Block height when the vault was updated.
+	sint64 updated_height = 4;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 5;
+}
+
+message UserStats {
+	// Current subscribed amount in the vault
+	string current_amount = 1;
+	// Current amount of LP tokens in the vault
+	string current_lp_amount = 2;
+	// PnL statistics
+	PnlStats pnl = 3;
+}
+
+message ListSubscriptionsRequest {
+	// Vault address
+	string vault_address = 1;
+	// User address
+	string user_address = 2;
+	// Status of the redemption
+	string status = 3;
+	sint32 per_page = 4;
+	string token = 5;
+}
+
+message ListSubscriptionsResponse {
+	// List of subscriptions
+	repeated Subscription subscriptions = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
+}
+
+message Subscription {
+	// Contract address
+	string contract_address = 1;
+	// User
+	string user = 2;
+	// Index number of the subscription
+	sint64 index = 3;
+	// Amount of LP tokens given to the user for the subscription
+	string lp_amount = 4;
+	// Amount in USDT the user gave for the subscription
+	string amount = 5;
+	// Status of the subscription
+	string status = 6;
+	// Block height when the subscription was created.
+	sint64 created_height = 7;
+	// CreatedAt timestamp in UNIX millis.
+	sint64 created_at = 8;
+	// Block height when the subscription was executed.
+	sint64 executed_height = 9;
+	// ExecutedAt timestamp in UNIX millis.
+	sint64 executed_at = 10;
+}
+
+message ListRedemptionsRequest {
+	// Vault address
+	string vault_address = 1;
+	// User address
+	string user_address = 2;
+	// Status of the redemption
+	string status = 3;
+	sint32 per_page = 4;
+	string token = 5;
+}
+
+message ListRedemptionsResponse {
+	// List of subscriptions
+	repeated Redemption redemptions = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
+}
+
+message Redemption {
+	// Contract address
+	string contract_address = 1;
+	// User
+	string user = 2;
+	// Index number of the redemption
+	sint64 index = 3;
+	// Amount of LP tokens given to the user for the redemption
+	string lp_amount = 4;
+	// Amount in USDT the user gave for the redemption
+	string amount = 5;
+	// Status of the subscription
+	string status = 6;
+	// DueAt timestamp in UNIX millis.
+	sint64 due_at = 7;
+	// Block height when the subscription was created.
+	sint64 created_height = 8;
+	// CreatedAt timestamp in UNIX millis.
+	sint64 created_at = 9;
+	// Block height when the subscription was executed.
+	sint64 executed_height = 10;
+	// ExecutedAt timestamp in UNIX millis.
+	sint64 executed_at = 11;
+}
+
+message GetOperatorRedemptionBucketsRequest {
+	// Vault address
+	string vault_address = 1;
+	// Operator address
+	string operator_address = 2;
+}
+
+message GetOperatorRedemptionBucketsResponse {
+	// The redemption buckets
+	repeated RedemptionBucket buckets = 1;
+}
+
+message RedemptionBucket {
+	// Bucket
+	string bucket = 1;
+	// Amount of LP tokens to redeem
+	string lp_amount_to_redeem = 2;
+	// Amount needed to cover all the redemptions in the bucket
+	string needed_amount = 3;
+	// Amount of liquidity missing needed to cover all the redemptions in the bucket
+	string missing_liquidity = 4;
+}
+
+message TvlHistoryRequest {
+	// Vault address
+	string vault_address = 1;
+	// timestamp from which to start the query in milliseconds (UTC)
+	sint64 since = 2;
+	// amount of data points to return
+	sint32 max_data_points = 3;
+}
+
+message TvlHistoryResponse {
+	repeated HistoricalTVL history = 1;
+}
+
+message HistoricalTVL {
+	// Time, Unix timestamp in milliseconds (UTC)
+	sint32 t = 1;
+	// TVL Value
+	string v = 2;
+}
+
+message PnlHistoryRequest {
+	// Vault address
+	string vault_address = 1;
+	// timestamp from which to start the query in milliseconds (UTC)
+	sint64 since = 2;
+	// amount of data points to return
+	sint32 max_data_points = 3;
+}
+
+message PnlHistoryResponse {
+	repeated HistoricalPnL history = 1;
+}
+
+message HistoricalPnL {
+	// Time, Unix timestamp in milliseconds (UTC)
+	sint32 t = 1;
+	// PnL Value
+	string v = 2;
 }

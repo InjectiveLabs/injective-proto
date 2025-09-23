@@ -17,6 +17,12 @@ service InjectiveAuctionRPC {
 	rpc AuctionEndpoint (AuctionEndpointRequest) returns (AuctionEndpointResponse);
 	// Provide the historical auctions info
 	rpc Auctions (AuctionsRequest) returns (AuctionsResponse);
+	// Provide the historical auctions info
+	rpc AuctionsHistoryV2 (AuctionsHistoryV2Request) returns (AuctionsHistoryV2Response);
+	// Provide historical auction info for a given auction
+	rpc AuctionV2 (AuctionV2Request) returns (AuctionV2Response);
+	// Provide the historical auctions info for a given account
+	rpc AccountAuctionsV2 (AccountAuctionsV2Request) returns (AccountAuctionsV2Response);
 	// StreamBids streams new bids of an auction.
 	rpc StreamBids (StreamBidsRequest) returns (stream StreamBidsResponse);
 	// InjBurntEndpoint returns the total amount of INJ burnt in auctions.
@@ -46,6 +52,7 @@ message Auction {
 	sint64 end_timestamp = 5;
 	// UpdatedAt timestamp in UNIX millis.
 	sint64 updated_at = 6;
+	AuctionContract contract = 7;
 }
 
 message Coin {
@@ -53,6 +60,26 @@ message Coin {
 	string denom = 1;
 	string amount = 2;
 	string usd_value = 3;
+}
+
+message AuctionContract {
+	uint64 id = 1;
+	// Bid target of the auction
+	string bid_target = 2;
+	// Total slots of the auction
+	uint64 current_slots = 3;
+	// Total slots of the auction
+	uint64 total_slots = 4;
+	// Max user allocation of the auction
+	string max_user_allocation = 5;
+	// Total committed amount of the auction
+	string total_committed = 6;
+	// Whitelist addresses for the auction
+	repeated string whitelist_addresses = 7;
+	// Auction start timestamp in UNIX millis.
+	uint64 start_timestamp = 8;
+	// Auction end timestamp in UNIX millis.
+	uint64 end_timestamp = 9;
 }
 
 message Bid {
@@ -69,6 +96,60 @@ message AuctionsRequest {
 message AuctionsResponse {
 	// The historical auctions
 	repeated Auction auctions = 1;
+}
+
+message AuctionsHistoryV2Request {
+	sint32 per_page = 1;
+	// Pagination token
+	string token = 2;
+	// The ending timestamp in UNIX milliseconds to filter the auctions
+	sint64 end_time = 3;
+}
+
+message AuctionsHistoryV2Response {
+	// The historical auctions
+	repeated Auction auctions = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
+}
+
+message AuctionV2Request {
+	// The auction round number.
+	sint64 round = 1;
+}
+
+message AuctionV2Response {
+	// The auction
+	Auction auction = 1;
+}
+
+message AccountAuctionsV2Request {
+	// Address of account
+	string address = 1;
+	sint32 per_page = 2;
+	// Pagination token
+	string token = 3;
+}
+
+message AccountAuctionsV2Response {
+	// The historical auctions
+	repeated AccountAuctionV2 auctions = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
+}
+
+message AccountAuctionV2 {
+	uint64 id = 1;
+	uint64 round = 2;
+	string amount_deposited = 3;
+	// Whether the auction rewards can be claimed.
+	bool is_claimable = 4;
+	repeated ClaimedAssets claimed_assets = 5;
+}
+
+message ClaimedAssets {
+	string denom = 1;
+	string amount = 2;
 }
 
 message StreamBidsRequest {
