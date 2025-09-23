@@ -218,6 +218,12 @@ service Msg {
   rpc UpdateAtomicMarketOrderFeeMultiplierSchedule(
       MsgAtomicMarketOrderFeeMultiplierSchedule)
       returns (MsgAtomicMarketOrderFeeMultiplierScheduleResponse);
+
+  rpc SetDelegationTransferReceivers(MsgSetDelegationTransferReceivers)
+      returns (MsgSetDelegationTransferReceiversResponse);
+
+  rpc CancelPostOnlyMode(MsgCancelPostOnlyMode)
+      returns (MsgCancelPostOnlyModeResponse);
 }
 
 message MsgUpdateSpotMarket {
@@ -1517,3 +1523,31 @@ message MsgAtomicMarketOrderFeeMultiplierSchedule {
 }
 
 message MsgAtomicMarketOrderFeeMultiplierScheduleResponse {}
+
+// MsgSetDelegationTransferReceivers defines a message for setting delegation
+// transfer receivers
+message MsgSetDelegationTransferReceivers {
+  option (amino.name) = "exchange/MsgSetDelegationTransferReceivers";
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // the sender's Injective address (must be exchange admin)
+  string sender = 1;
+  // list of receiver addresses to set as delegation transfer receivers
+  repeated string receivers = 2;
+}
+
+// MsgSetDelegationTransferReceiversResponse defines the response for
+// MsgSetDelegationTransferReceivers
+message MsgSetDelegationTransferReceiversResponse {}
+
+// MsgCancelPostOnlyMode defines a message for canceling post-only mode
+message MsgCancelPostOnlyMode {
+  option (amino.name) = "exchange/MsgCancelPostOnlyMode";
+  option (cosmos.msg.v1.signer) = "sender";
+
+  // the sender's Injective address
+  string sender = 1;
+}
+
+// MsgCancelPostOnlyModeResponse defines the response for MsgCancelPostOnlyMode
+message MsgCancelPostOnlyModeResponse {}
