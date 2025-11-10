@@ -33,6 +33,8 @@ service InjectiveArchiverRPC {
 	rpc DenomHolders (DenomHoldersRequest) returns (DenomHoldersResponse);
 	// Provide historical trades data.
 	rpc HistoricalTrades (HistoricalTradesRequest) returns (HistoricalTradesResponse);
+	// Stream spot markets average entries for a given account address.
+	rpc StreamSpotAverageEntries (StreamSpotAverageEntriesRequest) returns (stream StreamSpotAverageEntriesResponse);
 }
 
 message BalanceRequest {
@@ -83,6 +85,15 @@ message HistoricalRPNL {
 	repeated sint32 t = 1;
 	// Realized Profit and Loss value
 	repeated double v = 2;
+	// Detailed Profit and Loss value
+	repeated HistoricalDetailedPNL dv = 3;
+}
+
+message HistoricalDetailedPNL {
+	// Realized Profit and Loss value
+	double rpnl = 1;
+	// Unrealized Profit and Loss value
+	double upnl = 2;
 }
 
 message VolumesRequest {
@@ -288,4 +299,27 @@ message PriceLevel {
 	string quantity = 2;
 	// Price level last updated timestamp in UNIX millis.
 	sint64 timestamp = 3;
+}
+
+message StreamSpotAverageEntriesRequest {
+	// Account address
+	string account = 1;
+}
+
+message StreamSpotAverageEntriesResponse {
+	// List of spot average entries
+	SpotAverageEntry average_entry = 1;
+	// Operation timestamp in UNIX.
+	sint64 timestamp = 2;
+}
+
+message SpotAverageEntry {
+	// The ID of the market
+	string market_id = 1;
+	// The average entry price for the spot market
+	string average_entry_price = 2;
+	// The total quantity held in the spot market
+	string quantity = 3;
+	// The USD value of the total quantity held in the spot market
+	string usd_value = 4;
 }

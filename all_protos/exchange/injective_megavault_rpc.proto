@@ -220,6 +220,8 @@ message UserStats {
 	string current_lp_amount = 2;
 	// PnL statistics
 	PnlStats pnl = 3;
+	// Current deposisted value
+	string deposited_value = 4;
 }
 
 message ListSubscriptionsRequest {

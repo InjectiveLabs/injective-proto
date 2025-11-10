@@ -80,6 +80,8 @@ message AuctionContract {
 	uint64 start_timestamp = 8;
 	// Auction end timestamp in UNIX millis.
 	uint64 end_timestamp = 9;
+	// Max round allocation of the auction
+	string max_round_allocation = 10;
 }
 
 message Bid {
@@ -108,9 +110,31 @@ message AuctionsHistoryV2Request {
 
 message AuctionsHistoryV2Response {
 	// The historical auctions
-	repeated Auction auctions = 1;
+	repeated AuctionV2Result auctions = 1;
 	// Next tokens for pagination
 	repeated string next = 2;
+}
+
+message AuctionV2Result {
+	// Account address of the auction winner
+	string winner = 1;
+	// Coins in the basket
+	repeated CoinPrices basket = 2;
+	string winning_bid_amount = 3;
+	uint64 round = 4;
+	// Auction end timestamp in UNIX millis.
+	sint64 end_timestamp = 5;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 6;
+	AuctionContract contract = 7;
+}
+
+message CoinPrices {
+	// Denom of the coin
+	string denom = 1;
+	string amount = 2;
+	// Map of historical prices.
+	map<string, string> prices = 3;
 }
 
 message AuctionV2Request {
@@ -119,8 +143,17 @@ message AuctionV2Request {
 }
 
 message AuctionV2Response {
-	// The auction
-	Auction auction = 1;
+	// Account address of the auction winner
+	string winner = 1;
+	// Coins in the basket
+	repeated CoinPrices basket = 2;
+	string winning_bid_amount = 3;
+	uint64 round = 4;
+	// Auction end timestamp in UNIX millis.
+	sint64 end_timestamp = 5;
+	// UpdatedAt timestamp in UNIX millis.
+	sint64 updated_at = 6;
+	AuctionContract contract = 7;
 }
 
 message AccountAuctionsV2Request {
@@ -136,6 +169,8 @@ message AccountAuctionsV2Response {
 	repeated AccountAuctionV2 auctions = 1;
 	// Next tokens for pagination
 	repeated string next = 2;
+	// Total number of auctions
+	sint64 total = 3;
 }
 
 message AccountAuctionV2 {
@@ -144,12 +179,7 @@ message AccountAuctionV2 {
 	string amount_deposited = 3;
 	// Whether the auction rewards can be claimed.
 	bool is_claimable = 4;
-	repeated ClaimedAssets claimed_assets = 5;
-}
-
-message ClaimedAssets {
-	string denom = 1;
-	string amount = 2;
+	repeated CoinPrices claimed_assets = 5;
 }
 
 message StreamBidsRequest {

@@ -1,9 +1,10 @@
-COMETBFT_VERSION_TAG=v1.0.1-inj.3
-COSMOS_SDK_VERSION_TAG=v0.50.13-evm-comet1-inj.6
-IBC_GO_VERSION_TAG=v8.7.0-evm-comet1-inj
-WASMD_VERSION_TAG=v0.53.3-evm-comet1-inj
-INJECTIVE_CORE_VERSION_TAG=v1.16.4
-INJECTIVE_INDEXER_VERSION_TAG=v1.16.91
+COMETBFT_VERSION_TAG=v1.0.1-inj.4
+COSMOS_SDK_VERSION_TAG=v0.50.14-inj
+IBC_GO_VERSION_TAG=v8.7.0-inj.3
+WASMD_VERSION_TAG=v0.53.3-inj.2
+HYPERLANE_VERSION_TAG=v1.0.1-inj
+INJECTIVE_CORE_VERSION_TAG=v1.17.0-beta.3
+INJECTIVE_INDEXER_VERSION_TAG=v1.17.0-beta
 
 # These variables are required by the csharp proto generation logic
 WORK_DIR=$(shell pwd)
@@ -39,10 +40,6 @@ define clean_generated
 endef
 
 define clean_repos
-	rm -Rf cosmos-sdk
-	rm -Rf ibc-go
-	rm -Rf cometbft
-	rm -Rf wasmd
 	rm -Rf injective-core
 	rm -Rf injective-indexer
 endef
@@ -73,8 +70,13 @@ download-protos:
 	buf export https://github.com/InjectiveLabs/wasmd.git#tag=$(WASMD_VERSION_TAG) --exclude-imports --output=third_party
 	buf export https://github.com/InjectiveLabs/cometbft.git#tag=$(COMETBFT_VERSION_TAG) --exclude-imports --output=third_party
 	buf export https://github.com/cosmos/ics23.git --exclude-imports --output=third_party
+	buf export https://github.com/InjectiveLabs/hyperlane-cosmos.git#tag=$(HYPERLANE_VERSION_TAG) --exclude-imports --output=third_party
 	cp -r injective-core/proto/injective proto/
 	cp -r third_party/* proto/
+	if [ -d "proto/proto" ]; then \
+		cp -r proto/proto/* proto/; \
+		rm -rf proto/proto; \
+	fi
 
 download-indexer-protos:
 	mkdir -p proto/exchange
