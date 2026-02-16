@@ -81,6 +81,10 @@ message Operator {
 	sint64 updated_height = 4;
 	// UpdatedAt timestamp in UNIX millis.
 	sint64 updated_at = 5;
+	// Percentage of the operator
+	string percentage = 6;
+	// Subaccount ID of the operator
+	string subaccount_id = 7;
 }
 
 message Incentives {
@@ -207,10 +211,14 @@ message User {
 	string contract_address = 2;
 	// User stats
 	UserStats stats = 3;
+	// Block height when the vault was created.
+	sint64 created_height = 4;
+	// CreatedAt timestamp in UNIX millis.
+	sint64 created_at = 5;
 	// Block height when the vault was updated.
-	sint64 updated_height = 4;
+	sint64 updated_height = 6;
 	// UpdatedAt timestamp in UNIX millis.
-	sint64 updated_at = 5;
+	sint64 updated_at = 7;
 }
 
 message UserStats {
@@ -263,6 +271,19 @@ message Subscription {
 	sint64 executed_height = 9;
 	// ExecutedAt timestamp in UNIX millis.
 	sint64 executed_at = 10;
+	// Subscription status log
+	repeated OperationStatusLogEntry log = 11;
+}
+
+message OperationStatusLogEntry {
+	// Status of the subscription at this log entry
+	string status = 1;
+	// Transaction hash associated with this log entry
+	string tx_hash = 2;
+	// Block height when this log entry occurred
+	sint64 block_height = 3;
+	// Timestamp when this log entry occurred in UNIX millis.
+	sint64 block_time = 4;
 }
 
 message ListRedemptionsRequest {
@@ -306,6 +327,8 @@ message Redemption {
 	sint64 executed_height = 10;
 	// ExecutedAt timestamp in UNIX millis.
 	sint64 executed_at = 11;
+	// Redemption status log
+	repeated OperationStatusLogEntry log = 12;
 }
 
 message GetOperatorRedemptionBucketsRequest {
@@ -346,7 +369,7 @@ message TvlHistoryResponse {
 
 message HistoricalTVL {
 	// Time, Unix timestamp in milliseconds (UTC)
-	sint32 t = 1;
+	sint64 t = 1;
 	// TVL Value
 	string v = 2;
 }
@@ -366,7 +389,7 @@ message PnlHistoryResponse {
 
 message HistoricalPnL {
 	// Time, Unix timestamp in milliseconds (UTC)
-	sint32 t = 1;
+	sint64 t = 1;
 	// PnL Value
 	string v = 2;
 }

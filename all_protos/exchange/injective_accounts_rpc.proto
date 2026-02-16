@@ -329,6 +329,10 @@ message Position {
 	sint64 updated_at = 10;
 	// Position created timestamp in UNIX millis.
 	sint64 created_at = 11;
+	// Last funding fees since position opened
+	string funding_last = 12;
+	// Net funding fees since position opened
+	string funding_sum = 13;
 }
 
 message TradeResult {

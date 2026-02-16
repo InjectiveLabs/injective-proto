@@ -72,6 +72,8 @@ message Block {
 	repeated BlockEvent events = 3;
 	// Indicates whether the block is the latest one available in the event provider
 	bool in_sync = 4;
+	// Block timestamp in UNIX millis.
+	sint64 time = 5;
 }
 
 message BlockEvent {

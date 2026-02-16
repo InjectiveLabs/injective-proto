@@ -118,6 +118,14 @@ message DerivativePosition {
 	sint64 updated_at = 12;
 	// Position created timestamp in UNIX millis.
 	sint64 created_at = 13;
+	// Last funding fees since position opened
+	string funding_last = 14;
+	// Net funding fees since position opened
+	string funding_sum = 15;
+	// Cumulative funding entry of the position
+	string cumulative_funding_entry = 16;
+	// Effective cumulative funding entry of the position
+	string effective_cumulative_funding_entry = 17;
 }
 
 message AccountPortfolioBalancesRequest {

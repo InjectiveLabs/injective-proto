@@ -133,6 +133,8 @@ message DerivativeMarketInfo {
 	string min_notional = 21;
 	// Defines the reduce margin ratio of a derivative market
 	string reduce_margin_ratio = 22;
+	// The open notional cap of the market, if any
+	OpenNotionalCap open_notional_cap = 23;
 }
 
 message TokenMeta {
@@ -181,6 +183,11 @@ message ExpiryFuturesMarketInfo {
 	sint64 expiration_timestamp = 1;
 	// Defines the settlement price for a time expiry futures market.
 	string settlement_price = 2;
+}
+
+message OpenNotionalCap {
+	// The open notional cap of the market
+	string cap = 1;
 }
 
 message MarketRequest {
@@ -542,6 +549,14 @@ message DerivativePosition {
 	sint64 updated_at = 12;
 	// Position created timestamp in UNIX millis.
 	sint64 created_at = 13;
+	// Last funding fees since position opened
+	string funding_last = 14;
+	// Net funding fees since position opened
+	string funding_sum = 15;
+	// Cumulative funding entry of the position
+	string cumulative_funding_entry = 16;
+	// Effective cumulative funding entry of the position
+	string effective_cumulative_funding_entry = 17;
 }
 
 message PositionsV2Request {
@@ -599,6 +614,14 @@ message DerivativePositionV2 {
 	sint64 updated_at = 11;
 	// Market quote denom
 	string denom = 12;
+	// Last funding fees since position opened
+	string funding_last = 13;
+	// Net funding fees since position opened
+	string funding_sum = 14;
+	// Cumulative funding entry of the position
+	string cumulative_funding_entry = 15;
+	// Effective cumulative funding entry of the position
+	string effective_cumulative_funding_entry = 16;
 }
 
 message LiquidablePositionsRequest {
