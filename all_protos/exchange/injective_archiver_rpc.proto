@@ -53,11 +53,24 @@ message HistoricalBalance {
 	repeated sint32 t = 1;
 	// Balance value
 	repeated double v = 2;
+	// Detailed Balance value
+	repeated HistoricalDetailedBalance dv = 3;
+}
+
+message HistoricalDetailedBalance {
+	// Spot amount value
+	double spot = 1;
+	// Perpetual amount value
+	double perp = 2;
+	// Staking amount value
+	double staking = 3;
 }
 
 message AccountStatsRequest {
 	// Account address
 	string account = 1;
+	// Time period filter for pnl and volume.
+	string period = 2;
 }
 
 message AccountStatsResponse {
@@ -67,6 +80,8 @@ message AccountStatsResponse {
 	double pnl = 2;
 	// Trade volume (USD)
 	double volume = 3;
+	// Staking amount (INJ)
+	string stake = 4;
 }
 
 message RpnlRequest {

@@ -23,10 +23,14 @@ service InjectiveAuctionRPC {
 	rpc AuctionV2 (AuctionV2Request) returns (AuctionV2Response);
 	// Provide the historical auctions info for a given account
 	rpc AccountAuctionsV2 (AccountAuctionsV2Request) returns (AccountAuctionsV2Response);
+	// Get the allowlist status for a specific account in an auction round
+	rpc AuctionAccountStatus (AuctionAccountStatusRequest) returns (AuctionAccountStatusResponse);
 	// StreamBids streams new bids of an auction.
 	rpc StreamBids (StreamBidsRequest) returns (stream StreamBidsResponse);
 	// InjBurntEndpoint returns the total amount of INJ burnt in auctions.
 	rpc InjBurntEndpoint (InjBurntEndpointRequest) returns (InjBurntEndpointResponse);
+	// Returns total INJ burnt and its total USD value in auctions.
+	rpc AuctionsStats (AuctionsStatsRequest) returns (AuctionsStatsResponse);
 }
 
 message AuctionEndpointRequest {
@@ -82,6 +86,8 @@ message AuctionContract {
 	uint64 end_timestamp = 9;
 	// Max round allocation of the auction
 	string max_round_allocation = 10;
+	// Whether any bid has been placed in the auction.
+	bool is_bid_placed = 11;
 }
 
 message Bid {
@@ -127,6 +133,7 @@ message AuctionV2Result {
 	// UpdatedAt timestamp in UNIX millis.
 	sint64 updated_at = 6;
 	AuctionContract contract = 7;
+	string winning_bid_amount_usd = 8;
 }
 
 message CoinPrices {
@@ -154,6 +161,7 @@ message AuctionV2Response {
 	// UpdatedAt timestamp in UNIX millis.
 	sint64 updated_at = 6;
 	AuctionContract contract = 7;
+	string winning_bid_amount_usd = 8;
 }
 
 message AccountAuctionsV2Request {
@@ -182,6 +190,18 @@ message AccountAuctionV2 {
 	repeated CoinPrices claimed_assets = 5;
 }
 
+message AuctionAccountStatusRequest {
+	// The auction round number
+	sint64 round = 1;
+	// Address of account
+	string address = 2;
+}
+
+message AuctionAccountStatusResponse {
+	// The allowlist status of the account
+	string status = 1;
+}
+
 message StreamBidsRequest {
 }
 
@@ -199,4 +219,14 @@ message InjBurntEndpointRequest {
 
 message InjBurntEndpointResponse {
 	string total_inj_burnt = 1;
+}
+
+message AuctionsStatsRequest {
+}
+
+message AuctionsStatsResponse {
+	// Total cumulative amount of INJ burnt in auctions
+	string total_burnt = 1;
+	// Total cumulative historical basket value in USD of all auctions
+	string total_usd_value = 2;
 }

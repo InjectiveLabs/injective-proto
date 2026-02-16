@@ -13,15 +13,18 @@ option go_package = "/injective_explorer_rpcpb";
 
 // ExplorerAPI implements explorer data API for e.g. Blockchain Explorer
 service InjectiveExplorerRPC {
-	// GetAccountTxs returns tranctions involving in an account based upon params.
+	// GetAccountTxs returns transactions involving in an account based upon
+// params. Deprecated: use GetAccountTxsV2 instead.
 	rpc GetAccountTxs (GetAccountTxsRequest) returns (GetAccountTxsResponse);
 	// GetAccountTxs returns tranctions involving in an account based upon params.
 	rpc GetAccountTxsV2 (GetAccountTxsV2Request) returns (GetAccountTxsV2Response);
-	// GetContractTxs returns contract-related transactions
+	// GetContractTxs returns contract-related transactions. Deprecated: use
+// GetContractTxsV2 instead.
 	rpc GetContractTxs (GetContractTxsRequest) returns (GetContractTxsResponse);
 	// GetContractTxs returns contract-related transactions
 	rpc GetContractTxsV2 (GetContractTxsV2Request) returns (GetContractTxsV2Response);
-	// GetBlocks returns blocks based upon the request params
+	// GetBlocks returns blocks based upon the request params. Deprecated: use
+// GetBlocksV2 instead.
 	rpc GetBlocks (GetBlocksRequest) returns (GetBlocksResponse);
 	// GetBlocks returns blocks based upon the request params
 	rpc GetBlocksV2 (GetBlocksV2Request) returns (GetBlocksV2Response);
@@ -33,7 +36,8 @@ service InjectiveExplorerRPC {
 	rpc GetValidator (GetValidatorRequest) returns (GetValidatorResponse);
 	// GetValidatorUptime returns validator uptime information on the active chain
 	rpc GetValidatorUptime (GetValidatorUptimeRequest) returns (GetValidatorUptimeResponse);
-	// GetTxs returns transactions based upon the request params
+	// GetTxs returns transactions based upon the request params. Deprecated: use
+// GetTxsV2 instead.
 	rpc GetTxs (GetTxsRequest) returns (GetTxsResponse);
 	// GetTxs returns transactions based upon the request params
 	rpc GetTxsV2 (GetTxsV2Request) returns (GetTxsV2Response);
@@ -328,6 +332,7 @@ message TxData {
 	repeated Signature signatures = 13;
 	// Block timestamp in unix milli
 	uint64 block_unix_timestamp = 14;
+	string ethereum_tx_hash_hex = 15;
 }
 
 message GetValidatorsRequest {
@@ -463,7 +468,10 @@ message GetTxsV2Response {
 }
 
 message GetTxByTxHashRequest {
+	// transaction hash
 	string hash = 1;
+	// Set to true if the provided hash may be an EVM tx hash
+	bool is_evm_hash = 2;
 }
 
 message GetTxByTxHashResponse {

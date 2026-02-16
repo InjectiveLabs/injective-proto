@@ -27,10 +27,21 @@ service InjectiveOracleRPC {
 }
 
 message OracleListRequest {
+	// Filter by oracle symbol
+	string symbol = 1;
+	// Filter by oracle type
+	string oracle_type = 2;
+	// Number of results per page
+	sint32 per_page = 3;
+	// Pagination token from previous response
+	string token = 4;
 }
 
 message OracleListResponse {
+	// List of oracles
 	repeated Oracle oracles = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
 }
 
 message Oracle {
