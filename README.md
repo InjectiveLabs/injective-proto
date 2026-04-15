@@ -64,7 +64,20 @@ If you are using the Injective proto components in Java you might want to use th
 
 ## Update the proto components in the repository
 
-To generate the proto files for all the supported languajes run `make run-full`
+To generate the proto files for all the supported languages run:
 
-The script required `buf` installed to generate the proto files for C++, Java and Python.
-For the C# and Rust proto generation, the script requires `protoc` installed. It then uses the GrpTools plugin to generate the Grpc components. Please make sure that the plugin in grpc.tools/tools/<os_specific_folder> has execution permission
+```bash
+make run-full
+```
+
+### Tooling requirements
+
+- `buf` CLI is required.
+- No local `protoc`, `grpc.tools`, or `rust_plugins` binaries are required for generation.
+- The generation process uses pinned Buf remote plugins (configured in `buf.gen.yaml`) to keep output reproducible.
+
+### Generation flow
+
+- `make generate` syncs the source protos under `proto/` and runs a single `buf generate` for all supported languages.
+- `scripts/normalize_generated.py` performs compatibility normalization so C# and Rust outputs keep the expected source-relative tree shape.
+- `all_protos` is refreshed from `proto/` after generation.
