@@ -87,6 +87,8 @@ message DerivativeMarketHistoryRequest {
 	// Number of bars (higher priority than from) starting with to. If countback is
 // set, from should be ignored.
 	sint32 countback = 6;
+	// Use oracle prices as fallback for missing derivative candles.
+	bool use_oracle_prices = 7;
 }
 
 message DerivativeMarketHistoryResponse {

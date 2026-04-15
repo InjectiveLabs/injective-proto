@@ -422,7 +422,7 @@ message SpotTrade {
 	string fee_recipient = 9;
 	// A unique string that helps differentiate between trades
 	string trade_id = 10;
-	// Trade's execution side, marker/taker
+	// Trade's execution side, maker,taker,n/a (n/a = not applicable)
 	string execution_side = 11;
 	// Custom client order ID
 	string cid = 12;

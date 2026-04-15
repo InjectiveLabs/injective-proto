@@ -59,6 +59,8 @@ message StreamBlockEventsRequest {
 	// Select backend processor
 	string backend = 1;
 	sint32 height = 2;
+	// Comma separated list of events to get
+	string events = 3;
 }
 
 message StreamBlockEventsResponse {
