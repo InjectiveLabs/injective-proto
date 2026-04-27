@@ -622,6 +622,9 @@ message DerivativePositionV2 {
 	string cumulative_funding_entry = 15;
 	// Effective cumulative funding entry of the position
 	string effective_cumulative_funding_entry = 16;
+	// Unrealized profit and loss of the position (only present when requested with
+// with_upnl=true)
+	string upnl = 17;
 }
 
 message LiquidablePositionsRequest {
@@ -846,7 +849,7 @@ message DerivativeTrade {
 	string fee_recipient = 10;
 	// A unique string that helps differentiate between trades
 	string trade_id = 11;
-	// Trade's execution side, marker/taker
+	// Trade's execution side, maker,taker,n/a (n/a = not applicable)
 	string execution_side = 12;
 	// Custom client order ID
 	string cid = 13;

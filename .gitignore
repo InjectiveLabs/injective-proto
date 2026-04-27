@@ -1,2 +1,3 @@
 .vscode/
 rust/target/
+__pycache__/

@@ -333,6 +333,7 @@ message TxData {
 	// Block timestamp in unix milli
 	uint64 block_unix_timestamp = 14;
 	string ethereum_tx_hash_hex = 15;
+	string memo = 16;
 }
 
 message GetValidatorsRequest {

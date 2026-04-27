@@ -22,6 +22,9 @@ service InjectiveOracleRPC {
 	// StreamPrices streams new price changes for a specified oracle. If no oracles
 // are provided, all price changes are streamed.
 	rpc StreamPrices (StreamPricesRequest) returns (stream StreamPricesResponse);
+	// StreamOracleList streams oracle data updates filtered by oracle type and
+// optionally by symbols.
+	rpc StreamOracleList (StreamOracleListRequest) returns (stream StreamOracleListResponse);
 	// StreamPrices streams new price changes markets
 	rpc StreamPricesByMarkets (StreamPricesByMarketsRequest) returns (stream StreamPricesByMarketsResponse);
 }
@@ -121,6 +124,24 @@ message StreamPricesResponse {
 	string price = 1;
 	// Operation timestamp in UNIX millis.
 	sint64 timestamp = 2;
+}
+
+message StreamOracleListRequest {
+	// Filter by oracle type
+	string oracle_type = 1;
+	// Oracle symbols to stream; empty streams all symbols for the given oracle type
+	repeated string symbols = 2;
+}
+
+message StreamOracleListResponse {
+	// The symbol of the oracle asset
+	string symbol = 1;
+	// Oracle type
+	string oracle_type = 2;
+	// The price of the oracle asset
+	string price = 3;
+	// Operation timestamp in UNIX millis.
+	sint64 timestamp = 4;
 }
 
 message StreamPricesByMarketsRequest {

@@ -264,6 +264,8 @@ message HistoricalTradesRequest {
 	string token = 6;
 	// Account address
 	string account = 7;
+	// Filter by execution type of trades
+	repeated string execution_types = 8;
 }
 
 message HistoricalTradesResponse {
@@ -295,7 +297,7 @@ message HistoricalTrade {
 	uint64 executed_height = 8;
 	// Fee recipient address
 	string fee_recipient = 9;
-	// Trade's execution side, maker/taker
+	// Trade's execution side, maker,taker,n/a (n/a = not applicable)
 	string execution_side = 10;
 	// USD value of the trade at the time of execution
 	string usd_value = 11;
@@ -305,6 +307,13 @@ message HistoricalTrade {
 	string market_type = 13;
 	// Unique trade ID
 	string trade_id = 14;
+	// The execution type of the trade
+	string execution_type = 15;
+	// Client-provided unique identifier for the order
+	string cid = 16;
+	// The funding rate at the time of the trade execution, applicable only for
+// derivative trades
+	string funding_rate = 17;
 }
 
 message PriceLevel {
