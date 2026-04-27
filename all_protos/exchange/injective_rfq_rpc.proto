@@ -340,13 +340,13 @@ message CreateConditionalOrderRequest {
 // subaccount_nonce    (uint32)  — taker subaccount index
 // lane_version        (uint64)  — lane version for replay protection
 // deadline_ms         (uint64)  — expiry timestamp in milliseconds
-// direction           (string)  — "Long" or "Short"
+// direction           (string)  — "long" or "short"
 // quantity            (string)  — FPDecimal e.g. "1", "4.9"
 // margin              (string)  — collateral amount as FPDecimal
 // worst_price         (string)  — FPDecimal worst acceptable price
 // min_total_fill_quantity (string) — FPDecimal minimum fill
-// trigger             (enum)    — {"MarkPriceGte":"<price>"} or
-// {"MarkPriceLte":"<price>"}
+// trigger             (enum)    — {"mark_price_gte":"<price>"} or
+// {"mark_price_lte":"<price>"}
 // unfilled_action     (null)    — always null in v1
 // cid                 (*string) — optional client ID, or null
 // allowed_relayer     (*string) — optional relayer address, or null
@@ -428,13 +428,21 @@ message ConditionalOrderResponseType {
 	sint64 updated_at = 11;
 	// Expiry timestamp in milliseconds
 	sint64 expires_at = 12;
+	// Trigger condition (mark_price_gte, mark_price_lte)
+	string trigger_type = 13;
+	// Minimum total fill quantity
+	string min_total_fill_quantity = 14;
+	// Event time timestamp in milliseconds (streaming only)
+	uint64 event_time = 15;
+	// Last error message, if any
+	string error = 16;
 }
 
 message ListConditionalOrdersRequest {
 	// Taker address
 	string request_address = 1;
-	// Filter by status
-	string status = 2;
+	// Filter by one or more statuses; empty means no filter
+	repeated string status = 2;
 	// Filter by market ID
 	string market_id = 3;
 	// Number of records per page
@@ -481,7 +489,8 @@ message CreateRFQRequestType {
 }
 
 message TakerStreamResponse {
-	// Type: 'quote', 'request_ack', 'error', 'pong', 'conditional_order_ack'
+	// Type: 'quote', 'request_ack', 'error', 'pong', 'conditional_order_ack',
+// 'conditional_order_update'
 	string message_type = 1;
 	// Quote from market maker
 	RFQQuoteType quote = 2;
@@ -491,6 +500,8 @@ message TakerStreamResponse {
 	StreamError error = 4;
 	// Acknowledgment for conditional order creation
 	ConditionalOrderAck conditional_order_ack = 5;
+	// Conditional order lifecycle update
+	ConditionalOrderResponseType conditional_order = 6;
 }
 // Acknowledgment for stream operations
 message RequestStreamAck {

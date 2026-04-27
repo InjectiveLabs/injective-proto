@@ -202,16 +202,26 @@ message TradesRequest {
 	sint32 per_page = 4;
 	// Pagination token
 	string token = 5;
+	// Field to sort by
+	string sort_by = 6;
+	// Sort direction
+	string sort_direction = 7;
+	// The starting timestamp in UNIX milliseconds that the trades must be equal or
+// older than
+	sint64 start_time = 8;
+	// The ending timestamp in UNIX milliseconds that the trades must be equal or
+// younger than
+	sint64 end_time = 9;
 }
 
 message TradesResponse {
 	// Trades of TC Derivative Markets
-	repeated DerivativeTrade trades = 1;
+	repeated TCDerivativeTrade trades = 1;
 	// Next tokens for pagination
 	repeated string next = 2;
 }
-
-message DerivativeTrade {
+// TC derivative trade including position metadata fields
+message TCDerivativeTrade {
 	// Order hash.
 	string order_hash = 1;
 	// The subaccountId that executed the trade
@@ -240,6 +250,12 @@ message DerivativeTrade {
 	string cid = 13;
 	// Profit and loss of the trade
 	string pnl = 14;
+	// True if the position associated with this trade is long
+	bool position_is_long = 15;
+	// Timestamp when the position was opened in UNIX millis
+	sint64 position_opened_at = 16;
+	// Entry price of the position associated with this trade
+	string position_entry_price = 17;
 }
 
 message PositionDelta {
@@ -261,7 +277,7 @@ message StreamTradesRequest {
 
 message StreamTradesResponse {
 	// New TC derivative market trade
-	DerivativeTrade trade = 1;
+	TCDerivativeTrade trade = 1;
 	// Executed trades update type
 	string operation_type = 2;
 	// Operation timestamp in UNIX millis
