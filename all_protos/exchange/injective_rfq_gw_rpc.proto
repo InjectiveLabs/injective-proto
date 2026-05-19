@@ -13,9 +13,133 @@ option go_package = "/injective_rfq_gw_rpcpb";
 
 // InjectiveRfqGwRPC defines gRPC API of the RFQ Gw service.
 service InjectiveRfqGwRPC {
+	// Full RFQ cycle for EVM autosign wallets: create request, wait for quotes,
+// prepare fee-delegated EIP712 typed data with MsgExec wrapper signable by the
+// ephemeral autosign EVM key
+	rpc PrepareEip712AutoSign (PrepareEip712AutoSignRequest) returns (PrepareEip712AutoSignResponse);
 	// Full RFQ cycle for autosign wallets: create request, wait for quotes,
 // prepare fee-delegated MsgExec tx signable by the ephemeral autosign key
 	rpc PrepareAutoSign (PrepareAutoSignRequest) returns (PrepareAutoSignResponse);
+	// Full RFQ cycle with EIP712 output: create request, wait for quotes, prepare
+// fee-delegated EIP712 typed data for eth_signTypedData_v4
+	rpc PrepareEip712 (PrepareEip712Request) returns (PrepareEip712Response);
+	// Full RFQ cycle: create request, wait for quotes, prepare fee-delegated
+// accept tx
+	rpc Prepare (PrepareRequest) returns (PrepareResponse);
+}
+
+message PrepareEip712AutoSignRequest {
+	RFQGwPrepareEip712AutoSignRequestType request = 1;
+}
+
+message RFQGwPrepareEip712AutoSignRequestType {
+	string client_id = 1;
+	string market_id = 2;
+	string direction = 3;
+	string margin = 4;
+	string quantity = 5;
+	string worst_price = 6;
+	// Ephemeral autosign address (MsgExec grantee) that signs the EIP712 typed data
+	string autosign_address = 7;
+	// RFQ request expiry in milliseconds. 0 = no expiry
+	uint64 expiry = 8;
+	// Hex-encoded autosign ephemeral public key
+	string autosign_pub_key = 9;
+	// Autosign (ephemeral) Cosmos account number
+	uint64 autosign_account_number = 10;
+	// Autosign (ephemeral) Cosmos account sequence (nonce)
+	uint64 autosign_account_sequence = 11;
+	// Fee payer Cosmos account number
+	uint64 fee_payer_account_number = 12;
+	// Fee payer Cosmos account sequence (nonce)
+	uint64 fee_payer_account_sequence = 13;
+	// How long to wait for quotes (max 5000ms)
+	uint64 quotes_wait_time_ms = 20;
+	// Action for quantity not filled by the selected quotes. Set `limit` to place
+// a limit order at the given price, `market` to sweep the remainder as a
+// market order. Omit to settle only the quoted amount.
+	RFQSettlementUnfilledActionType unfilled_action = 21;
+	// Taker subaccount nonce at settlement time. Prevents replay when submitting
+// multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain
+// nonce).
+	uint32 subaccount_nonce = 22;
+	// Client order ID echoed through to the on-chain trade event. Used to
+// correlate a trade event back to the originating UI order. Not used
+// server-side.
+	string cid = 23;
+	// Real taker address (authz granter); used as MsgExecuteContractCompat sender
+	string taker_address = 30;
+	// EVM chain ID used in the EIP712 domain separator (e.g. 1 for Injective
+// mainnet)
+	uint64 eth_chain_id = 31;
+	// EIP712 wrapper version: 'v2' uses WrapTxToEIP712V2, 'v1' uses legacy amino
+// JSON
+	string eip712_wrapper = 32;
+	// Optional gas limit override
+	uint64 gas = 33;
+}
+// Action to take for unfilled quantity - only one field should be set
+message RFQSettlementUnfilledActionType {
+	// Limit order action
+	RFQSettlementLimitActionType limit = 1;
+	// Market order action
+	RFQSettlementMarketActionType market = 2;
+}
+// Limit order action for unfilled quantity
+message RFQSettlementLimitActionType {
+	// Limit price
+	string price = 1;
+}
+// Market order action for unfilled quantity
+message RFQSettlementMarketActionType {
+}
+
+message PrepareEip712AutoSignResponse {
+	// Generated RFQ ID
+	uint64 rfq_id = 1;
+	// EIP712-compatible JSON containing MsgExec wrapper, signable with
+// eth_signTypedData_v4
+	string data = 2;
+	// Hex-encoded fee payer signature over the EIP712 hash
+	string fee_payer_sig = 3;
+	// Fee payer address
+	string fee_payer = 4;
+	// SIGN_MODE_EIP712_V2 or SIGN_MODE_LEGACY_AMINO_JSON
+	string sign_mode = 5;
+	// Fee payer public key type
+	string pub_key_type = 6;
+	// Fee payer public key
+	CosmosPubKey fee_payer_pub_key = 7;
+	// Selected quotes in execution order
+	repeated RFQGwPrepareQuoteResult quotes = 8;
+	// Autosign (ephemeral) account number
+	uint64 autosign_account_number = 9;
+	// Autosign (ephemeral) account sequence
+	uint64 autosign_account_sequence = 10;
+	// Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms
+// hint in next request
+	uint64 quotes_wait_ms = 11;
+	// Number of quotes that expired after being received and were excluded from
+// selection
+	uint64 expired_quotes_count = 12;
+}
+
+message CosmosPubKey {
+	// Pubkey type URL
+	string type = 1;
+	// Hex-encoded string of the public key
+	string key = 2;
+}
+
+message RFQGwPrepareQuoteResult {
+	// Maker address
+	string maker = 1;
+	// Quote price
+	string price = 2;
+	// Quote quantity
+	string quantity = 3;
+	// Quote margin
+	string margin = 4;
 }
 
 message PrepareAutoSignRequest {
@@ -60,21 +184,6 @@ message RFQGwPrepareAutoSignRequestType {
 	// Real taker address (authz granter); used as MsgExecuteContractCompat sender
 	string taker_address = 30;
 }
-// Action to take for unfilled quantity - only one field should be set
-message RFQSettlementUnfilledActionType {
-	// Limit order action
-	RFQSettlementLimitActionType limit = 1;
-	// Market order action
-	RFQSettlementMarketActionType market = 2;
-}
-// Limit order action for unfilled quantity
-message RFQSettlementLimitActionType {
-	// Limit price
-	string price = 1;
-}
-// Market order action for unfilled quantity
-message RFQSettlementMarketActionType {
-}
 
 message PrepareAutoSignResponse {
 	// Generated RFQ ID
@@ -104,22 +213,157 @@ message PrepareAutoSignResponse {
 	// Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms
 // hint in next request
 	uint64 quotes_wait_ms = 13;
+	// Number of quotes that expired after being received and were excluded from
+// selection
+	uint64 expired_quotes_count = 14;
 }
 
-message CosmosPubKey {
-	// Pubkey type URL
-	string type = 1;
-	// Hex-encoded string of the public key
-	string key = 2;
+message PrepareEip712Request {
+	RFQGwPrepareEip712RequestType request = 1;
 }
 
-message RFQGwPrepareQuoteResult {
-	// Maker address
-	string maker = 1;
-	// Quote price
-	string price = 2;
-	// Quote quantity
-	string quantity = 3;
-	// Quote margin
+message RFQGwPrepareEip712RequestType {
+	string client_id = 1;
+	string market_id = 2;
+	string direction = 3;
 	string margin = 4;
+	string quantity = 5;
+	string worst_price = 6;
+	string taker_address = 7;
+	// RFQ request expiry in milliseconds. 0 = no expiry
+	uint64 expiry = 8;
+	// Hex-encoded taker public key
+	string taker_pub_key = 9;
+	// Taker Cosmos account number
+	uint64 taker_account_number = 10;
+	// Taker Cosmos account sequence (nonce)
+	uint64 taker_account_sequence = 11;
+	// Fee payer Cosmos account number
+	uint64 fee_payer_account_number = 12;
+	// Fee payer Cosmos account sequence (nonce)
+	uint64 fee_payer_account_sequence = 13;
+	// How long to wait for quotes (max 5000ms)
+	uint64 quotes_wait_time_ms = 20;
+	// Action for quantity not filled by the selected quotes. Set `limit` to place
+// a limit order at the given price, `market` to sweep the remainder as a
+// market order. Omit to settle only the quoted amount.
+	RFQSettlementUnfilledActionType unfilled_action = 21;
+	// Taker subaccount nonce at settlement time. Prevents replay when submitting
+// multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain
+// nonce).
+	uint32 subaccount_nonce = 22;
+	// Client order ID echoed through to the on-chain trade event. Used to
+// correlate a trade event back to the originating UI order. Not used
+// server-side.
+	string cid = 23;
+	// EVM chain ID used in the EIP712 domain separator (e.g. 1 for Injective
+// mainnet)
+	uint64 eth_chain_id = 30;
+	// EIP712 wrapper version: 'v2' uses WrapTxToEIP712V2, 'v1' uses legacy amino
+// JSON
+	string eip712_wrapper = 31;
+	// Optional gas limit override
+	uint64 gas = 32;
+}
+
+message PrepareEip712Response {
+	// Generated RFQ ID
+	uint64 rfq_id = 1;
+	// EIP712-compatible JSON, signable with eth_signTypedData_v4
+	string data = 2;
+	// Hex-encoded fee payer signature over the EIP712 hash
+	string fee_payer_sig = 3;
+	// Fee payer address
+	string fee_payer = 4;
+	// SIGN_MODE_EIP712_V2 or SIGN_MODE_LEGACY_AMINO_JSON
+	string sign_mode = 5;
+	// Fee payer public key type
+	string pub_key_type = 6;
+	// Fee payer public key
+	CosmosPubKey fee_payer_pub_key = 7;
+	// Selected quotes in execution order
+	repeated RFQGwPrepareQuoteResult quotes = 8;
+	// Taker Cosmos account number
+	uint64 taker_account_number = 9;
+	// Taker Cosmos account sequence
+	uint64 taker_account_sequence = 10;
+	// Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms
+// hint in next request
+	uint64 quotes_wait_ms = 11;
+	// Number of quotes that expired after being received and were excluded from
+// selection
+	uint64 expired_quotes_count = 12;
+}
+
+message PrepareRequest {
+	RFQGwPrepareRequestType request = 1;
+}
+
+message RFQGwPrepareRequestType {
+	string client_id = 1;
+	string market_id = 2;
+	string direction = 3;
+	string margin = 4;
+	string quantity = 5;
+	string worst_price = 6;
+	string taker_address = 7;
+	// RFQ request expiry in milliseconds. 0 = no expiry
+	uint64 expiry = 8;
+	// Hex-encoded taker public key
+	string taker_pub_key = 9;
+	// Taker Cosmos account number
+	uint64 taker_account_number = 10;
+	// Taker Cosmos account sequence (nonce)
+	uint64 taker_account_sequence = 11;
+	// Fee payer Cosmos account number
+	uint64 fee_payer_account_number = 12;
+	// Fee payer Cosmos account sequence (nonce)
+	uint64 fee_payer_account_sequence = 13;
+	// How long to wait for quotes (max 5000ms)
+	uint64 quotes_wait_time_ms = 20;
+	// Action for quantity not filled by the selected quotes. Set `limit` to place
+// a limit order at the given price, `market` to sweep the remainder as a
+// market order. Omit to settle only the quoted amount.
+	RFQSettlementUnfilledActionType unfilled_action = 21;
+	// Taker subaccount nonce at settlement time. Prevents replay when submitting
+// multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain
+// nonce).
+	uint32 subaccount_nonce = 22;
+	// Client order ID echoed through to the on-chain trade event. Used to
+// correlate a trade event back to the originating UI order. Not used
+// server-side.
+	string cid = 23;
+}
+
+message PrepareResponse {
+	// Generated RFQ ID
+	uint64 rfq_id = 1;
+	// Fee-delegated prepared transaction bytes
+	bytes tx = 2;
+	// Hex-encoded fee payer signature
+	string fee_payer_sig = 3;
+	// Fee payer address
+	string fee_payer = 4;
+	// Sign mode (SIGN_MODE_DIRECT)
+	string sign_mode = 5;
+	// Fee payer public key type
+	string pub_key_type = 6;
+	// Fee payer public key
+	CosmosPubKey fee_payer_pub_key = 7;
+	// Selected quotes in execution order
+	repeated RFQGwPrepareQuoteResult quotes = 8;
+	// Taker Cosmos account number
+	uint64 taker_account_number = 9;
+	// Taker Cosmos account sequence
+	uint64 taker_account_sequence = 10;
+	// Fee payer Cosmos account number
+	uint64 fee_payer_account_number = 11;
+	// Fee payer Cosmos account sequence
+	uint64 fee_payer_account_sequence = 12;
+	// Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms
+// hint in next request
+	uint64 quotes_wait_ms = 13;
+	// Number of quotes that expired after being received and were excluded from
+// selection
+	uint64 expired_quotes_count = 14;
 }

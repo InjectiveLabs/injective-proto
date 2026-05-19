@@ -212,6 +212,8 @@ message TradesRequest {
 	// The ending timestamp in UNIX milliseconds that the trades must be equal or
 // younger than
 	sint64 end_time = 9;
+	// Return only trades with non-zero PNL
+	bool with_pnl = 10;
 }
 
 message TradesResponse {
@@ -256,6 +258,8 @@ message TCDerivativeTrade {
 	sint64 position_opened_at = 16;
 	// Entry price of the position associated with this trade
 	string position_entry_price = 17;
+	// True if the position is closed by this trade
+	bool is_position_closed = 18;
 }
 
 message PositionDelta {
