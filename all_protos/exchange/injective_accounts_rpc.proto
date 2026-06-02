@@ -516,6 +516,8 @@ message DerivativeLimitOrder {
 	string tx_hash = 21;
 	// Custom client order ID
 	string cid = 22;
+	// Account address that owns the subaccount which placed this order
+	string account_address = 23;
 }
 
 message OrderHistoryResult {

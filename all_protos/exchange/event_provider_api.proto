@@ -27,6 +27,8 @@ service EventProviderAPI {
 	rpc GetABCIBlockEvents (GetABCIBlockEventsRequest) returns (GetABCIBlockEventsResponse);
 	// Get all raw block events for selected height
 	rpc GetABCIBlockEventsAtHeight (GetABCIBlockEventsAtHeightRequest) returns (GetABCIBlockEventsAtHeightResponse);
+	// Stream raw block events for selected height
+	rpc StreamABCIEvents (StreamABCIEventsRequest) returns (stream StreamABCIEventsResponse);
 }
 
 message GetLatestHeightRequest {
@@ -203,4 +205,34 @@ message GetABCIBlockEventsAtHeightResponse {
 	// Error message.
 	string e = 3;
 	RawBlock raw_block = 4;
+}
+
+message StreamABCIEventsRequest {
+	sint32 height = 1;
+	// Array of event types
+	repeated string event_types = 2;
+	// Number of blocks to include in each stream response. The service will have a
+// cap on the batch size, and default to it if it's greater. Once the stream is
+// in sync, the batch size
+	uint32 batch_size = 3;
+	// Number of parallel fetchers. The service will have a cap on the number of
+// fetchers, and default to it. The service may chose to throttle the fetchers
+// based on the current load.
+	uint32 fetchers = 4;
+}
+
+message StreamABCIEventsResponse {
+	repeated StreamedRawBlock blocks = 1;
+}
+
+message StreamedRawBlock {
+	// Indicates whether the block is the latest one available in the event provider
+	bool in_sync = 20;
+	sint64 height = 1;
+	string block_time = 5;
+	// Block timestamp in UNIX millis.
+	sint64 block_timestamp = 6;
+	repeated ABCIResponseDeliverTx txs_results = 2;
+	repeated ABCIEvent begin_block_events = 3;
+	repeated ABCIEvent end_block_events = 4;
 }

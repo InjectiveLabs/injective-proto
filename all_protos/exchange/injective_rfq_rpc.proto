@@ -13,12 +13,8 @@ option go_package = "/injective_rfq_rpcpb";
 
 // InjectiveRfqRPC defines gRPC API of the RFQ (Request for Quote) API.
 service InjectiveRfqRPC {
-	// Create RFQ request
-	rpc Request (RequestRequest) returns (RequestResponse);
 	// Stream RFQ requests
 	rpc StreamRequest (StreamRequestRequest) returns (stream StreamRequestResponse);
-	// Create RFQ quote
-	rpc Quote (QuoteRequest) returns (QuoteResponse);
 	// Stream RFQ quotes
 	rpc StreamQuote (StreamQuoteRequest) returns (stream StreamQuoteResponse);
 	// List RFQ settlements
@@ -33,43 +29,6 @@ service InjectiveRfqRPC {
 	rpc TakerStream (stream TakerStreamStreamingRequest) returns (stream TakerStreamResponse);
 	// Bidirectional stream for makers: receive requests, send quotes
 	rpc MakerStream (stream MakerStreamStreamingRequest) returns (stream MakerStreamResponse);
-}
-
-message RequestRequest {
-	// RFQ request to create
-	RFQRequestInputType request = 1;
-}
-// RFQ request
-message RFQRequestInputType {
-	// Client ID
-	string client_id = 1;
-	// Market ID
-	string market_id = 2;
-	// Direction (long/short)
-	string direction = 3;
-	// Margin amount
-	string margin = 4;
-	// Quantity
-	string quantity = 5;
-	// Worst acceptable price
-	string worst_price = 6;
-	// Requester address
-	string request_address = 7;
-	// Expiry timestamp in milliseconds
-	uint64 expiry = 8;
-	// Transaction time timestamp
-	uint64 transaction_time = 9;
-	// Whether the request is for price check only
-	bool price_check = 10;
-}
-
-message RequestResponse {
-	// Status of the operation
-	string status = 1;
-	// Client ID
-	string client_id = 2;
-	// Generated RFQ ID
-	uint64 rfq_id = 3;
 }
 
 message StreamRequestRequest {
@@ -113,70 +72,6 @@ message RFQRequestType {
 	uint64 transaction_time = 13;
 	// Block height
 	uint64 height = 14;
-}
-
-message QuoteRequest {
-	// RFQ quote to create
-	RFQQuoteType quote = 1;
-}
-// RFQ quote
-message RFQQuoteType {
-	// Chain ID
-	string chain_id = 1;
-	// Contract address
-	string contract_address = 2;
-	// Market ID
-	string market_id = 3;
-	// RFQ ID
-	uint64 rfq_id = 4;
-	// Taker direction (long/short)
-	string taker_direction = 5;
-	// Margin amount
-	string margin = 6;
-	// Quantity
-	string quantity = 7;
-	// Price
-	string price = 8;
-	// Expiry timestamp and height
-	RFQExpiryType expiry = 9;
-	// Maker address
-	string maker = 10;
-	// Taker address
-	string taker = 11;
-	// Signature
-	string signature = 12;
-	// Status (pending, accepted, rejected, expired)
-	string status = 13;
-	// Creation timestamp
-	sint64 created_at = 14;
-	// Last update timestamp
-	sint64 updated_at = 15;
-	// Block height
-	uint64 height = 16;
-	// Event time timestamp
-	uint64 event_time = 17;
-	// Transaction time timestamp
-	uint64 transaction_time = 18;
-	// Maker subaccount nonce used in quote signature
-	uint64 maker_subaccount_nonce = 19;
-	// Optional minimum fill quantity used in quote signature
-	string min_fill_quantity = 20;
-	// Whether the quote is for price check only
-	bool price_check = 21;
-	// Client ID from the originating request
-	string client_id = 22;
-}
-// Expiry with timestamp and block height
-message RFQExpiryType {
-	// Expiry timestamp in milliseconds
-	uint64 timestamp = 1;
-	// Expiry block height
-	uint64 height = 2;
-}
-
-message QuoteResponse {
-	// Status of the operation
-	string status = 1;
 }
 
 message StreamQuoteRequest {
@@ -237,13 +132,28 @@ message RFQProcessedQuoteType {
 	// Transaction time timestamp
 	uint64 transaction_time = 18;
 	// Maker subaccount nonce used in quote signature
-	uint64 maker_subaccount_nonce = 19;
+	uint32 maker_subaccount_nonce = 19;
 	// Optional minimum fill quantity used in quote signature
 	string min_fill_quantity = 20;
 	// Whether the quote is for price check only
 	bool price_check = 21;
 	// Client ID from the originating request
 	string client_id = 22;
+	// Signature scheme used for the quote: "v1" (raw JSON keccak256) or "v2"
+// (EIP-712). Defaults to "v1" when omitted, for backward compatibility with
+// pre-EIP-712 clients.
+	string sign_mode = 23;
+	// EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is
+// "v2"; ignored otherwise. Must match one of the indexer's configured chain
+// IDs.
+	uint64 evm_chain_id = 24;
+}
+// Expiry with timestamp and block height
+message RFQExpiryType {
+	// Expiry timestamp in milliseconds
+	uint64 timestamp = 1;
+	// Expiry block height
+	uint64 height = 2;
 }
 
 message ListSettlementRequest {
@@ -295,6 +205,8 @@ message RFQSettlementType {
 	uint64 height = 15;
 	// Settlement CID
 	string cid = 16;
+	// Settlement transaction hash
+	string tx_hash = 17;
 }
 // Action to take for unfilled quantity - only one field should be set
 message RFQSettlementUnfilledActionType {
@@ -353,6 +265,14 @@ message CreateConditionalOrderRequest {
 // Then: signature = secp256k1_sign(Keccak256(canonical_json),
 // taker_private_key)
 	string signature = 2;
+	// Signature scheme used for the conditional order: "v1" (raw JSON keccak256)
+// or "v2" (EIP-712). Defaults to "v1" when omitted, for backward compatibility
+// with pre-EIP-712 clients.
+	string sign_mode = 3;
+	// EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is
+// "v2"; ignored otherwise. Must match one of the indexer's configured chain
+// IDs.
+	uint64 evm_chain_id = 4;
 }
 // Conditional order input matching the contract's SignedTakerIntent payload
 message ConditionalOrderInput {
@@ -396,6 +316,8 @@ message ConditionalOrderInput {
 	string cid = 19;
 	// Optional relayer restriction
 	string allowed_relayer = 20;
+	// Replay protection nonce time window in milliseconds
+	uint64 taker_nonce_time_window_ms = 21;
 }
 
 message CreateConditionalOrderResponse {
@@ -434,8 +356,20 @@ message ConditionalOrderResponseType {
 	string min_total_fill_quantity = 14;
 	// Event time timestamp in milliseconds (streaming only)
 	uint64 event_time = 15;
-	// Last error message, if any
+	// Deprecated: use 'errors' instead. Last error message, if any.
 	string error = 16;
+	// Settlement transaction hash, if any
+	string tx_hash = 17;
+	// Terminal timestamp in milliseconds (set when the order reaches a terminal
+// status: completed, failed, or cancelled)
+	sint64 terminal_at = 18;
+	// EVM chain ID embedded in the EIP-712 domain at signing time. Zero for v1
+// (raw JSON) orders.
+	uint64 evm_chain_id = 19;
+	// Replay protection nonce time window in milliseconds
+	uint64 taker_nonce_time_window_ms = 20;
+	// All error messages accumulated across execution attempts (most recent last)
+	repeated string errors = 21;
 }
 
 message ListConditionalOrdersRequest {
@@ -467,6 +401,13 @@ message TakerStreamStreamingRequest {
 	ConditionalOrderInput conditional_order = 3;
 	// Signature for the conditional order
 	string conditional_order_signature = 4;
+	// Signature scheme for the conditional order: "v1" (raw JSON keccak256) or
+// "v2" (EIP-712). Defaults to "v1" when omitted, for backward compatibility
+// with pre-EIP-712 clients.
+	string conditional_order_sign_mode = 5;
+	// EVM chain ID embedded in the EIP-712 domain for the conditional order.
+// Required when conditional_order_sign_mode is "v2".
+	uint64 conditional_order_evm_chain_id = 6;
 }
 // RFQ request
 message CreateRFQRequestType {
@@ -503,6 +444,61 @@ message TakerStreamResponse {
 	// Conditional order lifecycle update
 	ConditionalOrderResponseType conditional_order = 6;
 }
+// RFQ quote
+message RFQQuoteType {
+	// Chain ID
+	string chain_id = 1;
+	// Contract address
+	string contract_address = 2;
+	// Market ID
+	string market_id = 3;
+	// RFQ ID
+	uint64 rfq_id = 4;
+	// Taker direction (long/short)
+	string taker_direction = 5;
+	// Margin amount
+	string margin = 6;
+	// Quantity
+	string quantity = 7;
+	// Price
+	string price = 8;
+	// Expiry timestamp and height
+	RFQExpiryType expiry = 9;
+	// Maker address
+	string maker = 10;
+	// Taker address
+	string taker = 11;
+	// Signature
+	string signature = 12;
+	// Status (pending, accepted, rejected, expired)
+	string status = 13;
+	// Creation timestamp
+	sint64 created_at = 14;
+	// Last update timestamp
+	sint64 updated_at = 15;
+	// Block height
+	uint64 height = 16;
+	// Event time timestamp
+	uint64 event_time = 17;
+	// Transaction time timestamp
+	uint64 transaction_time = 18;
+	// Maker subaccount nonce used in quote signature
+	uint32 maker_subaccount_nonce = 19;
+	// Optional minimum fill quantity used in quote signature
+	string min_fill_quantity = 20;
+	// Whether the quote is for price check only
+	bool price_check = 21;
+	// Client ID from the originating request
+	string client_id = 22;
+	// Signature scheme used for the quote: "v1" (raw JSON keccak256) or "v2"
+// (EIP-712). Defaults to "v1" when omitted, for backward compatibility with
+// pre-EIP-712 clients.
+	string sign_mode = 23;
+	// EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is
+// "v2"; ignored otherwise. Must match one of the indexer's configured chain
+// IDs.
+	uint64 evm_chain_id = 24;
+}
 // Acknowledgment for stream operations
 message RequestStreamAck {
 	// RFQ ID
@@ -518,6 +514,9 @@ message StreamError {
 	string code = 1;
 	// Error message
 	string message_ = 2;
+	// ID to identify the request or quote in the stream. RFQ_ID for quotes.
+// CLIENT_ID for requests.
+	string id = 3;
 }
 // Acknowledgment for conditional order creation
 message ConditionalOrderAck {
@@ -526,15 +525,24 @@ message ConditionalOrderAck {
 }
 // Message sent by maker in bidirectional stream
 message MakerStreamStreamingRequest {
-	// Type: 'quote', 'ping'
+	// Type: 'quote', 'ping', 'auth'
 	string message_type = 1;
 	// Quote to submit
 	RFQQuoteType quote = 2;
+	// Auth response to a stream challenge
+	MakerAuth auth = 3;
+}
+// Maker response to a stream auth challenge, signed with EIP-712 v2
+message MakerAuth {
+	// EVM chain ID used in the EIP-712 domain
+	uint64 evm_chain_id = 1;
+	// EIP-712 signature over the StreamAuthChallenge typed data
+	string signature = 2;
 }
 
 message MakerStreamResponse {
 	// Type: 'request', 'quote_ack', 'quote_update', 'settlement_update', 'error',
-// 'pong'
+// 'pong', 'challenge'
 	string message_type = 1;
 	// RFQ request from taker
 	RFQRequestType request = 2;
@@ -546,6 +554,8 @@ message MakerStreamResponse {
 	RFQProcessedQuoteType processed_quote = 5;
 	// Settlement update for maker
 	RFQSettlementMakerUpdate settlement = 6;
+	// Auth challenge issued before the stream loop begins
+	MakerChallenge challenge = 7;
 }
 // Acknowledgment for stream operations
 message QuoteStreamAck {
@@ -590,6 +600,8 @@ message RFQSettlementMakerUpdate {
 	uint64 height = 15;
 	// Settlement CID
 	string cid = 16;
+	// Settlement transaction hash
+	string tx_hash = 17;
 }
 // Quote data embedded in settlement
 message RFQSettlementQuote {
@@ -613,4 +625,13 @@ message RFQSettlementQuote {
 	uint64 nonce = 9;
 	// Quote status (accepted, rejected, expired)
 	string status = 10;
+}
+// Auth challenge issued by the server before the maker stream loop begins
+message MakerChallenge {
+	// Hex-encoded 32-byte nonce
+	string nonce = 1;
+	// EVM chain ID to use when signing the challenge with EIP-712 v2
+	uint64 evm_chain_id = 2;
+	// Unix milliseconds after which the challenge is no longer accepted
+	sint64 expires_at = 3;
 }
