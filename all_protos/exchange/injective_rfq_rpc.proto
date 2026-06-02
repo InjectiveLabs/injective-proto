@@ -316,6 +316,8 @@ message ConditionalOrderInput {
 	string cid = 19;
 	// Optional relayer restriction
 	string allowed_relayer = 20;
+	// Replay protection nonce time window in milliseconds
+	uint64 taker_nonce_time_window_ms = 21;
 }
 
 message CreateConditionalOrderResponse {
@@ -354,7 +356,7 @@ message ConditionalOrderResponseType {
 	string min_total_fill_quantity = 14;
 	// Event time timestamp in milliseconds (streaming only)
 	uint64 event_time = 15;
-	// Last error message, if any
+	// Deprecated: use 'errors' instead. Last error message, if any.
 	string error = 16;
 	// Settlement transaction hash, if any
 	string tx_hash = 17;
@@ -364,6 +366,10 @@ message ConditionalOrderResponseType {
 	// EVM chain ID embedded in the EIP-712 domain at signing time. Zero for v1
 // (raw JSON) orders.
 	uint64 evm_chain_id = 19;
+	// Replay protection nonce time window in milliseconds
+	uint64 taker_nonce_time_window_ms = 20;
+	// All error messages accumulated across execution attempts (most recent last)
+	repeated string errors = 21;
 }
 
 message ListConditionalOrdersRequest {

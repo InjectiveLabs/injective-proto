@@ -94,6 +94,8 @@ message TCDerivativeOrderHistoryType {
 	string tx_hash = 20;
 	// Custom client order ID
 	string cid = 21;
+	// Account address that owns the subaccount which placed this order
+	string account_address = 22;
 }
 
 message StreamOrdersHistoryRequest {
@@ -175,6 +177,8 @@ message DerivativeLimitOrder {
 	string tx_hash = 21;
 	// Custom client order ID
 	string cid = 22;
+	// Account address that owns the subaccount which placed this order
+	string account_address = 23;
 }
 
 message StreamOrdersRequest {
@@ -214,6 +218,8 @@ message TradesRequest {
 	sint64 end_time = 9;
 	// Return only trades with non-zero PNL
 	bool with_pnl = 10;
+	// filter synthetic trades by RFQ maker address
+	string rfq_maker = 11;
 }
 
 message TradesResponse {
@@ -260,6 +266,16 @@ message TCDerivativeTrade {
 	string position_entry_price = 17;
 	// True if the position is closed by this trade
 	bool is_position_closed = 18;
+	// RFQ maker address for the synthetic trade (set only on synthetic trades
+// coming from an RFQ settlement)
+	string rfq_maker = 19;
+	// Account address that owns the subaccount which executed this trade
+	string account_address = 20;
+	// RFQ identifier the synthetic trade was settled under (set only on synthetic
+// trades coming from an RFQ settlement)
+	uint64 rfq_id = 21;
+	// Transaction hash where the trade was executed
+	string tx_hash = 22;
 }
 
 message PositionDelta {
@@ -277,6 +293,9 @@ message StreamTradesRequest {
 	repeated string market_ids = 1;
 	// filter by account address
 	string account_address = 2;
+	// filter synthetic trades by RFQ maker address (only emits maker-side
+// synthetic trades whose rfqMaker equals this address)
+	string rfq_maker = 3;
 }
 
 message StreamTradesResponse {
@@ -360,4 +379,6 @@ message StreamPositionsResponse {
 	DerivativePositionV2 position = 1;
 	// Operation timestamp in UNIX millis.
 	sint64 timestamp = 2;
+	// Position update type
+	string operation_type = 3;
 }

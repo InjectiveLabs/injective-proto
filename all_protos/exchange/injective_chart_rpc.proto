@@ -49,6 +49,9 @@ message SpotMarketHistoryRequest {
 	// Number of bars (higher priority than from) starting with to. If countback is
 // set, from should be ignored.
 	sint32 countback = 6;
+	// When true, snaps consecutive candles together so each open equals the
+// previous close.
+	bool fill_gaps = 7;
 }
 
 message SpotMarketHistoryResponse {
@@ -89,6 +92,9 @@ message DerivativeMarketHistoryRequest {
 	sint32 countback = 6;
 	// Use oracle prices as fallback for missing derivative candles.
 	bool use_oracle_prices = 7;
+	// When true, fills gaps in derivative candles using oracle/mark prices
+// anchored to neighboring real trade candles.
+	bool fill_gaps = 8;
 }
 
 message DerivativeMarketHistoryResponse {
