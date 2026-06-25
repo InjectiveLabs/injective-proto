@@ -514,9 +514,12 @@ message StreamError {
 	string code = 1;
 	// Error message
 	string message_ = 2;
-	// ID to identify the request or quote in the stream. RFQ_ID for quotes.
-// CLIENT_ID for requests.
+	// Client ID. Only filled in taker streams
 	string id = 3;
+	// Taker address. Only filled in the maker stream
+	string taker = 4;
+	// RFQ ID. Only filled if available
+	uint64 rfq_id = 5;
 }
 // Acknowledgment for conditional order creation
 message ConditionalOrderAck {
@@ -563,6 +566,8 @@ message QuoteStreamAck {
 	uint64 rfq_id = 1;
 	// Status of the operation
 	string status = 2;
+	// Taker address
+	string taker = 3;
 }
 // RFQ settlement update streamed to maker in real-time
 message RFQSettlementMakerUpdate {

@@ -27,6 +27,8 @@ service InjectiveExchangeRPC {
 	rpc BroadcastCosmosTx (BroadcastCosmosTxRequest) returns (BroadcastCosmosTxResponse);
 	// Return fee payer information's
 	rpc GetFeePayer (GetFeePayerRequest) returns (GetFeePayerResponse);
+	// PrepareFeeGrant creates or refreshes a feegrant for a grantee address
+	rpc PrepareFeeGrant (PrepareFeeGrantRequest) returns (PrepareFeeGrantResponse);
 }
 
 message GetTxRequest {
@@ -246,4 +248,24 @@ message GetFeePayerResponse {
 	string fee_payer = 1;
 	// ethsecp256k1 feePayer pubkey
 	CosmosPubKey fee_payer_pub_key = 2;
+}
+
+message PrepareFeeGrantRequest {
+	// Address that receives the feegrant
+	string grantee_address = 1;
+}
+
+message PrepareFeeGrantResponse {
+	// Feegrant granter address
+	string granter_address = 1;
+	// Grantee address
+	string grantee_address = 2;
+	// Feegrant transaction hash
+	string tx_hash = 3;
+	// Feegrant expiration timestamp in Unix milliseconds
+	uint64 expiration = 4;
+	// Feegrant spend limit
+	CosmosCoin spend_limit = 5;
+	// Message type URLs allowed by the feegrant
+	repeated string allowed_messages = 6;
 }
