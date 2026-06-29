@@ -30,6 +30,8 @@ service InjectiveTCDerivativesRPC {
 	rpc Positions (PositionsRequest) returns (PositionsResponse);
 	// StreamPositions streams TC derivatives position updates
 	rpc StreamPositions (StreamPositionsRequest) returns (stream StreamPositionsResponse);
+	// FundingPayments lists funding payments, optionally filtered by market.
+	rpc FundingPayments (FundingPaymentsRequest) returns (FundingPaymentsResponse);
 }
 
 message OrdersHistoryRequest {
@@ -220,6 +222,8 @@ message TradesRequest {
 	bool with_pnl = 10;
 	// filter synthetic trades by RFQ maker address
 	string rfq_maker = 11;
+	// filter trades including the address as RFQ maker or the trade account address
+	string participant = 12;
 }
 
 message TradesResponse {
@@ -381,4 +385,31 @@ message StreamPositionsResponse {
 	sint64 timestamp = 2;
 	// Position update type
 	string operation_type = 3;
+}
+
+message FundingPaymentsRequest {
+	// Market IDs to filter funding payments
+	repeated string market_ids = 1;
+	// Number of results per page
+	sint32 per_page = 2;
+	// Pagination token
+	string token = 3;
+}
+
+message FundingPaymentsResponse {
+	// List of funding payments
+	repeated FundingPayment payments = 1;
+	// Next tokens for pagination
+	repeated string next = 2;
+}
+
+message FundingPayment {
+	// Derivative Market ID
+	string market_id = 1;
+	// The subaccountId that the position belongs to
+	string subaccount_id = 2;
+	// Amount of the funding payment
+	string amount = 3;
+	// Timestamp of funding payment in UNIX millis
+	sint64 timestamp = 4;
 }

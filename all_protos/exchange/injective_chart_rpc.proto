@@ -95,6 +95,9 @@ message DerivativeMarketHistoryRequest {
 	// When true, fills gaps in derivative candles using oracle/mark prices
 // anchored to neighboring real trade candles.
 	bool fill_gaps = 8;
+	// When true, we'll use index prices. Supersedes useOraclePrices and fillGaps.
+// Disabled for binary options markets.
+	bool index_prices = 9;
 }
 
 message DerivativeMarketHistoryResponse {
