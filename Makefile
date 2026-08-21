@@ -30,7 +30,7 @@ endef
 
 .PHONY: \
 	clean-all clean-generated clone-all clone-injective-core clone-injective-indexer \
-	download-indexer-protos download-protos generate normalize-generated pack run-full sync-protos
+	download-indexer-protos download-protos generate generate-api-specs normalize-generated pack run-full sync-protos
 
 clean-all:
 	$(call clean_protos)
@@ -80,8 +80,12 @@ generate:
 	$(call clean_generated)
 	buf generate --template buf.gen.yaml --timeout 0
 	$(MAKE) normalize-generated
+	$(MAKE) generate-api-specs
 	rm -Rf all_protos
 	cp -r proto all_protos
+
+generate-api-specs:
+	python3 scripts/generate_api_specs.py
 
 normalize-generated:
 	python3 scripts/normalize_generated.py

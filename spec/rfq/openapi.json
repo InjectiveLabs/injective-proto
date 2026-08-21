@@ -1,0 +1,4178 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "TrueCurrent RFQ API",
+    "version": "1.0.0",
+    "description": "TrueCurrent RFQ API for perpetual futures trading on Injective. Unary RPCs for settlements, conditional orders, and transaction preparation.\nSee https://docs.tc.xyz for full documentation.",
+    "contact": {
+      "name": "TrueCurrent",
+      "url": "https://tc.xyz"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://github.com/InjectiveLabs/injective-rfq-toolkit/blob/master/LICENSE"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://testnet.sentry.exchange.grpc-web.injective.network",
+      "description": "Testnet RFQ API"
+    }
+  ],
+  "paths": {
+    "/api/rfq-gw/v1/prepare": {
+      "post": {
+        "description": "Full RFQ cycle: create request, wait for quotes, prepare fee-delegated accept tx",
+        "operationId": "InjectiveRfqGwRPC#prepare",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "cid": "Aperiam velit.",
+                "client_id": "550e8400-e29b-41d4-a716-446655440000",
+                "direction": "short",
+                "expiry": 15410282721670924000,
+                "fee_payer_account_number": 8186647524655079000,
+                "fee_payer_account_sequence": 7922158842246734000,
+                "margin": "20j",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "quantity": "hmj",
+                "quotes_wait_time_ms": 2538138569226906000,
+                "simulate": true,
+                "subaccount_nonce": 1439477247,
+                "taker_account_number": 675011330092922600,
+                "taker_account_sequence": 14227074064093397000,
+                "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "taker_pub_key": "Non quae eius corrupti nam.",
+                "tx_body_memo": "Et tempore accusamus odit et exercitationem.",
+                "unfilled_action": {
+                  "limit": {
+                    "price": "A minima ratione necessitatibus possimus earum cupiditate."
+                  },
+                  "market": {}
+                },
+                "worst_price": "6py"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/RFQGwPrepareRequestType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "expired_quotes_count": 8672308971853365000,
+                  "fee_payer": "Blanditiis nobis.",
+                  "fee_payer_account_number": 16044502166383580000,
+                  "fee_payer_account_sequence": 4923123779536083000,
+                  "fee_payer_pub_key": {
+                    "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+                    "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+                  },
+                  "fee_payer_sig": "Est et vitae quia.",
+                  "pub_key_type": "Voluptas ad incidunt deserunt.",
+                  "quotes": [
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    }
+                  ],
+                  "quotes_wait_ms": 3147221379763556400,
+                  "rfq_id": 10281836932627440000,
+                  "sign_mode": "Est necessitatibus quibusdam et laboriosam nesciunt quas.",
+                  "taker_account_number": 10201763598575815000,
+                  "taker_account_sequence": 18022049118066233000,
+                  "tx": "UmVwZWxsYXQgYW5pbWkgY3VwaWRpdGF0ZSByYXRpb25lIGV4cGVkaXRhIGxhYm9yaW9zYW0u"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareResponseBody"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "404": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found response."
+          },
+          "429": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Too Many Requests response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          },
+          "503": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Service Unavailable response."
+          }
+        },
+        "summary": "prepare InjectiveRfqGwRPC",
+        "tags": [
+          "InjectiveRfqGwRPC"
+        ]
+      }
+    },
+    "/api/rfq-gw/v1/prepareAutoSign": {
+      "post": {
+        "description": "Full RFQ cycle for autosign wallets: create request, wait for quotes, prepare fee-delegated MsgExec tx signable by the ephemeral autosign key",
+        "operationId": "InjectiveRfqGwRPC#prepareAutoSign",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "autosign_account_number": 7857204520434830000,
+                "autosign_account_sequence": 7900120996213919000,
+                "autosign_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "autosign_pub_key": "Explicabo vero temporibus tempore iste voluptatem.",
+                "cid": "Sunt id qui dolorem dolores ut molestias.",
+                "client_id": "550e8400-e29b-41d4-a716-446655440000",
+                "direction": "short",
+                "expiry": 3083058642596817000,
+                "fee_payer_account_number": 2622098745662940000,
+                "fee_payer_account_sequence": 4354821145336221000,
+                "margin": "7oo",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "quantity": "c1j",
+                "quotes_wait_time_ms": 16775860820907140000,
+                "simulate": true,
+                "subaccount_nonce": 489042807,
+                "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "tx_body_memo": "Ratione enim ipsum ad accusantium.",
+                "unfilled_action": {
+                  "limit": {
+                    "price": "A minima ratione necessitatibus possimus earum cupiditate."
+                  },
+                  "market": {}
+                },
+                "worst_price": "3cr"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/RFQGwPrepareAutoSignRequestType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "autosign_account_number": 17240632756382038000,
+                  "autosign_account_sequence": 10115395547772750000,
+                  "expired_quotes_count": 11575359218912690000,
+                  "fee_payer": "Sunt earum rem laudantium.",
+                  "fee_payer_account_number": 5473180751795618000,
+                  "fee_payer_account_sequence": 1759997371538760000,
+                  "fee_payer_pub_key": {
+                    "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+                    "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+                  },
+                  "fee_payer_sig": "Incidunt error aut quia.",
+                  "pub_key_type": "Eos dolor consectetur esse laborum.",
+                  "quotes": [
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    }
+                  ],
+                  "quotes_wait_ms": 6033108328566413000,
+                  "rfq_id": 17884472098142482000,
+                  "sign_mode": "Quia doloribus aut deserunt reprehenderit.",
+                  "tx": "VmVybyBpc3RlIHF1aXNxdWFtLg=="
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareAutoSignResponseBody"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "404": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found response."
+          },
+          "429": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Too Many Requests response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          },
+          "503": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Service Unavailable response."
+          }
+        },
+        "summary": "prepareAutoSign InjectiveRfqGwRPC",
+        "tags": [
+          "InjectiveRfqGwRPC"
+        ]
+      }
+    },
+    "/api/rfq-gw/v1/prepareEip712": {
+      "post": {
+        "description": "Full RFQ cycle with EIP712 output: create request, wait for quotes, prepare fee-delegated EIP712 typed data for eth_signTypedData_v4",
+        "operationId": "InjectiveRfqGwRPC#prepareEip712",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "cid": "Aperiam debitis qui eum reiciendis.",
+                "client_id": "550e8400-e29b-41d4-a716-446655440000",
+                "direction": "short",
+                "eip712_wrapper": "V1",
+                "eth_chain_id": 1,
+                "expiry": 13175620206444282000,
+                "fee_payer_account_number": 11878155845529154000,
+                "fee_payer_account_sequence": 5041476357517826000,
+                "gas": 13215550359182862000,
+                "margin": "1y5",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "quantity": "dm3",
+                "quotes_wait_time_ms": 9781681028189716000,
+                "simulate": false,
+                "subaccount_nonce": 3085233169,
+                "taker_account_number": 1149314134473691300,
+                "taker_account_sequence": 8426374622132444000,
+                "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "taker_pub_key": "Eos amet pariatur eum.",
+                "tx_body_memo": "Inventore aut rem et.",
+                "unfilled_action": {
+                  "limit": {
+                    "price": "A minima ratione necessitatibus possimus earum cupiditate."
+                  },
+                  "market": {}
+                },
+                "worst_price": "adg"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/RFQGwPrepareEip712RequestType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": "Quos itaque nostrum sed deserunt.",
+                  "expired_quotes_count": 4782134407193456000,
+                  "fee_payer": "Ad enim ut qui et.",
+                  "fee_payer_pub_key": {
+                    "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+                    "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+                  },
+                  "fee_payer_sig": "Ullam fugiat saepe vitae molestias.",
+                  "pub_key_type": "Quia fuga amet.",
+                  "quotes": [
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    }
+                  ],
+                  "quotes_wait_ms": 16814160587698342000,
+                  "rfq_id": 9384213352217078000,
+                  "sign_mode": "Deleniti reprehenderit officiis et.",
+                  "taker_account_number": 10323522222894582000,
+                  "taker_account_sequence": 908940576590632200
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareEip712ResponseBody2"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "404": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found response."
+          },
+          "429": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Too Many Requests response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          },
+          "503": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Service Unavailable response."
+          }
+        },
+        "summary": "prepareEip712 InjectiveRfqGwRPC",
+        "tags": [
+          "InjectiveRfqGwRPC"
+        ]
+      }
+    },
+    "/api/rfq-gw/v1/prepareEip712AutoSign": {
+      "post": {
+        "description": "Full RFQ cycle for EVM autosign wallets: create request, wait for quotes, prepare fee-delegated EIP712 typed data with MsgExec wrapper signable by the ephemeral autosign EVM key",
+        "operationId": "InjectiveRfqGwRPC#prepareEip712AutoSign",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "autosign_account_number": 6321668127891315000,
+                "autosign_account_sequence": 8270255988182688000,
+                "autosign_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "autosign_pub_key": "Corrupti hic distinctio tempora.",
+                "cid": "Sed maxime ex minima modi ut placeat.",
+                "client_id": "550e8400-e29b-41d4-a716-446655440000",
+                "direction": "long",
+                "eip712_wrapper": "V2",
+                "eth_chain_id": 1,
+                "expiry": 11745293872505852000,
+                "fee_payer_account_number": 1902386658101273600,
+                "fee_payer_account_sequence": 11076764734491881000,
+                "gas": 9338001165091496000,
+                "margin": "cz4",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "quantity": "s3m",
+                "quotes_wait_time_ms": 6014478808940498000,
+                "simulate": true,
+                "subaccount_nonce": 3300598045,
+                "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "tx_body_memo": "Est veniam repellat nemo.",
+                "unfilled_action": {
+                  "limit": {
+                    "price": "A minima ratione necessitatibus possimus earum cupiditate."
+                  },
+                  "market": {}
+                },
+                "worst_price": "uq5"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/RFQGwPrepareEip712AutoSignRequestType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "autosign_account_number": 9288520999885040000,
+                  "autosign_account_sequence": 15692709101329748000,
+                  "data": "Ex libero aperiam esse est praesentium enim.",
+                  "expired_quotes_count": 6673624653924507000,
+                  "fee_payer": "Quos porro a beatae ea sunt facilis.",
+                  "fee_payer_pub_key": {
+                    "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+                    "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+                  },
+                  "fee_payer_sig": "Quia culpa in dolorem.",
+                  "pub_key_type": "Voluptate dolorem reiciendis optio ut exercitationem culpa.",
+                  "quotes": [
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    },
+                    {
+                      "maker": "Molestias reprehenderit.",
+                      "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                      "price": "Quod in quidem labore deserunt et.",
+                      "quantity": "At sit consequuntur et."
+                    }
+                  ],
+                  "quotes_wait_ms": 9505264031906790000,
+                  "rfq_id": 14680613821545443000,
+                  "sign_mode": "Fugiat quia sint."
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareEip712AutoSignResponseBody"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "404": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found response."
+          },
+          "429": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Too Many Requests response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          },
+          "503": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Service Unavailable response."
+          }
+        },
+        "summary": "prepareEip712AutoSign InjectiveRfqGwRPC",
+        "tags": [
+          "InjectiveRfqGwRPC"
+        ]
+      }
+    },
+    "/api/rfq/v1/conditionalOrder": {
+      "post": {
+        "description": "Create a conditional TP/SL order",
+        "operationId": "InjectiveRfqRPC#CreateConditionalOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "evm_chain_id": 1439,
+                "order": {
+                  "allowed_relayer": "Fuga optio ut eius illo.",
+                  "chain_id": "Esse praesentium qui ut illum.",
+                  "cid": "Reprehenderit non placeat ea nisi voluptas ad.",
+                  "contract_address": "Vel ratione sed.",
+                  "deadline_ms": 2290785571276599800,
+                  "direction": "short",
+                  "epoch": 6782012929606596000,
+                  "lane_version": 8354962862439618000,
+                  "margin": "Et cupiditate qui aut quod.",
+                  "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                  "min_total_fill_quantity": "Modi molestias sed voluptates sit aspernatur.",
+                  "quantity": "Facere fuga voluptatum sunt quae velit.",
+                  "rfq_id": 15871445568047055000,
+                  "subaccount_nonce": 3431329232,
+                  "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                  "taker_nonce_time_window_ms": 10978370738646516000,
+                  "trigger_price": "Aut dolorem dicta rerum mollitia qui.",
+                  "trigger_type": "mark_price_lte",
+                  "unfilled_action": "Velit optio numquam velit consequatur iure.",
+                  "version": 9602297422699127000,
+                  "worst_price": "Deserunt et."
+                },
+                "sign_mode": "v1",
+                "signature": "0x1234abcd..."
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CreateConditionalOrderRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "order": {
+                    "created_at": 7841992890665955000,
+                    "direction": "Aperiam et aut.",
+                    "error": "Vel quaerat totam et.",
+                    "errors": [
+                      "Quisquam temporibus.",
+                      "Ab a alias culpa."
+                    ],
+                    "event_time": 18260116771687830000,
+                    "evm_chain_id": 1439,
+                    "expires_at": 5770836752993445000,
+                    "margin": "Voluptate consectetur deleniti.",
+                    "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                    "min_total_fill_quantity": "Omnis aut.",
+                    "quantity": "Culpa enim repudiandae neque.",
+                    "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                    "rfq_id": 10024418390963036000,
+                    "status": "Accusamus et delectus.",
+                    "taker_nonce_time_window_ms": 12322625215961795000,
+                    "terminal_at": 3367096091906568000,
+                    "trigger_price": "Optio ea.",
+                    "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+                    "tx_hash": "Blanditiis velit.",
+                    "updated_at": 1366373911280752400,
+                    "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/CreateConditionalOrderResponseBody"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "409": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          }
+        },
+        "summary": "CreateConditionalOrder InjectiveRfqRPC",
+        "tags": [
+          "InjectiveRfqRPC"
+        ]
+      }
+    },
+    "/api/rfq/v1/conditionalOrders": {
+      "get": {
+        "description": "List conditional TP/SL orders",
+        "operationId": "InjectiveRfqRPC#ListConditionalOrders",
+        "parameters": [
+          {
+            "allowEmptyValue": true,
+            "description": "Taker address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "in": "query",
+            "name": "request_address",
+            "required": true,
+            "schema": {
+              "description": "Taker address",
+              "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "maxLength": 42,
+              "minLength": 42,
+              "pattern": "^inj1[0-9a-zA-Z]{38}$",
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by one or more statuses; empty means no filter",
+            "example": [
+              "pending_trigger",
+              "triggered"
+            ],
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "description": "Filter by one or more statuses; empty means no filter",
+              "example": [
+                "pending_trigger",
+                "triggered"
+              ],
+              "items": {
+                "enum": [
+                  "pending_trigger",
+                  "triggered",
+                  "settling",
+                  "submitted",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "example": "cancelled",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by market ID",
+            "example": "Soluta animi.",
+            "in": "query",
+            "name": "market_id",
+            "schema": {
+              "description": "Filter by market ID",
+              "example": "Aut harum atque accusamus fugit accusamus et.",
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Number of records per page",
+            "example": 8811227931000927000,
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "description": "Number of records per page",
+              "example": 7265196767463068000,
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Pagination token",
+            "example": "Autem consectetur earum nemo debitis et.",
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "description": "Pagination token",
+              "example": "Veniam officiis voluptatem consequatur.",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "next": [
+                    "Et exercitationem saepe reiciendis nesciunt maiores.",
+                    "Sed consectetur."
+                  ],
+                  "orders": [
+                    {
+                      "created_at": 7841992890665955000,
+                      "direction": "Aperiam et aut.",
+                      "error": "Vel quaerat totam et.",
+                      "errors": [
+                        "Quisquam temporibus.",
+                        "Ab a alias culpa."
+                      ],
+                      "event_time": 18260116771687830000,
+                      "evm_chain_id": 1439,
+                      "expires_at": 5770836752993445000,
+                      "margin": "Voluptate consectetur deleniti.",
+                      "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                      "min_total_fill_quantity": "Omnis aut.",
+                      "quantity": "Culpa enim repudiandae neque.",
+                      "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                      "rfq_id": 10024418390963036000,
+                      "status": "Accusamus et delectus.",
+                      "taker_nonce_time_window_ms": 12322625215961795000,
+                      "terminal_at": 3367096091906568000,
+                      "trigger_price": "Optio ea.",
+                      "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+                      "tx_hash": "Blanditiis velit.",
+                      "updated_at": 1366373911280752400,
+                      "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+                    },
+                    {
+                      "created_at": 7841992890665955000,
+                      "direction": "Aperiam et aut.",
+                      "error": "Vel quaerat totam et.",
+                      "errors": [
+                        "Quisquam temporibus.",
+                        "Ab a alias culpa."
+                      ],
+                      "event_time": 18260116771687830000,
+                      "evm_chain_id": 1439,
+                      "expires_at": 5770836752993445000,
+                      "margin": "Voluptate consectetur deleniti.",
+                      "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                      "min_total_fill_quantity": "Omnis aut.",
+                      "quantity": "Culpa enim repudiandae neque.",
+                      "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                      "rfq_id": 10024418390963036000,
+                      "status": "Accusamus et delectus.",
+                      "taker_nonce_time_window_ms": 12322625215961795000,
+                      "terminal_at": 3367096091906568000,
+                      "trigger_price": "Optio ea.",
+                      "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+                      "tx_hash": "Blanditiis velit.",
+                      "updated_at": 1366373911280752400,
+                      "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ListConditionalOrdersResponseBody"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          }
+        },
+        "summary": "ListConditionalOrders InjectiveRfqRPC",
+        "tags": [
+          "InjectiveRfqRPC"
+        ]
+      }
+    },
+    "/api/rfq/v1/listSettlements": {
+      "get": {
+        "description": "List RFQ settlements",
+        "operationId": "InjectiveRfqRPC#listSettlement",
+        "parameters": [
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by taker addresses",
+            "example": [
+              "Dolor quia.",
+              "Minima consequuntur eaque et."
+            ],
+            "in": "query",
+            "name": "addresses",
+            "schema": {
+              "description": "Filter by taker addresses",
+              "example": [
+                "Impedit magnam ipsa doloribus.",
+                "Qui mollitia ducimus aut vitae."
+              ],
+              "items": {
+                "example": "Asperiores ipsa necessitatibus voluptas est recusandae est.",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Number of records per page",
+            "example": 4373954241508246500,
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "description": "Number of records per page",
+              "example": 1372273526836172500,
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Pagination token",
+            "example": "Voluptatibus quas veritatis atque aut molestiae.",
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "description": "Pagination token",
+              "example": "Non eum.",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "next": [
+                    "Ut et aut eligendi autem molestiae facilis.",
+                    "Assumenda consequatur eum consequuntur odit."
+                  ],
+                  "settlements": [
+                    {
+                      "cid": "Itaque similique excepturi consequatur.",
+                      "created_at": 8872741917354963000,
+                      "direction": "Exercitationem occaecati aut odio.",
+                      "event_time": 10417364717330723000,
+                      "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+                      "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+                      "height": 9362826119760802000,
+                      "margin": "Amet sit natus ut repellat.",
+                      "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                      "quantity": "Optio numquam.",
+                      "rfq_id": 17029011130005322000,
+                      "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                      "transaction_time": 17223606115857525000,
+                      "tx_hash": "Reiciendis in quia.",
+                      "unfilled_action": {
+                        "limit": {
+                          "price": "Veritatis autem."
+                        },
+                        "market": {}
+                      },
+                      "updated_at": 5786101868231487000,
+                      "worst_price": "Dolor esse voluptatem."
+                    },
+                    {
+                      "cid": "Itaque similique excepturi consequatur.",
+                      "created_at": 8872741917354963000,
+                      "direction": "Exercitationem occaecati aut odio.",
+                      "event_time": 10417364717330723000,
+                      "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+                      "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+                      "height": 9362826119760802000,
+                      "margin": "Amet sit natus ut repellat.",
+                      "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                      "quantity": "Optio numquam.",
+                      "rfq_id": 17029011130005322000,
+                      "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                      "transaction_time": 17223606115857525000,
+                      "tx_hash": "Reiciendis in quia.",
+                      "unfilled_action": {
+                        "limit": {
+                          "price": "Veritatis autem."
+                        },
+                        "market": {}
+                      },
+                      "updated_at": 5786101868231487000,
+                      "worst_price": "Dolor esse voluptatem."
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ListSettlementResponseBody"
+                }
+              }
+            },
+            "description": "OK response."
+          },
+          "400": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          }
+        },
+        "summary": "listSettlement InjectiveRfqRPC",
+        "tags": [
+          "InjectiveRfqRPC"
+        ]
+      }
+    },
+    "/api/rfq/v1/stream/quote": {
+      "get": {
+        "description": "Stream RFQ quotes",
+        "operationId": "InjectiveRfqRPC#streamQuote",
+        "parameters": [
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by addresses",
+            "example": [
+              "6ie",
+              "1tk"
+            ],
+            "in": "query",
+            "name": "addresses",
+            "schema": {
+              "description": "Filter by addresses",
+              "example": [
+                "446",
+                "ri8"
+              ],
+              "items": {
+                "example": "2tx",
+                "maxLength": 42,
+                "minLength": 42,
+                "pattern": "^inj1[0-9a-zA-Z]{38}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by market IDs",
+            "example": [
+              "0ml",
+              "25p",
+              "shl"
+            ],
+            "in": "query",
+            "name": "market_ids",
+            "schema": {
+              "description": "Filter by market IDs",
+              "example": [
+                "xj0",
+                "jan",
+                "exi"
+              ],
+              "items": {
+                "example": "vqq",
+                "maxLength": 66,
+                "minLength": 66,
+                "pattern": "^0x[0-9a-fA-F]{64}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "quote": {
+                    "chain_id": "Ipsa quis modi.",
+                    "client_id": "Odit et.",
+                    "contract_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                    "created_at": 1233125201904057900,
+                    "error": "Quisquam dolorem voluptates.",
+                    "event_time": 16475622201913975000,
+                    "evm_chain_id": 1439,
+                    "executed_margin": "Reiciendis quo officia perspiciatis doloremque soluta.",
+                    "executed_quantity": "At unde ipsam.",
+                    "expiry": {
+                      "height": 12370127747833858000,
+                      "timestamp": 527408705720408800
+                    },
+                    "height": 9178945186265172000,
+                    "maker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                    "maker_subaccount_nonce": 3229192623,
+                    "margin": "Ut qui.",
+                    "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                    "min_fill_quantity": "Id corporis in minima.",
+                    "price": "Ducimus tenetur non.",
+                    "price_check": true,
+                    "quantity": "Et et enim architecto atque beatae.",
+                    "rfq_id": 17867720046283825000,
+                    "sign_mode": "v1",
+                    "signature": "Quas aliquid velit ut.",
+                    "status": "Sunt minima sunt aut voluptatem.",
+                    "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                    "taker_direction": "Voluptates at qui illum.",
+                    "transaction_time": 14981962541400710000,
+                    "updated_at": 570830044571909700
+                  },
+                  "stream_operation": "Error debitis autem cumque enim repudiandae adipisci."
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/StreamQuoteResponseBody"
+                }
+              }
+            },
+            "description": "Switching Protocols response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          }
+        },
+        "summary": "streamQuote InjectiveRfqRPC",
+        "tags": [
+          "InjectiveRfqRPC"
+        ]
+      }
+    },
+    "/api/rfq/v1/stream/request": {
+      "get": {
+        "description": "Stream RFQ requests",
+        "operationId": "InjectiveRfqRPC#streamRequest",
+        "parameters": [
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by market IDs",
+            "example": [
+              "q66",
+              "dof",
+              "qps",
+              "ipv"
+            ],
+            "in": "query",
+            "name": "market_ids",
+            "schema": {
+              "description": "Filter by market IDs",
+              "example": [
+                "8bp",
+                "j7s",
+                "28v",
+                "twl"
+              ],
+              "items": {
+                "example": "tje",
+                "maxLength": 66,
+                "minLength": 66,
+                "pattern": "^0x[0-9a-fA-F]{64}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "request": {
+                    "client_id": "550e8400-e29b-41d4-a716-446655440000",
+                    "created_at": 4235543728421345300,
+                    "direction": "Aut unde ut tempore.",
+                    "expiry": 13667982556176484000,
+                    "height": 9421381560379169000,
+                    "margin": "Amet quas voluptatem ut quia aut magnam.",
+                    "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                    "quantity": "Repellendus omnis nihil dolor atque sit.",
+                    "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                    "rfq_id": 1633850705781255700,
+                    "status": "Quia odio hic.",
+                    "transaction_time": 3743054256756975000,
+                    "updated_at": 7758170457221049000,
+                    "worst_price": "Suscipit temporibus officia maxime ut fugit."
+                  },
+                  "stream_operation": "Totam fuga repellat."
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/StreamRequestResponseBody"
+                }
+              }
+            },
+            "description": "Switching Protocols response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          }
+        },
+        "summary": "streamRequest InjectiveRfqRPC",
+        "tags": [
+          "InjectiveRfqRPC"
+        ]
+      }
+    },
+    "/api/rfq/v1/stream/settlement": {
+      "get": {
+        "description": "Stream RFQ settlements",
+        "operationId": "InjectiveRfqRPC#streamSettlement",
+        "parameters": [
+          {
+            "allowEmptyValue": true,
+            "description": "Filter by addresses",
+            "example": [
+              "Nesciunt iste est harum.",
+              "Magni fugit unde minima cum.",
+              "Dolorem dolorem temporibus aperiam."
+            ],
+            "in": "query",
+            "name": "addresses",
+            "schema": {
+              "description": "Filter by addresses",
+              "example": [
+                "Quia ullam.",
+                "Atque tempore ipsum consequatur dolore quia.",
+                "Tempore velit."
+              ],
+              "items": {
+                "example": "Quidem minus.",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "settlement": {
+                    "cid": "Itaque similique excepturi consequatur.",
+                    "created_at": 8872741917354963000,
+                    "direction": "Exercitationem occaecati aut odio.",
+                    "event_time": 10417364717330723000,
+                    "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+                    "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+                    "height": 9362826119760802000,
+                    "margin": "Amet sit natus ut repellat.",
+                    "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                    "quantity": "Optio numquam.",
+                    "rfq_id": 17029011130005322000,
+                    "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                    "transaction_time": 17223606115857525000,
+                    "tx_hash": "Reiciendis in quia.",
+                    "unfilled_action": {
+                      "limit": {
+                        "price": "Veritatis autem."
+                      },
+                      "market": {}
+                    },
+                    "updated_at": 5786101868231487000,
+                    "worst_price": "Dolor esse voluptatem."
+                  },
+                  "stream_operation": "Deleniti eos quidem illum rerum."
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/StreamSettlementResponseBody"
+                }
+              }
+            },
+            "description": "Switching Protocols response."
+          },
+          "500": {
+            "content": {
+              "application/vnd.goa.error": {
+                "example": {
+                  "id": "3F1FKVRR",
+                  "message": "Value of ID must be an integer",
+                  "name": "bad_request"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error response."
+          }
+        },
+        "summary": "streamSettlement InjectiveRfqRPC",
+        "tags": [
+          "InjectiveRfqRPC"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConditionalOrderInput": {
+        "description": "Conditional order input matching the contract's SignedTakerIntent payload",
+        "example": {
+          "allowed_relayer": "Accusantium ipsa placeat aut consequatur.",
+          "chain_id": "Veniam commodi harum pariatur tenetur in.",
+          "cid": "Modi unde.",
+          "contract_address": "Ullam dolorum esse quasi doloremque voluptates ut.",
+          "deadline_ms": 17530512910915166000,
+          "direction": "short",
+          "epoch": 13571080443867992000,
+          "lane_version": 10053295376853758000,
+          "margin": "Et repellat.",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "min_total_fill_quantity": "Nostrum praesentium molestiae vel illum odio.",
+          "quantity": "In necessitatibus fuga.",
+          "rfq_id": 5905292709147706000,
+          "subaccount_nonce": 941185620,
+          "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "taker_nonce_time_window_ms": 9480836120991030000,
+          "trigger_price": "Vero quidem et et id ad sunt.",
+          "trigger_type": "mark_price_gte",
+          "unfilled_action": "Sunt at incidunt.",
+          "version": 7168936926737915000,
+          "worst_price": "Aspernatur a velit enim."
+        },
+        "properties": {
+          "allowed_relayer": {
+            "description": "Optional relayer restriction",
+            "example": "Numquam facere esse modi quisquam ea molestiae.",
+            "type": "string"
+          },
+          "chain_id": {
+            "description": "Chain ID (e.g. injective-1)",
+            "example": "Distinctio placeat error.",
+            "type": "string"
+          },
+          "cid": {
+            "description": "Optional client ID",
+            "example": "Suscipit iure fugit qui.",
+            "type": "string"
+          },
+          "contract_address": {
+            "description": "RFQ contract address",
+            "example": "Ullam eos sint maiores totam qui.",
+            "type": "string"
+          },
+          "deadline_ms": {
+            "description": "Expiry timestamp in milliseconds",
+            "example": 3184595793836958000,
+            "type": "integer"
+          },
+          "direction": {
+            "description": "Trade direction",
+            "enum": [
+              "long",
+              "short"
+            ],
+            "example": "short",
+            "type": "string"
+          },
+          "epoch": {
+            "description": "Taker's current epoch (replay protection)",
+            "example": 17356403097499308000,
+            "type": "integer"
+          },
+          "lane_version": {
+            "description": "Lane version (replay + OCO protection)",
+            "example": 1951706599071114200,
+            "type": "integer"
+          },
+          "margin": {
+            "description": "Collateral amount as FPDecimal",
+            "example": "Autem aliquid.",
+            "type": "string"
+          },
+          "market_id": {
+            "description": "Derivative market ID",
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "min_total_fill_quantity": {
+            "description": "FPDecimal minimum total fill quantity",
+            "example": "Culpa in consequatur voluptatem rerum hic ut.",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "FPDecimal quantity (e.g. \"1\", \"4.9\")",
+            "example": "Fugiat debitis sint voluptates sunt quaerat et.",
+            "type": "string"
+          },
+          "rfq_id": {
+            "description": "Unique RFQ order ID",
+            "example": 4779333948478653000,
+            "type": "integer"
+          },
+          "subaccount_nonce": {
+            "description": "Taker subaccount index",
+            "example": 3039412925,
+            "type": "integer"
+          },
+          "taker": {
+            "description": "Taker address (bech32)",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "taker_nonce_time_window_ms": {
+            "description": "Replay protection nonce time window in milliseconds",
+            "example": 2940597299188476400,
+            "type": "integer"
+          },
+          "trigger_price": {
+            "description": "Mark price threshold for the trigger condition",
+            "example": "Nihil eaque reprehenderit non expedita corporis.",
+            "type": "string"
+          },
+          "trigger_type": {
+            "description": "Trigger condition type",
+            "enum": [
+              "mark_price_gte",
+              "mark_price_lte"
+            ],
+            "example": "mark_price_gte",
+            "type": "string"
+          },
+          "unfilled_action": {
+            "description": "Post-unfilled action JSON (optional)",
+            "example": "Accusamus eos qui est.",
+            "type": "string"
+          },
+          "version": {
+            "description": "Protocol version",
+            "example": 9258435900165802000,
+            "type": "integer"
+          },
+          "worst_price": {
+            "description": "FPDecimal worst acceptable price",
+            "example": "Praesentium natus voluptatum laudantium.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "chain_id",
+          "contract_address",
+          "taker",
+          "epoch",
+          "rfq_id",
+          "market_id",
+          "subaccount_nonce",
+          "lane_version",
+          "deadline_ms",
+          "direction",
+          "quantity",
+          "margin",
+          "worst_price",
+          "min_total_fill_quantity",
+          "trigger_type",
+          "trigger_price",
+          "taker_nonce_time_window_ms"
+        ],
+        "type": "object"
+      },
+      "ConditionalOrderResponseType": {
+        "description": "Conditional TP/SL order",
+        "example": {
+          "created_at": 3030092121664080400,
+          "direction": "Dolor harum ducimus modi.",
+          "error": "Vel voluptatibus qui velit velit voluptates.",
+          "errors": [
+            "At sint quia.",
+            "Et doloremque et vel.",
+            "Sed autem incidunt est quis."
+          ],
+          "event_time": 8803343889684055000,
+          "evm_chain_id": 1439,
+          "expires_at": 7341636938454513000,
+          "margin": "Velit enim.",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "min_total_fill_quantity": "Numquam est.",
+          "quantity": "Quidem sapiente magnam.",
+          "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "rfq_id": 7060938672429910000,
+          "status": "Ea aliquid fugit recusandae quo quis.",
+          "taker_nonce_time_window_ms": 8773169030263695000,
+          "terminal_at": 5656709153296126000,
+          "trigger_price": "Molestiae hic soluta nesciunt pariatur consequatur fuga.",
+          "trigger_type": "Maxime dolorem velit quia dolor blanditiis.",
+          "tx_hash": "Voluptatem beatae quam rerum qui iure fugit.",
+          "updated_at": 2124035490243620400,
+          "worst_price": "Placeat quia exercitationem."
+        },
+        "properties": {
+          "created_at": {
+            "description": "Creation timestamp in milliseconds",
+            "example": 6970647837290277000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "direction": {
+            "description": "Exit direction (long/short)",
+            "example": "Velit aut repellat quidem repellat aut sint.",
+            "type": "string"
+          },
+          "error": {
+            "description": "Deprecated: use 'errors' instead. Last error message, if any.",
+            "example": "Tempora molestiae fuga magnam expedita consequuntur maxime.",
+            "type": "string"
+          },
+          "errors": {
+            "description": "All error messages accumulated across execution attempts (most recent last)",
+            "example": [
+              "Qui aliquam quia explicabo neque.",
+              "Rem suscipit est incidunt.",
+              "Ut occaecati adipisci sit reiciendis sunt deserunt."
+            ],
+            "items": {
+              "example": "Dolor consequuntur voluptatem est rem voluptatem.",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "event_time": {
+            "description": "Event time timestamp in milliseconds (streaming only)",
+            "example": 8948520335087115000,
+            "type": "integer"
+          },
+          "evm_chain_id": {
+            "description": "EVM chain ID embedded in the EIP-712 domain at signing time. Zero for v1 (raw JSON) orders.",
+            "example": 1439,
+            "type": "integer"
+          },
+          "expires_at": {
+            "description": "Expiry timestamp in milliseconds",
+            "example": 7155129711100121000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "margin": {
+            "description": "Collateral amount",
+            "example": "Perferendis qui.",
+            "type": "string"
+          },
+          "market_id": {
+            "description": "Derivative market ID",
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "min_total_fill_quantity": {
+            "description": "Minimum total fill quantity",
+            "example": "Minima explicabo unde adipisci non et et.",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Contract quantity",
+            "example": "Cum nostrum corrupti deserunt omnis corrupti.",
+            "type": "string"
+          },
+          "request_address": {
+            "description": "Taker address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "rfq_id": {
+            "description": "RFQ order ID",
+            "example": 14955480987757690000,
+            "type": "integer"
+          },
+          "status": {
+            "description": "Order status",
+            "example": "Velit magni id eaque quia aliquid.",
+            "type": "string"
+          },
+          "taker_nonce_time_window_ms": {
+            "description": "Replay protection nonce time window in milliseconds",
+            "example": 2513304000393230300,
+            "type": "integer"
+          },
+          "terminal_at": {
+            "description": "Terminal timestamp in milliseconds (set when the order reaches a terminal status: completed, failed, or cancelled)",
+            "example": 6816591359884993000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "trigger_price": {
+            "description": "Mark price threshold",
+            "example": "Et et dolor odio in.",
+            "type": "string"
+          },
+          "trigger_type": {
+            "description": "Trigger condition (mark_price_gte, mark_price_lte)",
+            "example": "Voluptatibus quis dignissimos corporis.",
+            "type": "string"
+          },
+          "tx_hash": {
+            "description": "Settlement transaction hash, if any",
+            "example": "Similique enim nisi autem et nemo quos.",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Last update timestamp in milliseconds",
+            "example": 2436489812059629600,
+            "format": "int64",
+            "type": "integer"
+          },
+          "worst_price": {
+            "description": "Worst acceptable price",
+            "example": "Velit quis recusandae fugiat placeat quas.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rfq_id",
+          "market_id",
+          "direction",
+          "margin",
+          "quantity",
+          "worst_price",
+          "request_address",
+          "trigger_price",
+          "status"
+        ],
+        "type": "object"
+      },
+      "CosmosPubKey": {
+        "example": {
+          "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+          "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+        },
+        "properties": {
+          "key": {
+            "description": "Hex-encoded string of the public key",
+            "example": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+            "pattern": "^0x(([0-9a-fA-F][0-9a-fA-F])+)?$",
+            "type": "string"
+          },
+          "type": {
+            "description": "Pubkey type URL",
+            "example": "/injective.crypto.v1beta1.ethsecp256k1.PubKey",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "key"
+        ],
+        "type": "object"
+      },
+      "CreateConditionalOrderRequestBody": {
+        "example": {
+          "evm_chain_id": 1439,
+          "order": {
+            "allowed_relayer": "Fuga optio ut eius illo.",
+            "chain_id": "Esse praesentium qui ut illum.",
+            "cid": "Reprehenderit non placeat ea nisi voluptas ad.",
+            "contract_address": "Vel ratione sed.",
+            "deadline_ms": 2290785571276599800,
+            "direction": "short",
+            "epoch": 6782012929606596000,
+            "lane_version": 8354962862439618000,
+            "margin": "Et cupiditate qui aut quod.",
+            "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "min_total_fill_quantity": "Modi molestias sed voluptates sit aspernatur.",
+            "quantity": "Facere fuga voluptatum sunt quae velit.",
+            "rfq_id": 15871445568047055000,
+            "subaccount_nonce": 3431329232,
+            "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "taker_nonce_time_window_ms": 10978370738646516000,
+            "trigger_price": "Aut dolorem dicta rerum mollitia qui.",
+            "trigger_type": "mark_price_lte",
+            "unfilled_action": "Velit optio numquam velit consequatur iure.",
+            "version": 9602297422699127000,
+            "worst_price": "Deserunt et."
+          },
+          "sign_mode": "v1",
+          "signature": "0x1234abcd..."
+        },
+        "properties": {
+          "evm_chain_id": {
+            "description": "EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is \"v2\"; ignored otherwise. Must match one of the indexer's configured chain IDs.",
+            "example": 1439,
+            "type": "integer"
+          },
+          "order": {
+            "$ref": "#/components/schemas/ConditionalOrderInput"
+          },
+          "sign_mode": {
+            "default": "v1",
+            "description": "Signature scheme used for the conditional order: \"v1\" (raw JSON keccak256) or \"v2\" (EIP-712). Defaults to \"v1\" when omitted, for backward compatibility with pre-EIP-712 clients.",
+            "enum": [
+              "v1",
+              "v2"
+            ],
+            "example": "v1",
+            "type": "string"
+          },
+          "signature": {
+            "description": "Hex-encoded 65-byte ECDSA recoverable signature (r‖s‖v). To produce: build the canonical JSON object with these fields in exact order, no omitted keys, null for absent values:\n  version              (uint8)   — protocol version\n  chain_id             (string)  — e.g. \"injective-1\"\n  contract_address     (string)  — RFQ contract bech32 address\n  taker               (string)  — taker bech32 address\n  epoch               (uint64)  — taker's current epoch\n  rfq_id              (uint64)  — unique order ID\n  market_id           (string)  — derivative market ID hex\n  subaccount_nonce    (uint32)  — taker subaccount index\n  lane_version        (uint64)  — lane version for replay protection\n  deadline_ms         (uint64)  — expiry timestamp in milliseconds\n  direction           (string)  — \"long\" or \"short\"\n  quantity            (string)  — FPDecimal e.g. \"1\", \"4.9\"\n  margin              (string)  — collateral amount as FPDecimal\n  worst_price         (string)  — FPDecimal worst acceptable price\n  min_total_fill_quantity (string) — FPDecimal minimum fill\n  trigger             (enum)    — {\"mark_price_gte\":\"<price>\"} or {\"mark_price_lte\":\"<price>\"}\n  unfilled_action     (null)    — always null in v1\n  cid                 (*string) — optional client ID, or null\n  allowed_relayer     (*string) — optional relayer address, or null\nThen: signature = secp256k1_sign(Keccak256(canonical_json), taker_private_key)",
+            "example": "0x1234abcd...",
+            "type": "string"
+          }
+        },
+        "required": [
+          "order",
+          "signature"
+        ],
+        "type": "object"
+      },
+      "CreateConditionalOrderResponseBody": {
+        "example": {
+          "order": {
+            "created_at": 7841992890665955000,
+            "direction": "Aperiam et aut.",
+            "error": "Vel quaerat totam et.",
+            "errors": [
+              "Quisquam temporibus.",
+              "Ab a alias culpa."
+            ],
+            "event_time": 18260116771687830000,
+            "evm_chain_id": 1439,
+            "expires_at": 5770836752993445000,
+            "margin": "Voluptate consectetur deleniti.",
+            "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "min_total_fill_quantity": "Omnis aut.",
+            "quantity": "Culpa enim repudiandae neque.",
+            "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "rfq_id": 10024418390963036000,
+            "status": "Accusamus et delectus.",
+            "taker_nonce_time_window_ms": 12322625215961795000,
+            "terminal_at": 3367096091906568000,
+            "trigger_price": "Optio ea.",
+            "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+            "tx_hash": "Blanditiis velit.",
+            "updated_at": 1366373911280752400,
+            "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+          }
+        },
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/ConditionalOrderResponseType"
+          }
+        },
+        "type": "object"
+      },
+      "Error": {
+        "description": "Bad request",
+        "example": {
+          "id": "3F1FKVRR",
+          "message": "Value of ID must be an integer",
+          "name": "bad_request"
+        },
+        "properties": {
+          "fault": {
+            "description": "Is the error a server-side fault?",
+            "example": false,
+            "type": "boolean"
+          },
+          "id": {
+            "description": "ID is a unique identifier for this particular occurrence of the problem.",
+            "example": "123abc",
+            "type": "string"
+          },
+          "message": {
+            "description": "Message is a human-readable explanation specific to this occurrence of the problem.",
+            "example": "parameter 'p' must be an integer",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name is the name of this class of errors.",
+            "example": "bad_request",
+            "type": "string"
+          },
+          "temporary": {
+            "description": "Is the error temporary?",
+            "example": true,
+            "type": "boolean"
+          },
+          "timeout": {
+            "description": "Is the error a timeout?",
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "message",
+          "temporary",
+          "timeout",
+          "fault"
+        ],
+        "type": "object"
+      },
+      "ListConditionalOrdersResponseBody": {
+        "example": {
+          "next": [
+            "Amet totam in.",
+            "Vitae fugiat numquam eligendi.",
+            "Est illum rerum non quis.",
+            "Sapiente ut consequatur repudiandae similique et."
+          ],
+          "orders": [
+            {
+              "created_at": 7841992890665955000,
+              "direction": "Aperiam et aut.",
+              "error": "Vel quaerat totam et.",
+              "errors": [
+                "Quisquam temporibus.",
+                "Ab a alias culpa."
+              ],
+              "event_time": 18260116771687830000,
+              "evm_chain_id": 1439,
+              "expires_at": 5770836752993445000,
+              "margin": "Voluptate consectetur deleniti.",
+              "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "min_total_fill_quantity": "Omnis aut.",
+              "quantity": "Culpa enim repudiandae neque.",
+              "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "rfq_id": 10024418390963036000,
+              "status": "Accusamus et delectus.",
+              "taker_nonce_time_window_ms": 12322625215961795000,
+              "terminal_at": 3367096091906568000,
+              "trigger_price": "Optio ea.",
+              "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+              "tx_hash": "Blanditiis velit.",
+              "updated_at": 1366373911280752400,
+              "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+            },
+            {
+              "created_at": 7841992890665955000,
+              "direction": "Aperiam et aut.",
+              "error": "Vel quaerat totam et.",
+              "errors": [
+                "Quisquam temporibus.",
+                "Ab a alias culpa."
+              ],
+              "event_time": 18260116771687830000,
+              "evm_chain_id": 1439,
+              "expires_at": 5770836752993445000,
+              "margin": "Voluptate consectetur deleniti.",
+              "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "min_total_fill_quantity": "Omnis aut.",
+              "quantity": "Culpa enim repudiandae neque.",
+              "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "rfq_id": 10024418390963036000,
+              "status": "Accusamus et delectus.",
+              "taker_nonce_time_window_ms": 12322625215961795000,
+              "terminal_at": 3367096091906568000,
+              "trigger_price": "Optio ea.",
+              "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+              "tx_hash": "Blanditiis velit.",
+              "updated_at": 1366373911280752400,
+              "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+            },
+            {
+              "created_at": 7841992890665955000,
+              "direction": "Aperiam et aut.",
+              "error": "Vel quaerat totam et.",
+              "errors": [
+                "Quisquam temporibus.",
+                "Ab a alias culpa."
+              ],
+              "event_time": 18260116771687830000,
+              "evm_chain_id": 1439,
+              "expires_at": 5770836752993445000,
+              "margin": "Voluptate consectetur deleniti.",
+              "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "min_total_fill_quantity": "Omnis aut.",
+              "quantity": "Culpa enim repudiandae neque.",
+              "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "rfq_id": 10024418390963036000,
+              "status": "Accusamus et delectus.",
+              "taker_nonce_time_window_ms": 12322625215961795000,
+              "terminal_at": 3367096091906568000,
+              "trigger_price": "Optio ea.",
+              "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+              "tx_hash": "Blanditiis velit.",
+              "updated_at": 1366373911280752400,
+              "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+            },
+            {
+              "created_at": 7841992890665955000,
+              "direction": "Aperiam et aut.",
+              "error": "Vel quaerat totam et.",
+              "errors": [
+                "Quisquam temporibus.",
+                "Ab a alias culpa."
+              ],
+              "event_time": 18260116771687830000,
+              "evm_chain_id": 1439,
+              "expires_at": 5770836752993445000,
+              "margin": "Voluptate consectetur deleniti.",
+              "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "min_total_fill_quantity": "Omnis aut.",
+              "quantity": "Culpa enim repudiandae neque.",
+              "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "rfq_id": 10024418390963036000,
+              "status": "Accusamus et delectus.",
+              "taker_nonce_time_window_ms": 12322625215961795000,
+              "terminal_at": 3367096091906568000,
+              "trigger_price": "Optio ea.",
+              "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+              "tx_hash": "Blanditiis velit.",
+              "updated_at": 1366373911280752400,
+              "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+            }
+          ]
+        },
+        "properties": {
+          "next": {
+            "description": "Next tokens for pagination",
+            "example": [
+              "Aperiam ea quas dolorum molestias nostrum veniam.",
+              "Est et dolor dolores animi eveniet quo.",
+              "Iste laboriosam sint tenetur quo.",
+              "Atque esse delectus."
+            ],
+            "items": {
+              "example": "Libero quis voluptatibus.",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "orders": {
+            "description": "List of conditional orders",
+            "example": [
+              {
+                "created_at": 7841992890665955000,
+                "direction": "Aperiam et aut.",
+                "error": "Vel quaerat totam et.",
+                "errors": [
+                  "Quisquam temporibus.",
+                  "Ab a alias culpa."
+                ],
+                "event_time": 18260116771687830000,
+                "evm_chain_id": 1439,
+                "expires_at": 5770836752993445000,
+                "margin": "Voluptate consectetur deleniti.",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "min_total_fill_quantity": "Omnis aut.",
+                "quantity": "Culpa enim repudiandae neque.",
+                "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "rfq_id": 10024418390963036000,
+                "status": "Accusamus et delectus.",
+                "taker_nonce_time_window_ms": 12322625215961795000,
+                "terminal_at": 3367096091906568000,
+                "trigger_price": "Optio ea.",
+                "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+                "tx_hash": "Blanditiis velit.",
+                "updated_at": 1366373911280752400,
+                "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+              },
+              {
+                "created_at": 7841992890665955000,
+                "direction": "Aperiam et aut.",
+                "error": "Vel quaerat totam et.",
+                "errors": [
+                  "Quisquam temporibus.",
+                  "Ab a alias culpa."
+                ],
+                "event_time": 18260116771687830000,
+                "evm_chain_id": 1439,
+                "expires_at": 5770836752993445000,
+                "margin": "Voluptate consectetur deleniti.",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "min_total_fill_quantity": "Omnis aut.",
+                "quantity": "Culpa enim repudiandae neque.",
+                "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "rfq_id": 10024418390963036000,
+                "status": "Accusamus et delectus.",
+                "taker_nonce_time_window_ms": 12322625215961795000,
+                "terminal_at": 3367096091906568000,
+                "trigger_price": "Optio ea.",
+                "trigger_type": "Maiores rerum explicabo molestiae numquam dolor aut.",
+                "tx_hash": "Blanditiis velit.",
+                "updated_at": 1366373911280752400,
+                "worst_price": "Cupiditate expedita iste eius voluptas aperiam maxime."
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ConditionalOrderResponseType"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListSettlementResponseBody": {
+        "example": {
+          "next": [
+            "Occaecati labore ut laboriosam consequatur quia.",
+            "Consequatur id adipisci quam laborum.",
+            "Omnis dolores."
+          ],
+          "settlements": [
+            {
+              "cid": "Itaque similique excepturi consequatur.",
+              "created_at": 8872741917354963000,
+              "direction": "Exercitationem occaecati aut odio.",
+              "event_time": 10417364717330723000,
+              "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+              "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+              "height": 9362826119760802000,
+              "margin": "Amet sit natus ut repellat.",
+              "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "quantity": "Optio numquam.",
+              "rfq_id": 17029011130005322000,
+              "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "transaction_time": 17223606115857525000,
+              "tx_hash": "Reiciendis in quia.",
+              "unfilled_action": {
+                "limit": {
+                  "price": "Veritatis autem."
+                },
+                "market": {}
+              },
+              "updated_at": 5786101868231487000,
+              "worst_price": "Dolor esse voluptatem."
+            },
+            {
+              "cid": "Itaque similique excepturi consequatur.",
+              "created_at": 8872741917354963000,
+              "direction": "Exercitationem occaecati aut odio.",
+              "event_time": 10417364717330723000,
+              "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+              "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+              "height": 9362826119760802000,
+              "margin": "Amet sit natus ut repellat.",
+              "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "quantity": "Optio numquam.",
+              "rfq_id": 17029011130005322000,
+              "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+              "transaction_time": 17223606115857525000,
+              "tx_hash": "Reiciendis in quia.",
+              "unfilled_action": {
+                "limit": {
+                  "price": "Veritatis autem."
+                },
+                "market": {}
+              },
+              "updated_at": 5786101868231487000,
+              "worst_price": "Dolor esse voluptatem."
+            }
+          ]
+        },
+        "properties": {
+          "next": {
+            "description": "Next tokens for pagination",
+            "example": [
+              "Rerum qui provident enim omnis.",
+              "Est autem cupiditate necessitatibus voluptatem.",
+              "Perspiciatis consectetur illum."
+            ],
+            "items": {
+              "example": "Harum maiores iusto eligendi tenetur qui.",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "settlements": {
+            "description": "List of RFQ settlements",
+            "example": [
+              {
+                "cid": "Itaque similique excepturi consequatur.",
+                "created_at": 8872741917354963000,
+                "direction": "Exercitationem occaecati aut odio.",
+                "event_time": 10417364717330723000,
+                "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+                "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+                "height": 9362826119760802000,
+                "margin": "Amet sit natus ut repellat.",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "quantity": "Optio numquam.",
+                "rfq_id": 17029011130005322000,
+                "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "transaction_time": 17223606115857525000,
+                "tx_hash": "Reiciendis in quia.",
+                "unfilled_action": {
+                  "limit": {
+                    "price": "Veritatis autem."
+                  },
+                  "market": {}
+                },
+                "updated_at": 5786101868231487000,
+                "worst_price": "Dolor esse voluptatem."
+              },
+              {
+                "cid": "Itaque similique excepturi consequatur.",
+                "created_at": 8872741917354963000,
+                "direction": "Exercitationem occaecati aut odio.",
+                "event_time": 10417364717330723000,
+                "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+                "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+                "height": 9362826119760802000,
+                "margin": "Amet sit natus ut repellat.",
+                "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "quantity": "Optio numquam.",
+                "rfq_id": 17029011130005322000,
+                "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+                "transaction_time": 17223606115857525000,
+                "tx_hash": "Reiciendis in quia.",
+                "unfilled_action": {
+                  "limit": {
+                    "price": "Veritatis autem."
+                  },
+                  "market": {}
+                },
+                "updated_at": 5786101868231487000,
+                "worst_price": "Dolor esse voluptatem."
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RFQSettlementType"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "PrepareAutoSignResponseBody": {
+        "example": {
+          "autosign_account_number": 6750204159530663000,
+          "autosign_account_sequence": 348826124568936000,
+          "expired_quotes_count": 4214560616796326000,
+          "fee_payer": "Qui et omnis voluptas sint.",
+          "fee_payer_account_number": 15630198737868304000,
+          "fee_payer_account_sequence": 11844083715770251000,
+          "fee_payer_pub_key": {
+            "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+            "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+          },
+          "fee_payer_sig": "Eum possimus in qui eligendi modi.",
+          "pub_key_type": "Sint vero.",
+          "quotes": [
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            }
+          ],
+          "quotes_wait_ms": 14642605822557469000,
+          "rfq_id": 3187585320122516500,
+          "sign_mode": "Vel voluptatem unde quia ut provident neque.",
+          "tx": "RXVtIG9mZmljaWEgbWluaW1hIHF1aWJ1c2RhbSBhbGlxdWFtIHZlbGl0Lg=="
+        },
+        "properties": {
+          "autosign_account_number": {
+            "description": "Autosign (ephemeral) account number",
+            "example": 12570776381994498000,
+            "type": "integer"
+          },
+          "autosign_account_sequence": {
+            "description": "Autosign (ephemeral) account sequence",
+            "example": 17636830037484773000,
+            "type": "integer"
+          },
+          "expired_quotes_count": {
+            "description": "Number of quotes that expired after being received and were excluded from selection",
+            "example": 7804629047450165000,
+            "type": "integer"
+          },
+          "fee_payer": {
+            "description": "Fee payer address",
+            "example": "Aut sunt officia dolorum eum.",
+            "type": "string"
+          },
+          "fee_payer_account_number": {
+            "description": "Fee payer Cosmos account number",
+            "example": 10071592846720690000,
+            "type": "integer"
+          },
+          "fee_payer_account_sequence": {
+            "description": "Fee payer Cosmos account sequence",
+            "example": 2554473289767232500,
+            "type": "integer"
+          },
+          "fee_payer_pub_key": {
+            "$ref": "#/components/schemas/CosmosPubKey"
+          },
+          "fee_payer_sig": {
+            "description": "Hex-encoded fee payer signature",
+            "example": "Nisi excepturi voluptates harum quia maxime.",
+            "type": "string"
+          },
+          "pub_key_type": {
+            "description": "Fee payer public key type",
+            "example": "Reprehenderit tempore.",
+            "type": "string"
+          },
+          "quotes": {
+            "description": "Selected quotes in execution order",
+            "example": [
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RFQGwPrepareQuoteResult"
+            },
+            "type": "array"
+          },
+          "quotes_wait_ms": {
+            "description": "Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms hint in next request",
+            "example": 11989564305078145000,
+            "type": "integer"
+          },
+          "rfq_id": {
+            "description": "Generated RFQ ID",
+            "example": 14292013714703112000,
+            "type": "integer"
+          },
+          "sign_mode": {
+            "description": "Sign mode (SIGN_MODE_DIRECT)",
+            "example": "Iste laboriosam.",
+            "type": "string"
+          },
+          "tx": {
+            "description": "Fee-delegated prepared transaction bytes containing MsgExec wrapper",
+            "example": "SXRhcXVlIG9kaXQu",
+            "format": "binary",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PrepareEip712AutoSignResponseBody": {
+        "example": {
+          "autosign_account_number": 7221027170310316000,
+          "autosign_account_sequence": 8643561466080906000,
+          "data": "Et iusto ut et minus ut voluptatem.",
+          "expired_quotes_count": 11342834241700575000,
+          "fee_payer": "Eum qui maiores omnis sit.",
+          "fee_payer_pub_key": {
+            "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+            "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+          },
+          "fee_payer_sig": "Quasi laudantium facere pariatur assumenda.",
+          "pub_key_type": "Dolores temporibus fugit aut.",
+          "quotes": [
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            }
+          ],
+          "quotes_wait_ms": 16394135500698640000,
+          "rfq_id": 3283039632821528600,
+          "sign_mode": "Deserunt sunt id."
+        },
+        "properties": {
+          "autosign_account_number": {
+            "description": "Autosign (ephemeral) account number",
+            "example": 7272347831299578000,
+            "type": "integer"
+          },
+          "autosign_account_sequence": {
+            "description": "Autosign (ephemeral) account sequence",
+            "example": 12611148535737235000,
+            "type": "integer"
+          },
+          "data": {
+            "description": "EIP712-compatible JSON containing MsgExec wrapper, signable with eth_signTypedData_v4",
+            "example": "Voluptates eius.",
+            "type": "string"
+          },
+          "expired_quotes_count": {
+            "description": "Number of quotes that expired after being received and were excluded from selection",
+            "example": 14971366987380589000,
+            "type": "integer"
+          },
+          "fee_payer": {
+            "description": "Fee payer address",
+            "example": "Quia sunt provident blanditiis qui.",
+            "type": "string"
+          },
+          "fee_payer_pub_key": {
+            "$ref": "#/components/schemas/CosmosPubKey"
+          },
+          "fee_payer_sig": {
+            "description": "Hex-encoded fee payer signature over the EIP712 hash",
+            "example": "Sed vel.",
+            "type": "string"
+          },
+          "pub_key_type": {
+            "description": "Fee payer public key type",
+            "example": "Quis modi quo voluptatem quisquam.",
+            "type": "string"
+          },
+          "quotes": {
+            "description": "Selected quotes in execution order",
+            "example": [
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RFQGwPrepareQuoteResult"
+            },
+            "type": "array"
+          },
+          "quotes_wait_ms": {
+            "description": "Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms hint in next request",
+            "example": 18148270820645800000,
+            "type": "integer"
+          },
+          "rfq_id": {
+            "description": "Generated RFQ ID",
+            "example": 4795033075374583000,
+            "type": "integer"
+          },
+          "sign_mode": {
+            "description": "SIGN_MODE_EIP712_V2 or SIGN_MODE_LEGACY_AMINO_JSON",
+            "example": "Sint quo culpa provident beatae.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PrepareEip712ResponseBody2": {
+        "example": {
+          "data": "Aliquam adipisci nulla illum.",
+          "expired_quotes_count": 13814749454601822000,
+          "fee_payer": "Quae nemo voluptates consequuntur eligendi ut.",
+          "fee_payer_pub_key": {
+            "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+            "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+          },
+          "fee_payer_sig": "Magnam asperiores animi voluptatibus et officiis tempore.",
+          "pub_key_type": "Qui impedit ut.",
+          "quotes": [
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            }
+          ],
+          "quotes_wait_ms": 12672900816005472000,
+          "rfq_id": 6420045983717738000,
+          "sign_mode": "Excepturi libero.",
+          "taker_account_number": 16277123395640891000,
+          "taker_account_sequence": 10828949722365852000
+        },
+        "properties": {
+          "data": {
+            "description": "EIP712-compatible JSON, signable with eth_signTypedData_v4",
+            "example": "At eos.",
+            "type": "string"
+          },
+          "expired_quotes_count": {
+            "description": "Number of quotes that expired after being received and were excluded from selection",
+            "example": 7087386106034654000,
+            "type": "integer"
+          },
+          "fee_payer": {
+            "description": "Fee payer address",
+            "example": "Explicabo illo recusandae alias.",
+            "type": "string"
+          },
+          "fee_payer_pub_key": {
+            "$ref": "#/components/schemas/CosmosPubKey"
+          },
+          "fee_payer_sig": {
+            "description": "Hex-encoded fee payer signature over the EIP712 hash",
+            "example": "Numquam et culpa saepe eius itaque quidem.",
+            "type": "string"
+          },
+          "pub_key_type": {
+            "description": "Fee payer public key type",
+            "example": "Nostrum iusto est ut.",
+            "type": "string"
+          },
+          "quotes": {
+            "description": "Selected quotes in execution order",
+            "example": [
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RFQGwPrepareQuoteResult"
+            },
+            "type": "array"
+          },
+          "quotes_wait_ms": {
+            "description": "Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms hint in next request",
+            "example": 1012679620814275600,
+            "type": "integer"
+          },
+          "rfq_id": {
+            "description": "Generated RFQ ID",
+            "example": 11384559510312960000,
+            "type": "integer"
+          },
+          "sign_mode": {
+            "description": "SIGN_MODE_EIP712_V2 or SIGN_MODE_LEGACY_AMINO_JSON",
+            "example": "Hic nam.",
+            "type": "string"
+          },
+          "taker_account_number": {
+            "description": "Taker Cosmos account number",
+            "example": 245092763389741730,
+            "type": "integer"
+          },
+          "taker_account_sequence": {
+            "description": "Taker Cosmos account sequence",
+            "example": 3249822829847722000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PrepareResponseBody": {
+        "example": {
+          "expired_quotes_count": 16683266040978655000,
+          "fee_payer": "Odit adipisci qui qui perspiciatis.",
+          "fee_payer_account_number": 3995114354851621000,
+          "fee_payer_account_sequence": 4217383409858446000,
+          "fee_payer_pub_key": {
+            "key": "0x1f5630186eacde746784d176d4ea9d6a2f78e3a3ea8ce9933e4707fc2dfac7aa",
+            "type": "/injective.crypto.v1beta1.ethsecp256k1.PubKey"
+          },
+          "fee_payer_sig": "Aliquid asperiores odio voluptatem.",
+          "pub_key_type": "Consequuntur laudantium pariatur illo labore ab.",
+          "quotes": [
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            },
+            {
+              "maker": "Molestias reprehenderit.",
+              "margin": "Corporis qui explicabo odit et reiciendis harum.",
+              "price": "Quod in quidem labore deserunt et.",
+              "quantity": "At sit consequuntur et."
+            }
+          ],
+          "quotes_wait_ms": 760555594539950500,
+          "rfq_id": 10896734426956458000,
+          "sign_mode": "Qui inventore ullam.",
+          "taker_account_number": 2614607106813926400,
+          "taker_account_sequence": 3260740142355719000,
+          "tx": "QSBlcnJvciBzaXQgdmVyaXRhdGlzIG1pbmltYSBhZGlwaXNjaS4="
+        },
+        "properties": {
+          "expired_quotes_count": {
+            "description": "Number of quotes that expired after being received and were excluded from selection",
+            "example": 8779588100955884000,
+            "type": "integer"
+          },
+          "fee_payer": {
+            "description": "Fee payer address",
+            "example": "Impedit suscipit velit.",
+            "type": "string"
+          },
+          "fee_payer_account_number": {
+            "description": "Fee payer Cosmos account number",
+            "example": 5374510153555797000,
+            "type": "integer"
+          },
+          "fee_payer_account_sequence": {
+            "description": "Fee payer Cosmos account sequence",
+            "example": 16265665868053705000,
+            "type": "integer"
+          },
+          "fee_payer_pub_key": {
+            "$ref": "#/components/schemas/CosmosPubKey"
+          },
+          "fee_payer_sig": {
+            "description": "Hex-encoded fee payer signature",
+            "example": "Sit est unde dolorem quos et alias.",
+            "type": "string"
+          },
+          "pub_key_type": {
+            "description": "Fee payer public key type",
+            "example": "Quis occaecati et.",
+            "type": "string"
+          },
+          "quotes": {
+            "description": "Selected quotes in execution order",
+            "example": [
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              },
+              {
+                "maker": "Molestias reprehenderit.",
+                "margin": "Corporis qui explicabo odit et reiciendis harum.",
+                "price": "Quod in quidem labore deserunt et.",
+                "quantity": "At sit consequuntur et."
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RFQGwPrepareQuoteResult"
+            },
+            "type": "array"
+          },
+          "quotes_wait_ms": {
+            "description": "Actual milliseconds elapsed waiting for quotes; use as quotes_wait_time_ms hint in next request",
+            "example": 11501986582810820000,
+            "type": "integer"
+          },
+          "rfq_id": {
+            "description": "Generated RFQ ID",
+            "example": 14553680216689308000,
+            "type": "integer"
+          },
+          "sign_mode": {
+            "description": "Sign mode (SIGN_MODE_DIRECT)",
+            "example": "Non cupiditate dolor est accusantium.",
+            "type": "string"
+          },
+          "taker_account_number": {
+            "description": "Taker Cosmos account number",
+            "example": 16965191856055159000,
+            "type": "integer"
+          },
+          "taker_account_sequence": {
+            "description": "Taker Cosmos account sequence",
+            "example": 10324843381526710000,
+            "type": "integer"
+          },
+          "tx": {
+            "description": "Fee-delegated prepared transaction bytes",
+            "example": "Tm9zdHJ1bSB1dCBlbGlnZW5kaSB2b2x1cHRhdGlidXMgY3VtcXVlIGRlbGVuaXRpIHNlZC4=",
+            "format": "binary",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PriceResponseBody": {
+        "example": {
+          "price": "14.01"
+        },
+        "properties": {
+          "price": {
+            "description": "The price of the oracle asset",
+            "example": "14.01",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "price"
+        ],
+        "type": "object"
+      },
+      "RFQExpiryType": {
+        "description": "Expiry with timestamp and block height",
+        "example": {
+          "height": 10759322772706769000,
+          "timestamp": 12033367330920660000
+        },
+        "properties": {
+          "height": {
+            "description": "Expiry block height",
+            "example": 12625787192605362000,
+            "type": "integer"
+          },
+          "timestamp": {
+            "description": "Expiry timestamp in milliseconds",
+            "example": 11832897896131750000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "RFQGwPrepareAutoSignRequestType": {
+        "example": {
+          "autosign_account_number": 5021838404432067000,
+          "autosign_account_sequence": 2455353186969599000,
+          "autosign_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "autosign_pub_key": "Consectetur quod.",
+          "cid": "Sit consequatur incidunt quae harum quia ducimus.",
+          "client_id": "550e8400-e29b-41d4-a716-446655440000",
+          "direction": "long",
+          "expiry": 13270972781340426000,
+          "fee_payer_account_number": 15276392588931078000,
+          "fee_payer_account_sequence": 6977926544486731000,
+          "margin": "i2a",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "quantity": "p4r",
+          "quotes_wait_time_ms": 14463338379373271000,
+          "simulate": true,
+          "subaccount_nonce": 3336887235,
+          "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "tx_body_memo": "Qui eligendi consequatur.",
+          "unfilled_action": {
+            "limit": {
+              "price": "A minima ratione necessitatibus possimus earum cupiditate."
+            },
+            "market": {}
+          },
+          "worst_price": "kge"
+        },
+        "properties": {
+          "autosign_account_number": {
+            "description": "Autosign (ephemeral) Cosmos account number",
+            "example": 11166500045797280000,
+            "type": "integer"
+          },
+          "autosign_account_sequence": {
+            "description": "Autosign (ephemeral) Cosmos account sequence (nonce)",
+            "example": 18063124464570032000,
+            "type": "integer"
+          },
+          "autosign_address": {
+            "description": "Ephemeral autosign address (MsgExec grantee) that signs the prepared tx",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "autosign_pub_key": {
+            "description": "Hex-encoded autosign ephemeral public key",
+            "example": "Incidunt ipsum reprehenderit voluptatum.",
+            "type": "string"
+          },
+          "cid": {
+            "description": "Client order ID echoed through to the on-chain trade event. Used to correlate a trade event back to the originating UI order. Not used server-side.",
+            "example": "Velit laudantium id.",
+            "type": "string"
+          },
+          "client_id": {
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "example": "long",
+            "type": "string"
+          },
+          "expiry": {
+            "description": "RFQ request expiry in milliseconds. 0 = no expiry",
+            "example": 10176259691528300000,
+            "type": "integer"
+          },
+          "fee_payer_account_number": {
+            "description": "Fee payer Cosmos account number",
+            "example": 4338496199726408700,
+            "type": "integer"
+          },
+          "fee_payer_account_sequence": {
+            "description": "Fee payer Cosmos account sequence (nonce)",
+            "example": 3063916331763209000,
+            "type": "integer"
+          },
+          "margin": {
+            "example": "cv2",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "market_id": {
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "quantity": {
+            "example": "5i4",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "quotes_wait_time_ms": {
+            "default": 2000,
+            "description": "How long to wait for quotes (max 5000ms)",
+            "example": 434893301464823000,
+            "type": "integer"
+          },
+          "simulate": {
+            "default": false,
+            "description": "Simulate the tx on chain and use the estimated gas (with adjustment buffer) instead of the fee payer max gas. Falls back to max gas if the simulation fails.",
+            "example": true,
+            "type": "boolean"
+          },
+          "subaccount_nonce": {
+            "description": "Taker subaccount nonce at settlement time. Prevents replay when submitting multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain nonce).",
+            "example": 889901248,
+            "type": "integer"
+          },
+          "taker_address": {
+            "description": "Real taker address (authz granter); used as MsgExecuteContractCompat sender",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "tx_body_memo": {
+            "description": "Optional outer Cosmos TxBody memo",
+            "example": "Harum et.",
+            "type": "string"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "worst_price": {
+            "example": "8u8",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "market_id",
+          "direction",
+          "margin",
+          "quantity",
+          "worst_price",
+          "autosign_address",
+          "autosign_pub_key",
+          "taker_address"
+        ],
+        "type": "object"
+      },
+      "RFQGwPrepareEip712AutoSignRequestType": {
+        "example": {
+          "autosign_account_number": 12119812104049883000,
+          "autosign_account_sequence": 17240281394752539000,
+          "autosign_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "autosign_pub_key": "Sit ullam quia sapiente omnis velit.",
+          "cid": "Sed magni.",
+          "client_id": "550e8400-e29b-41d4-a716-446655440000",
+          "direction": "short",
+          "eip712_wrapper": "V1",
+          "eth_chain_id": 1,
+          "expiry": 7891804106662167000,
+          "fee_payer_account_number": 15258914637166434000,
+          "fee_payer_account_sequence": 10726700401282914000,
+          "gas": 14176409202438205000,
+          "margin": "gxt",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "quantity": "zid",
+          "quotes_wait_time_ms": 6424382590555545000,
+          "simulate": false,
+          "subaccount_nonce": 1948088710,
+          "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "tx_body_memo": "Alias autem hic sit velit dicta magnam.",
+          "unfilled_action": {
+            "limit": {
+              "price": "A minima ratione necessitatibus possimus earum cupiditate."
+            },
+            "market": {}
+          },
+          "worst_price": "nt4"
+        },
+        "properties": {
+          "autosign_account_number": {
+            "description": "Autosign (ephemeral) Cosmos account number",
+            "example": 7610956601184813000,
+            "type": "integer"
+          },
+          "autosign_account_sequence": {
+            "description": "Autosign (ephemeral) Cosmos account sequence (nonce)",
+            "example": 18242420663729895000,
+            "type": "integer"
+          },
+          "autosign_address": {
+            "description": "Ephemeral autosign address (MsgExec grantee) that signs the EIP712 typed data",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "autosign_pub_key": {
+            "description": "Hex-encoded autosign ephemeral public key",
+            "example": "Molestiae ipsa id repellat voluptates aliquid consequuntur.",
+            "type": "string"
+          },
+          "cid": {
+            "description": "Client order ID echoed through to the on-chain trade event. Used to correlate a trade event back to the originating UI order. Not used server-side.",
+            "example": "Non et at ut et.",
+            "type": "string"
+          },
+          "client_id": {
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "example": "short",
+            "type": "string"
+          },
+          "eip712_wrapper": {
+            "default": "v2",
+            "description": "EIP712 wrapper version: 'v2' uses WrapTxToEIP712V2, 'v1' uses legacy amino JSON",
+            "enum": [
+              "v1",
+              "v2",
+              "V1",
+              "V2"
+            ],
+            "example": "V2",
+            "type": "string"
+          },
+          "eth_chain_id": {
+            "description": "EVM chain ID used in the EIP712 domain separator (e.g. 1 for Injective mainnet)",
+            "example": 1,
+            "type": "integer"
+          },
+          "expiry": {
+            "description": "RFQ request expiry in milliseconds. 0 = no expiry",
+            "example": 4391374278579621000,
+            "type": "integer"
+          },
+          "fee_payer_account_number": {
+            "description": "Fee payer Cosmos account number",
+            "example": 16573490311017100000,
+            "type": "integer"
+          },
+          "fee_payer_account_sequence": {
+            "description": "Fee payer Cosmos account sequence (nonce)",
+            "example": 10292711173821014000,
+            "type": "integer"
+          },
+          "gas": {
+            "description": "Optional gas limit override. Takes precedence over simulate",
+            "example": 3012646194415297000,
+            "type": "integer"
+          },
+          "margin": {
+            "example": "o7h",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "market_id": {
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "quantity": {
+            "example": "x18",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "quotes_wait_time_ms": {
+            "default": 2000,
+            "description": "How long to wait for quotes (max 5000ms)",
+            "example": 1975755445929952500,
+            "type": "integer"
+          },
+          "simulate": {
+            "default": false,
+            "description": "Simulate the tx on chain and use the estimated gas (with adjustment buffer) instead of the fee payer max gas. Falls back to max gas if the simulation fails.",
+            "example": false,
+            "type": "boolean"
+          },
+          "subaccount_nonce": {
+            "description": "Taker subaccount nonce at settlement time. Prevents replay when submitting multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain nonce).",
+            "example": 1321576566,
+            "type": "integer"
+          },
+          "taker_address": {
+            "description": "Real taker address (authz granter); used as MsgExecuteContractCompat sender",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "tx_body_memo": {
+            "description": "Optional outer Cosmos TxBody memo",
+            "example": "Dolorem ut.",
+            "type": "string"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "worst_price": {
+            "example": "hpd",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "market_id",
+          "direction",
+          "margin",
+          "quantity",
+          "worst_price",
+          "autosign_address",
+          "autosign_pub_key",
+          "taker_address",
+          "eth_chain_id"
+        ],
+        "type": "object"
+      },
+      "RFQGwPrepareEip712RequestType": {
+        "example": {
+          "cid": "Voluptates voluptas.",
+          "client_id": "550e8400-e29b-41d4-a716-446655440000",
+          "direction": "long",
+          "eip712_wrapper": "v2",
+          "eth_chain_id": 1,
+          "expiry": 8706829840734755000,
+          "fee_payer_account_number": 6195078168230069000,
+          "fee_payer_account_sequence": 4981005942184924000,
+          "gas": 6189250098966652000,
+          "margin": "fj2",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "quantity": "fp5",
+          "quotes_wait_time_ms": 3449385174647940600,
+          "simulate": false,
+          "subaccount_nonce": 220646093,
+          "taker_account_number": 3662232153571733000,
+          "taker_account_sequence": 11137675523248180000,
+          "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "taker_pub_key": "Debitis aut ut qui a ut non.",
+          "tx_body_memo": "Quibusdam molestiae vel laborum ab voluptas enim.",
+          "unfilled_action": {
+            "limit": {
+              "price": "A minima ratione necessitatibus possimus earum cupiditate."
+            },
+            "market": {}
+          },
+          "worst_price": "1tf"
+        },
+        "properties": {
+          "cid": {
+            "description": "Client order ID echoed through to the on-chain trade event. Used to correlate a trade event back to the originating UI order. Not used server-side.",
+            "example": "Dolor omnis enim.",
+            "type": "string"
+          },
+          "client_id": {
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "example": "long",
+            "type": "string"
+          },
+          "eip712_wrapper": {
+            "default": "v2",
+            "description": "EIP712 wrapper version: 'v2' uses WrapTxToEIP712V2, 'v1' uses legacy amino JSON",
+            "enum": [
+              "v1",
+              "v2",
+              "V1",
+              "V2"
+            ],
+            "example": "V1",
+            "type": "string"
+          },
+          "eth_chain_id": {
+            "description": "EVM chain ID used in the EIP712 domain separator (e.g. 1 for Injective mainnet)",
+            "example": 1,
+            "type": "integer"
+          },
+          "expiry": {
+            "description": "RFQ request expiry in milliseconds. 0 = no expiry",
+            "example": 12580062174226729000,
+            "type": "integer"
+          },
+          "fee_payer_account_number": {
+            "description": "Fee payer Cosmos account number",
+            "example": 1055803834215720600,
+            "type": "integer"
+          },
+          "fee_payer_account_sequence": {
+            "description": "Fee payer Cosmos account sequence (nonce)",
+            "example": 15211636205963723000,
+            "type": "integer"
+          },
+          "gas": {
+            "description": "Optional gas limit override. Takes precedence over simulate",
+            "example": 1737371933709781200,
+            "type": "integer"
+          },
+          "margin": {
+            "example": "axs",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "market_id": {
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "quantity": {
+            "example": "na9",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "quotes_wait_time_ms": {
+            "default": 2000,
+            "description": "How long to wait for quotes (max 5000ms)",
+            "example": 1569605372848458000,
+            "type": "integer"
+          },
+          "simulate": {
+            "default": false,
+            "description": "Simulate the tx on chain and use the estimated gas (with adjustment buffer) instead of the fee payer max gas. Falls back to max gas if the simulation fails.",
+            "example": false,
+            "type": "boolean"
+          },
+          "subaccount_nonce": {
+            "description": "Taker subaccount nonce at settlement time. Prevents replay when submitting multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain nonce).",
+            "example": 4101164461,
+            "type": "integer"
+          },
+          "taker_account_number": {
+            "description": "Taker Cosmos account number",
+            "example": 9431044050745830000,
+            "type": "integer"
+          },
+          "taker_account_sequence": {
+            "description": "Taker Cosmos account sequence (nonce)",
+            "example": 4660909685250807000,
+            "type": "integer"
+          },
+          "taker_address": {
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "taker_pub_key": {
+            "description": "Hex-encoded taker public key",
+            "example": "Vero voluptatem odit tenetur odit minus voluptatem.",
+            "type": "string"
+          },
+          "tx_body_memo": {
+            "description": "Optional outer Cosmos TxBody memo",
+            "example": "Voluptatem et tempora voluptas error recusandae.",
+            "type": "string"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "worst_price": {
+            "example": "ohx",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "market_id",
+          "direction",
+          "margin",
+          "quantity",
+          "worst_price",
+          "taker_address",
+          "taker_pub_key",
+          "eth_chain_id"
+        ],
+        "type": "object"
+      },
+      "RFQGwPrepareQuoteResult": {
+        "example": {
+          "maker": "Et modi.",
+          "margin": "Tempora minus laudantium non est.",
+          "price": "Velit possimus eos.",
+          "quantity": "Omnis quasi eius optio."
+        },
+        "properties": {
+          "maker": {
+            "description": "Maker address",
+            "example": "Distinctio velit autem corrupti vero quisquam.",
+            "type": "string"
+          },
+          "margin": {
+            "description": "Quote margin",
+            "example": "Tempora vero sit et sit eum libero.",
+            "type": "string"
+          },
+          "price": {
+            "description": "Quote price",
+            "example": "Quod minima aut pariatur quod perspiciatis adipisci.",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Quote quantity",
+            "example": "Nihil voluptates.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "maker",
+          "price",
+          "quantity",
+          "margin"
+        ],
+        "type": "object"
+      },
+      "RFQGwPrepareRequestType": {
+        "example": {
+          "cid": "Facere in.",
+          "client_id": "550e8400-e29b-41d4-a716-446655440000",
+          "direction": "long",
+          "expiry": 10325001536399098000,
+          "fee_payer_account_number": 8154243156569566000,
+          "fee_payer_account_sequence": 12529171072249993000,
+          "margin": "kbe",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "quantity": "zum",
+          "quotes_wait_time_ms": 5316680648292015000,
+          "simulate": true,
+          "subaccount_nonce": 1882988501,
+          "taker_account_number": 6686642035491719000,
+          "taker_account_sequence": 12310113041735758000,
+          "taker_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "taker_pub_key": "Consequatur velit.",
+          "tx_body_memo": "Et quibusdam quaerat itaque ullam quaerat.",
+          "unfilled_action": {
+            "limit": {
+              "price": "A minima ratione necessitatibus possimus earum cupiditate."
+            },
+            "market": {}
+          },
+          "worst_price": "2gd"
+        },
+        "properties": {
+          "cid": {
+            "description": "Client order ID echoed through to the on-chain trade event. Used to correlate a trade event back to the originating UI order. Not used server-side.",
+            "example": "Enim quibusdam eligendi est.",
+            "type": "string"
+          },
+          "client_id": {
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "example": "short",
+            "type": "string"
+          },
+          "expiry": {
+            "description": "RFQ request expiry in milliseconds. 0 = no expiry",
+            "example": 777713068945244300,
+            "type": "integer"
+          },
+          "fee_payer_account_number": {
+            "description": "Fee payer Cosmos account number",
+            "example": 1482153161238855400,
+            "type": "integer"
+          },
+          "fee_payer_account_sequence": {
+            "description": "Fee payer Cosmos account sequence (nonce)",
+            "example": 1103784122294908900,
+            "type": "integer"
+          },
+          "margin": {
+            "example": "m3n",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "market_id": {
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "quantity": {
+            "example": "w7r",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "quotes_wait_time_ms": {
+            "default": 2000,
+            "description": "How long to wait for quotes (max 5000ms)",
+            "example": 2274970317042047700,
+            "type": "integer"
+          },
+          "simulate": {
+            "default": false,
+            "description": "Simulate the tx on chain and use the estimated gas (with adjustment buffer) instead of the fee payer max gas. Falls back to max gas if the simulation fails.",
+            "example": false,
+            "type": "boolean"
+          },
+          "subaccount_nonce": {
+            "description": "Taker subaccount nonce at settlement time. Prevents replay when submitting multiple RFQs in the same block. Defaults to 0 (contract reads the on-chain nonce).",
+            "example": 89492276,
+            "type": "integer"
+          },
+          "taker_account_number": {
+            "description": "Taker Cosmos account number",
+            "example": 2266164459050471400,
+            "type": "integer"
+          },
+          "taker_account_sequence": {
+            "description": "Taker Cosmos account sequence (nonce)",
+            "example": 2785766850367086600,
+            "type": "integer"
+          },
+          "taker_address": {
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "taker_pub_key": {
+            "description": "Hex-encoded taker public key",
+            "example": "Praesentium voluptas.",
+            "type": "string"
+          },
+          "tx_body_memo": {
+            "description": "Optional outer Cosmos TxBody memo",
+            "example": "Rerum hic omnis.",
+            "type": "string"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "worst_price": {
+            "example": "3nc",
+            "maxLength": 100,
+            "pattern": "^-?\\d+(\\.\\d+)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "market_id",
+          "direction",
+          "margin",
+          "quantity",
+          "worst_price",
+          "taker_address",
+          "taker_pub_key"
+        ],
+        "type": "object"
+      },
+      "RFQProcessedQuoteType": {
+        "description": "RFQ quote result streamed in real-time",
+        "example": {
+          "chain_id": "Quis dolor.",
+          "client_id": "Quia molestiae rem sit ut aliquid ipsa.",
+          "contract_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "created_at": 3639128250097235000,
+          "error": "Nisi earum quia dolorum labore neque.",
+          "event_time": 16426728788620257000,
+          "evm_chain_id": 1439,
+          "executed_margin": "Ratione facere omnis.",
+          "executed_quantity": "Assumenda nihil esse.",
+          "expiry": {
+            "height": 12370127747833858000,
+            "timestamp": 527408705720408800
+          },
+          "height": 8571142215614903000,
+          "maker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "maker_subaccount_nonce": 2585868655,
+          "margin": "Molestiae repudiandae asperiores.",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "min_fill_quantity": "Et dolorem.",
+          "price": "Odit dolorum exercitationem ipsum voluptatem sit.",
+          "price_check": false,
+          "quantity": "Quae quo nam commodi qui quibusdam.",
+          "rfq_id": 1610672127979551200,
+          "sign_mode": "v1",
+          "signature": "Quaerat at esse harum ut alias.",
+          "status": "Ipsam voluptas et.",
+          "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "taker_direction": "Dolorem omnis iste atque nostrum nobis.",
+          "transaction_time": 11354239973049980000,
+          "updated_at": 8458785916938619000
+        },
+        "properties": {
+          "chain_id": {
+            "description": "Chain ID",
+            "example": "Earum dolorum eius modi maxime.",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "Client ID from the originating request",
+            "example": "Culpa error qui ut quo sint.",
+            "type": "string"
+          },
+          "contract_address": {
+            "description": "Contract address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Creation timestamp",
+            "example": 1624450130145946000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "error": {
+            "description": "Error message if quote is rejected",
+            "example": "Molestias sint vero dolores laudantium.",
+            "type": "string"
+          },
+          "event_time": {
+            "description": "Event time timestamp",
+            "example": 11813935086705736000,
+            "type": "integer"
+          },
+          "evm_chain_id": {
+            "description": "EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is \"v2\"; ignored otherwise. Must match one of the indexer's configured chain IDs.",
+            "example": 1439,
+            "type": "integer"
+          },
+          "executed_margin": {
+            "description": "Executed margin for the quote, if successful",
+            "example": "Corrupti totam sequi.",
+            "type": "string"
+          },
+          "executed_quantity": {
+            "description": "Executed quantity for the quote, if successful",
+            "example": "Voluptates quae aut.",
+            "type": "string"
+          },
+          "expiry": {
+            "$ref": "#/components/schemas/RFQExpiryType"
+          },
+          "height": {
+            "description": "Block height",
+            "example": 1863003233266063400,
+            "type": "integer"
+          },
+          "maker": {
+            "description": "Maker address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "maker_subaccount_nonce": {
+            "description": "Maker subaccount nonce used in quote signature",
+            "example": 1804919716,
+            "type": "integer"
+          },
+          "margin": {
+            "description": "Margin amount",
+            "example": "Quasi velit perferendis a facere.",
+            "type": "string"
+          },
+          "market_id": {
+            "description": "Market ID",
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "min_fill_quantity": {
+            "description": "Optional minimum fill quantity used in quote signature",
+            "example": "Ratione voluptatibus voluptates.",
+            "type": "string"
+          },
+          "price": {
+            "description": "Price",
+            "example": "Nisi sit voluptates.",
+            "type": "string"
+          },
+          "price_check": {
+            "description": "Whether the quote is for price check only",
+            "example": true,
+            "type": "boolean"
+          },
+          "quantity": {
+            "description": "Quantity",
+            "example": "Distinctio accusantium animi.",
+            "type": "string"
+          },
+          "rfq_id": {
+            "description": "RFQ ID",
+            "example": 16100373831067871000,
+            "type": "integer"
+          },
+          "sign_mode": {
+            "default": "v1",
+            "description": "Signature scheme used for the quote: \"v1\" (raw JSON keccak256) or \"v2\" (EIP-712). Defaults to \"v1\" when omitted, for backward compatibility with pre-EIP-712 clients.",
+            "enum": [
+              "v1",
+              "v2"
+            ],
+            "example": "v1",
+            "type": "string"
+          },
+          "signature": {
+            "description": "Signature",
+            "example": "Accusamus ut quibusdam.",
+            "type": "string"
+          },
+          "status": {
+            "description": "Status (pending, accepted, rejected, expired)",
+            "example": "Dolorem nobis et quo.",
+            "type": "string"
+          },
+          "taker": {
+            "description": "Taker address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "taker_direction": {
+            "description": "Taker direction (long/short)",
+            "example": "Minus enim non iste ducimus in.",
+            "type": "string"
+          },
+          "transaction_time": {
+            "description": "Transaction time timestamp",
+            "example": 15424987344169046000,
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Last update timestamp",
+            "example": 6890243152592940000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "chain_id",
+          "contract_address",
+          "market_id",
+          "rfq_id",
+          "taker_direction",
+          "margin",
+          "quantity",
+          "price",
+          "expiry",
+          "maker",
+          "taker",
+          "signature",
+          "status",
+          "maker_subaccount_nonce"
+        ],
+        "type": "object"
+      },
+      "RFQRequestType": {
+        "description": "RFQ request",
+        "example": {
+          "client_id": "550e8400-e29b-41d4-a716-446655440000",
+          "created_at": 8914535382174884000,
+          "direction": "Ipsum molestias aut minima fuga fuga.",
+          "expiry": 1966452815918415400,
+          "height": 11669085043714845000,
+          "margin": "Accusamus officiis et.",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "quantity": "Perferendis aut culpa quia molestiae ducimus.",
+          "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "rfq_id": 1203768697268786200,
+          "status": "Sit exercitationem occaecati autem.",
+          "transaction_time": 17645695711397014000,
+          "updated_at": 2657862745091196400,
+          "worst_price": "Aut magnam atque est rerum."
+        },
+        "properties": {
+          "client_id": {
+            "description": "Client ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Creation timestamp",
+            "example": 5637332641262566000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "direction": {
+            "description": "Direction (long/short)",
+            "example": "Voluptas et laboriosam placeat quam quibusdam.",
+            "type": "string"
+          },
+          "expiry": {
+            "description": "Expiry timestamp in milliseconds",
+            "example": 16084481929168165000,
+            "type": "integer"
+          },
+          "height": {
+            "description": "Block height",
+            "example": 10466245727944458000,
+            "type": "integer"
+          },
+          "margin": {
+            "description": "Margin amount",
+            "example": "Aut libero aut eveniet tenetur mollitia unde.",
+            "type": "string"
+          },
+          "market_id": {
+            "description": "Market ID",
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Quantity",
+            "example": "Illo officiis possimus.",
+            "type": "string"
+          },
+          "request_address": {
+            "description": "Requester address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "rfq_id": {
+            "description": "RFQ ID",
+            "example": 5230110618745948000,
+            "type": "integer"
+          },
+          "status": {
+            "description": "Status (open, cancelled, completed)",
+            "example": "Natus sed sunt.",
+            "type": "string"
+          },
+          "transaction_time": {
+            "description": "Transaction time timestamp",
+            "example": 10010789209171839000,
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Last update timestamp",
+            "example": 6464782083955191000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "worst_price": {
+            "description": "Worst acceptable price",
+            "example": "Dolorum fugiat quibusdam nostrum.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "rfq_id",
+          "market_id",
+          "direction",
+          "margin",
+          "quantity",
+          "request_address",
+          "status"
+        ],
+        "type": "object"
+      },
+      "RFQSettlementMarketActionType": {
+        "description": "Market order action for unfilled quantity",
+        "example": {},
+        "type": "object"
+      },
+      "RFQSettlementType": {
+        "description": "RFQ settlement",
+        "example": {
+          "cid": "Qui qui eos culpa doloremque.",
+          "created_at": 8372425354208555000,
+          "direction": "Dicta enim.",
+          "event_time": 6619534549119597000,
+          "fallback_margin": "Iure ducimus earum dignissimos consequatur illum.",
+          "fallback_quantity": "Recusandae delectus repellendus in molestiae.",
+          "height": 4201984253071065600,
+          "margin": "Magni asperiores quas voluptates voluptates voluptas.",
+          "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "quantity": "Accusantium consequatur culpa et esse.",
+          "rfq_id": 1705240720087531300,
+          "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+          "transaction_time": 11213575549136988000,
+          "tx_hash": "Voluptatum culpa inventore ut sequi optio.",
+          "unfilled_action": {
+            "limit": {
+              "price": "Veritatis autem."
+            },
+            "market": {}
+          },
+          "updated_at": 4518580077003577000,
+          "worst_price": "Molestiae sint velit corrupti sunt consequatur."
+        },
+        "properties": {
+          "cid": {
+            "description": "Settlement CID",
+            "example": "Eveniet sint a autem aut.",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Creation timestamp",
+            "example": 6266229310198958000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "direction": {
+            "description": "Direction (long/short)",
+            "example": "Tempora quis atque quia.",
+            "type": "string"
+          },
+          "event_time": {
+            "description": "Event time timestamp",
+            "example": 6386476630060182000,
+            "type": "integer"
+          },
+          "fallback_margin": {
+            "description": "Fallback margin",
+            "example": "Incidunt ut voluptas.",
+            "type": "string"
+          },
+          "fallback_quantity": {
+            "description": "Fallback quantity",
+            "example": "Quas nisi aspernatur voluptatem vero aut vero.",
+            "type": "string"
+          },
+          "height": {
+            "description": "Block height",
+            "example": 15698376091748028000,
+            "type": "integer"
+          },
+          "margin": {
+            "description": "Margin amount",
+            "example": "Voluptas reprehenderit vel.",
+            "type": "string"
+          },
+          "market_id": {
+            "description": "Market ID",
+            "example": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "maxLength": 66,
+            "minLength": 66,
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Quantity",
+            "example": "Enim qui.",
+            "type": "string"
+          },
+          "rfq_id": {
+            "description": "RFQ ID",
+            "example": 830528835944699900,
+            "type": "integer"
+          },
+          "taker": {
+            "description": "Taker address",
+            "example": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maxLength": 42,
+            "minLength": 42,
+            "pattern": "^inj1[0-9a-zA-Z]{38}$",
+            "type": "string"
+          },
+          "transaction_time": {
+            "description": "Transaction time timestamp",
+            "example": 14069044232982540000,
+            "type": "integer"
+          },
+          "tx_hash": {
+            "description": "Settlement transaction hash",
+            "example": "Rerum veniam sequi sequi.",
+            "type": "string"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "updated_at": {
+            "description": "Last update timestamp",
+            "example": 8577514963885670000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "worst_price": {
+            "description": "Worst acceptable price",
+            "example": "Quis et necessitatibus sequi illo quis sequi.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rfq_id",
+          "market_id",
+          "taker",
+          "direction",
+          "margin",
+          "quantity",
+          "worst_price",
+          "fallback_quantity",
+          "fallback_margin"
+        ],
+        "type": "object"
+      },
+      "RFQSettlementUnfilledActionType": {
+        "description": "Action to take for unfilled quantity - only one field should be set",
+        "example": {
+          "limit": {
+            "price": "A minima ratione necessitatibus possimus earum cupiditate."
+          },
+          "market": {}
+        },
+        "properties": {
+          "limit": {
+            "$ref": "#/components/schemas/PriceResponseBody"
+          },
+          "market": {
+            "$ref": "#/components/schemas/RFQSettlementMarketActionType"
+          }
+        },
+        "type": "object"
+      },
+      "StreamQuoteResponseBody": {
+        "example": {
+          "quote": {
+            "chain_id": "Ipsa quis modi.",
+            "client_id": "Odit et.",
+            "contract_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "created_at": 1233125201904057900,
+            "error": "Quisquam dolorem voluptates.",
+            "event_time": 16475622201913975000,
+            "evm_chain_id": 1439,
+            "executed_margin": "Reiciendis quo officia perspiciatis doloremque soluta.",
+            "executed_quantity": "At unde ipsam.",
+            "expiry": {
+              "height": 12370127747833858000,
+              "timestamp": 527408705720408800
+            },
+            "height": 9178945186265172000,
+            "maker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "maker_subaccount_nonce": 3229192623,
+            "margin": "Ut qui.",
+            "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "min_fill_quantity": "Id corporis in minima.",
+            "price": "Ducimus tenetur non.",
+            "price_check": true,
+            "quantity": "Et et enim architecto atque beatae.",
+            "rfq_id": 17867720046283825000,
+            "sign_mode": "v1",
+            "signature": "Quas aliquid velit ut.",
+            "status": "Sunt minima sunt aut voluptatem.",
+            "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "taker_direction": "Voluptates at qui illum.",
+            "transaction_time": 14981962541400710000,
+            "updated_at": 570830044571909700
+          },
+          "stream_operation": "Quos sint quos sit."
+        },
+        "properties": {
+          "quote": {
+            "$ref": "#/components/schemas/RFQProcessedQuoteType"
+          },
+          "stream_operation": {
+            "description": "Operation type (insert, update, delete)",
+            "example": "Corporis labore consequatur in fugiat.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "StreamRequestResponseBody": {
+        "example": {
+          "request": {
+            "client_id": "550e8400-e29b-41d4-a716-446655440000",
+            "created_at": 4235543728421345300,
+            "direction": "Aut unde ut tempore.",
+            "expiry": 13667982556176484000,
+            "height": 9421381560379169000,
+            "margin": "Amet quas voluptatem ut quia aut magnam.",
+            "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "quantity": "Repellendus omnis nihil dolor atque sit.",
+            "request_address": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "rfq_id": 1633850705781255700,
+            "status": "Quia odio hic.",
+            "transaction_time": 3743054256756975000,
+            "updated_at": 7758170457221049000,
+            "worst_price": "Suscipit temporibus officia maxime ut fugit."
+          },
+          "stream_operation": "Est omnis doloremque itaque quos porro."
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RFQRequestType"
+          },
+          "stream_operation": {
+            "description": "Operation type (insert, update, delete)",
+            "example": "Laudantium voluptatem corporis aut.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "StreamSettlementResponseBody": {
+        "example": {
+          "settlement": {
+            "cid": "Itaque similique excepturi consequatur.",
+            "created_at": 8872741917354963000,
+            "direction": "Exercitationem occaecati aut odio.",
+            "event_time": 10417364717330723000,
+            "fallback_margin": "Quae provident repellendus possimus et ipsa.",
+            "fallback_quantity": "Deleniti enim omnis voluptas aut aliquid.",
+            "height": 9362826119760802000,
+            "margin": "Amet sit natus ut repellat.",
+            "market_id": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "quantity": "Optio numquam.",
+            "rfq_id": 17029011130005322000,
+            "taker": "inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49",
+            "transaction_time": 17223606115857525000,
+            "tx_hash": "Reiciendis in quia.",
+            "unfilled_action": {
+              "limit": {
+                "price": "Veritatis autem."
+              },
+              "market": {}
+            },
+            "updated_at": 5786101868231487000,
+            "worst_price": "Dolor esse voluptatem."
+          },
+          "stream_operation": "Totam aut beatae eos dignissimos in."
+        },
+        "properties": {
+          "settlement": {
+            "$ref": "#/components/schemas/RFQSettlementType"
+          },
+          "stream_operation": {
+            "description": "Operation type (insert, update, delete)",
+            "example": "Aut officiis ea.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}
