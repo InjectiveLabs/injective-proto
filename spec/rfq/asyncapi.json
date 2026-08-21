@@ -1,0 +1,1326 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "TrueCurrent RFQ Streaming API",
+    "version": "1.0.0",
+    "description": "TrueCurrent RFQ streaming API for perpetual futures trading on Injective. Bidirectional gRPC streams over WebSocket (gRPC-Web) for real-time quote discovery and settlement.\nSee https://docs.tc.xyz for full documentation.",
+    "contact": {
+      "name": "TrueCurrent",
+      "url": "https://tc.xyz"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://github.com/InjectiveLabs/injective-rfq-toolkit/blob/master/LICENSE"
+    }
+  },
+  "servers": {
+    "testnet": {
+      "host": "testnet.rfq.ws.injective.network",
+      "protocol": "wss",
+      "description": "Testnet WebSocket endpoint (gRPC-Web)"
+    }
+  },
+  "defaultContentType": "application/json",
+  "channels": {
+    "streamRequest": {
+      "address": "/InjectiveRfqRPC/StreamRequest",
+      "description": "Stream RFQ requests",
+      "messages": {
+        "subscribe": {
+          "$ref": "#/components/messages/StreamRequestResponse"
+        }
+      }
+    },
+    "streamQuote": {
+      "address": "/InjectiveRfqRPC/StreamQuote",
+      "description": "Stream RFQ quotes",
+      "messages": {
+        "subscribe": {
+          "$ref": "#/components/messages/StreamQuoteResponse"
+        }
+      }
+    },
+    "streamSettlement": {
+      "address": "/InjectiveRfqRPC/StreamSettlement",
+      "description": "Stream RFQ settlements",
+      "messages": {
+        "subscribe": {
+          "$ref": "#/components/messages/StreamSettlementResponse"
+        }
+      }
+    },
+    "takerStream": {
+      "address": "/InjectiveRfqRPC/TakerStream",
+      "description": "Bidirectional stream for takers: send requests, receive quotes",
+      "messages": {
+        "send": {
+          "$ref": "#/components/messages/TakerStreamStreamingRequest"
+        },
+        "receive": {
+          "$ref": "#/components/messages/TakerStreamResponse"
+        }
+      }
+    },
+    "makerStream": {
+      "address": "/InjectiveRfqRPC/MakerStream",
+      "description": "Bidirectional stream for makers: receive requests, send quotes",
+      "messages": {
+        "send": {
+          "$ref": "#/components/messages/MakerStreamStreamingRequest"
+        },
+        "receive": {
+          "$ref": "#/components/messages/MakerStreamResponse"
+        }
+      }
+    }
+  },
+  "operations": {
+    "receiveStreamRequest": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/streamRequest"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/streamRequest/messages/subscribe"
+        }
+      ],
+      "summary": "Stream RFQ requests"
+    },
+    "receiveStreamQuote": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/streamQuote"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/streamQuote/messages/subscribe"
+        }
+      ],
+      "summary": "Stream RFQ quotes"
+    },
+    "receiveStreamSettlement": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/streamSettlement"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/streamSettlement/messages/subscribe"
+        }
+      ],
+      "summary": "Stream RFQ settlements"
+    },
+    "sendTakerStream": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/takerStream"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/takerStream/messages/send"
+        }
+      ],
+      "summary": "Send message to TakerStream"
+    },
+    "receiveTakerStream": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/takerStream"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/takerStream/messages/receive"
+        }
+      ],
+      "summary": "Receive message from TakerStream"
+    },
+    "sendMakerStream": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/makerStream"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/makerStream/messages/send"
+        }
+      ],
+      "summary": "Send message to MakerStream"
+    },
+    "receiveMakerStream": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/makerStream"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/makerStream/messages/receive"
+        }
+      ],
+      "summary": "Receive message from MakerStream"
+    }
+  },
+  "components": {
+    "messages": {
+      "StreamRequestRequest": {
+        "name": "StreamRequestRequest",
+        "title": "StreamRequestRequest",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/StreamRequestRequest"
+        }
+      },
+      "StreamRequestResponse": {
+        "name": "StreamRequestResponse",
+        "title": "StreamRequestResponse",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/StreamRequestResponse"
+        }
+      },
+      "StreamQuoteRequest": {
+        "name": "StreamQuoteRequest",
+        "title": "StreamQuoteRequest",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/StreamQuoteRequest"
+        }
+      },
+      "StreamQuoteResponse": {
+        "name": "StreamQuoteResponse",
+        "title": "StreamQuoteResponse",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/StreamQuoteResponse"
+        }
+      },
+      "StreamSettlementRequest": {
+        "name": "StreamSettlementRequest",
+        "title": "StreamSettlementRequest",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/StreamSettlementRequest"
+        }
+      },
+      "StreamSettlementResponse": {
+        "name": "StreamSettlementResponse",
+        "title": "StreamSettlementResponse",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/StreamSettlementResponse"
+        }
+      },
+      "TakerStreamStreamingRequest": {
+        "name": "TakerStreamStreamingRequest",
+        "title": "Message sent by taker in bidirectional stream",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/TakerStreamStreamingRequest"
+        }
+      },
+      "TakerStreamResponse": {
+        "name": "TakerStreamResponse",
+        "title": "TakerStreamResponse",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/TakerStreamResponse"
+        }
+      },
+      "MakerStreamStreamingRequest": {
+        "name": "MakerStreamStreamingRequest",
+        "title": "Message sent by maker in bidirectional stream",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/MakerStreamStreamingRequest"
+        }
+      },
+      "MakerStreamResponse": {
+        "name": "MakerStreamResponse",
+        "title": "MakerStreamResponse",
+        "contentType": "application/json",
+        "payload": {
+          "$ref": "#/components/schemas/MakerStreamResponse"
+        }
+      }
+    },
+    "schemas": {
+      "ConditionalOrderAck": {
+        "type": "object",
+        "description": "Acknowledgment for conditional order creation",
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/ConditionalOrderResponseType"
+          }
+        }
+      },
+      "ConditionalOrderInput": {
+        "type": "object",
+        "description": "Conditional order input matching the contract's SignedTakerIntent payload",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "uint32",
+            "description": "Protocol version"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "Chain ID (e.g. injective-1)"
+          },
+          "contract_address": {
+            "type": "string",
+            "description": "RFQ contract address"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address (bech32)"
+          },
+          "epoch": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Taker's current epoch (replay protection)"
+          },
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Unique RFQ order ID"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Derivative market ID"
+          },
+          "subaccount_nonce": {
+            "type": "integer",
+            "format": "uint32",
+            "description": "Taker subaccount index"
+          },
+          "lane_version": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Lane version (replay + OCO protection)"
+          },
+          "deadline_ms": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Expiry timestamp in milliseconds"
+          },
+          "direction": {
+            "type": "string",
+            "description": "Trade direction"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "FPDecimal quantity (e.g. \"1\", \"4.9\")"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Collateral amount as FPDecimal"
+          },
+          "worst_price": {
+            "type": "string",
+            "description": "FPDecimal worst acceptable price"
+          },
+          "min_total_fill_quantity": {
+            "type": "string",
+            "description": "FPDecimal minimum total fill quantity"
+          },
+          "trigger_type": {
+            "type": "string",
+            "description": "Trigger condition type"
+          },
+          "trigger_price": {
+            "type": "string",
+            "description": "Mark price threshold for the trigger condition"
+          },
+          "unfilled_action": {
+            "type": "string",
+            "description": "Post-unfilled action JSON (optional)"
+          },
+          "cid": {
+            "type": "string",
+            "description": "Optional client ID"
+          },
+          "allowed_relayer": {
+            "type": "string",
+            "description": "Optional relayer restriction"
+          },
+          "taker_nonce_time_window_ms": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Replay protection nonce time window in milliseconds"
+          }
+        }
+      },
+      "ConditionalOrderResponseType": {
+        "type": "object",
+        "description": "Conditional TP/SL order",
+        "properties": {
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ order ID"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Derivative market ID"
+          },
+          "direction": {
+            "type": "string",
+            "description": "Exit direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Collateral amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Contract quantity"
+          },
+          "worst_price": {
+            "type": "string",
+            "description": "Worst acceptable price"
+          },
+          "request_address": {
+            "type": "string",
+            "description": "Taker address"
+          },
+          "trigger_price": {
+            "type": "string",
+            "description": "Mark price threshold"
+          },
+          "status": {
+            "type": "string",
+            "description": "Order status"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp in milliseconds"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Last update timestamp in milliseconds"
+          },
+          "expires_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Expiry timestamp in milliseconds"
+          },
+          "trigger_type": {
+            "type": "string",
+            "description": "Trigger condition (mark_price_gte, mark_price_lte)"
+          },
+          "min_total_fill_quantity": {
+            "type": "string",
+            "description": "Minimum total fill quantity"
+          },
+          "event_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Event time timestamp in milliseconds (streaming only)"
+          },
+          "error": {
+            "type": "string",
+            "description": "Deprecated: use 'errors' instead. Last error message, if any."
+          },
+          "tx_hash": {
+            "type": "string",
+            "description": "Settlement transaction hash, if any"
+          },
+          "terminal_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Terminal timestamp in milliseconds (set when the order reaches a terminal status: completed, failed, or cancelled)"
+          },
+          "evm_chain_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "EVM chain ID embedded in the EIP-712 domain at signing time. Zero for v1 (raw JSON) orders."
+          },
+          "taker_nonce_time_window_ms": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Replay protection nonce time window in milliseconds"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "All error messages accumulated across execution attempts (most recent last)"
+            },
+            "description": "All error messages accumulated across execution attempts (most recent last)"
+          }
+        }
+      },
+      "CreateRFQRequestType": {
+        "type": "object",
+        "description": "RFQ request",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market ID"
+          },
+          "direction": {
+            "type": "string",
+            "description": "Direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Margin amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity"
+          },
+          "worst_price": {
+            "type": "string",
+            "description": "Worst acceptable price"
+          },
+          "expiry": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Expiry timestamp in milliseconds"
+          },
+          "price_check": {
+            "type": "boolean",
+            "description": "Whether the request is for price check only"
+          }
+        }
+      },
+      "MakerAuth": {
+        "type": "object",
+        "description": "Maker response to a stream auth challenge, signed with EIP-712 v2",
+        "properties": {
+          "evm_chain_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "EVM chain ID used in the EIP-712 domain"
+          },
+          "signature": {
+            "type": "string",
+            "description": "EIP-712 signature over the StreamAuthChallenge typed data"
+          }
+        }
+      },
+      "MakerChallenge": {
+        "type": "object",
+        "description": "Auth challenge issued by the server before the maker stream loop begins",
+        "properties": {
+          "nonce": {
+            "type": "string",
+            "description": "Hex-encoded 32-byte nonce"
+          },
+          "evm_chain_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "EVM chain ID to use when signing the challenge with EIP-712 v2"
+          },
+          "expires_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix milliseconds after which the challenge is no longer accepted"
+          }
+        }
+      },
+      "MakerStreamResponse": {
+        "type": "object",
+        "properties": {
+          "message_type": {
+            "type": "string",
+            "description": "Type: 'request', 'quote_ack', 'quote_update', 'settlement_update', 'error', 'pong', 'challenge'"
+          },
+          "request": {
+            "$ref": "#/components/schemas/RFQRequestType"
+          },
+          "quote_ack": {
+            "$ref": "#/components/schemas/QuoteStreamAck"
+          },
+          "error": {
+            "$ref": "#/components/schemas/StreamError"
+          },
+          "processed_quote": {
+            "$ref": "#/components/schemas/RFQProcessedQuoteType"
+          },
+          "settlement": {
+            "$ref": "#/components/schemas/RFQSettlementMakerUpdate"
+          },
+          "challenge": {
+            "$ref": "#/components/schemas/MakerChallenge"
+          }
+        }
+      },
+      "MakerStreamStreamingRequest": {
+        "type": "object",
+        "description": "Message sent by maker in bidirectional stream",
+        "properties": {
+          "message_type": {
+            "type": "string",
+            "description": "Type: 'quote', 'ping', 'auth'"
+          },
+          "quote": {
+            "$ref": "#/components/schemas/RFQQuoteType"
+          },
+          "auth": {
+            "$ref": "#/components/schemas/MakerAuth"
+          }
+        }
+      },
+      "QuoteStreamAck": {
+        "type": "object",
+        "description": "Acknowledgment for stream operations",
+        "properties": {
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the operation"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address"
+          }
+        }
+      },
+      "RFQExpiryType": {
+        "type": "object",
+        "description": "Expiry with timestamp and block height",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Expiry timestamp in milliseconds"
+          },
+          "height": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Expiry block height"
+          }
+        }
+      },
+      "RFQProcessedQuoteType": {
+        "type": "object",
+        "description": "RFQ quote result streamed in real-time",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message if quote is rejected"
+          },
+          "executed_quantity": {
+            "type": "string",
+            "description": "Executed quantity for the quote, if successful"
+          },
+          "executed_margin": {
+            "type": "string",
+            "description": "Executed margin for the quote, if successful"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "Chain ID"
+          },
+          "contract_address": {
+            "type": "string",
+            "description": "Contract address"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market ID"
+          },
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "taker_direction": {
+            "type": "string",
+            "description": "Taker direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Margin amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity"
+          },
+          "price": {
+            "type": "string",
+            "description": "Price"
+          },
+          "expiry": {
+            "$ref": "#/components/schemas/RFQExpiryType"
+          },
+          "maker": {
+            "type": "string",
+            "description": "Maker address"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Signature"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status (pending, accepted, rejected, expired)"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Last update timestamp"
+          },
+          "height": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Block height"
+          },
+          "event_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Event time timestamp"
+          },
+          "transaction_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Transaction time timestamp"
+          },
+          "maker_subaccount_nonce": {
+            "type": "integer",
+            "format": "uint32",
+            "description": "Maker subaccount nonce used in quote signature"
+          },
+          "min_fill_quantity": {
+            "type": "string",
+            "description": "Optional minimum fill quantity used in quote signature"
+          },
+          "price_check": {
+            "type": "boolean",
+            "description": "Whether the quote is for price check only"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Client ID from the originating request"
+          },
+          "sign_mode": {
+            "type": "string",
+            "description": "Signature scheme used for the quote: \"v1\" (raw JSON keccak256) or \"v2\" (EIP-712). Defaults to \"v1\" when omitted, for backward compatibility with pre-EIP-712 clients."
+          },
+          "evm_chain_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is \"v2\"; ignored otherwise. Must match one of the indexer's configured chain IDs."
+          }
+        }
+      },
+      "RFQQuoteType": {
+        "type": "object",
+        "description": "RFQ quote",
+        "properties": {
+          "chain_id": {
+            "type": "string",
+            "description": "Chain ID"
+          },
+          "contract_address": {
+            "type": "string",
+            "description": "Contract address"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market ID"
+          },
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "taker_direction": {
+            "type": "string",
+            "description": "Taker direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Margin amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity"
+          },
+          "price": {
+            "type": "string",
+            "description": "Price"
+          },
+          "expiry": {
+            "$ref": "#/components/schemas/RFQExpiryType"
+          },
+          "maker": {
+            "type": "string",
+            "description": "Maker address"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Signature"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status (pending, accepted, rejected, expired)"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Last update timestamp"
+          },
+          "height": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Block height"
+          },
+          "event_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Event time timestamp"
+          },
+          "transaction_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Transaction time timestamp"
+          },
+          "maker_subaccount_nonce": {
+            "type": "integer",
+            "format": "uint32",
+            "description": "Maker subaccount nonce used in quote signature"
+          },
+          "min_fill_quantity": {
+            "type": "string",
+            "description": "Optional minimum fill quantity used in quote signature"
+          },
+          "price_check": {
+            "type": "boolean",
+            "description": "Whether the quote is for price check only"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Client ID from the originating request"
+          },
+          "sign_mode": {
+            "type": "string",
+            "description": "Signature scheme used for the quote: \"v1\" (raw JSON keccak256) or \"v2\" (EIP-712). Defaults to \"v1\" when omitted, for backward compatibility with pre-EIP-712 clients."
+          },
+          "evm_chain_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "EVM chain ID embedded in the EIP-712 domain. Required when sign_mode is \"v2\"; ignored otherwise. Must match one of the indexer's configured chain IDs."
+          }
+        }
+      },
+      "RFQRequestType": {
+        "type": "object",
+        "description": "RFQ request",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market ID"
+          },
+          "direction": {
+            "type": "string",
+            "description": "Direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Margin amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity"
+          },
+          "worst_price": {
+            "type": "string",
+            "description": "Worst acceptable price"
+          },
+          "request_address": {
+            "type": "string",
+            "description": "Requester address"
+          },
+          "expiry": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Expiry timestamp in milliseconds"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status (open, cancelled, completed)"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Last update timestamp"
+          },
+          "transaction_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Transaction time timestamp"
+          },
+          "height": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Block height"
+          }
+        }
+      },
+      "RFQSettlementLimitActionType": {
+        "type": "object",
+        "description": "Limit order action for unfilled quantity",
+        "properties": {
+          "price": {
+            "type": "string",
+            "description": "Limit price"
+          }
+        }
+      },
+      "RFQSettlementMakerUpdate": {
+        "type": "object",
+        "description": "RFQ settlement update streamed to maker in real-time",
+        "properties": {
+          "quotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RFQSettlementQuote"
+            },
+            "description": "List of quotes considered for settlement"
+          },
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market ID"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address"
+          },
+          "direction": {
+            "type": "string",
+            "description": "Direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Margin amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity"
+          },
+          "worst_price": {
+            "type": "string",
+            "description": "Worst acceptable price"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "fallback_quantity": {
+            "type": "string",
+            "description": "Fallback quantity"
+          },
+          "fallback_margin": {
+            "type": "string",
+            "description": "Fallback margin"
+          },
+          "transaction_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Transaction time timestamp"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Last update timestamp"
+          },
+          "event_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Event time timestamp"
+          },
+          "height": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Block height"
+          },
+          "cid": {
+            "type": "string",
+            "description": "Settlement CID"
+          },
+          "tx_hash": {
+            "type": "string",
+            "description": "Settlement transaction hash"
+          }
+        }
+      },
+      "RFQSettlementMarketActionType": {
+        "type": "object",
+        "description": "Market order action for unfilled quantity"
+      },
+      "RFQSettlementQuote": {
+        "type": "object",
+        "description": "Quote data embedded in settlement",
+        "properties": {
+          "maker": {
+            "type": "string",
+            "description": "Maker address"
+          },
+          "price": {
+            "type": "string",
+            "description": "Price"
+          },
+          "quoted_margin": {
+            "type": "string",
+            "description": "Quoted margin amount"
+          },
+          "quoted_quantity": {
+            "type": "string",
+            "description": "Quoted quantity"
+          },
+          "executed_margin": {
+            "type": "string",
+            "description": "Executed margin amount"
+          },
+          "executed_quantity": {
+            "type": "string",
+            "description": "Executed quantity"
+          },
+          "expiry": {
+            "$ref": "#/components/schemas/RFQExpiryType"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Signature"
+          },
+          "nonce": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Nonce"
+          },
+          "status": {
+            "type": "string",
+            "description": "Quote status (accepted, rejected, expired)"
+          }
+        }
+      },
+      "RFQSettlementType": {
+        "type": "object",
+        "description": "RFQ settlement",
+        "properties": {
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market ID"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address"
+          },
+          "direction": {
+            "type": "string",
+            "description": "Direction (long/short)"
+          },
+          "margin": {
+            "type": "string",
+            "description": "Margin amount"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity"
+          },
+          "worst_price": {
+            "type": "string",
+            "description": "Worst acceptable price"
+          },
+          "unfilled_action": {
+            "$ref": "#/components/schemas/RFQSettlementUnfilledActionType"
+          },
+          "fallback_quantity": {
+            "type": "string",
+            "description": "Fallback quantity"
+          },
+          "fallback_margin": {
+            "type": "string",
+            "description": "Fallback margin"
+          },
+          "transaction_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Transaction time timestamp"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Last update timestamp"
+          },
+          "event_time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Event time timestamp"
+          },
+          "height": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "Block height"
+          },
+          "cid": {
+            "type": "string",
+            "description": "Settlement CID"
+          },
+          "tx_hash": {
+            "type": "string",
+            "description": "Settlement transaction hash"
+          }
+        }
+      },
+      "RFQSettlementUnfilledActionType": {
+        "type": "object",
+        "description": "Action to take for unfilled quantity - only one field should be set",
+        "properties": {
+          "limit": {
+            "$ref": "#/components/schemas/RFQSettlementLimitActionType"
+          },
+          "market": {
+            "$ref": "#/components/schemas/RFQSettlementMarketActionType"
+          }
+        }
+      },
+      "RequestStreamAck": {
+        "type": "object",
+        "description": "Acknowledgment for stream operations",
+        "properties": {
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Client ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the operation"
+          }
+        }
+      },
+      "StreamError": {
+        "type": "object",
+        "description": "Error message in stream",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code"
+          },
+          "message_": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "id": {
+            "type": "string",
+            "description": "Client ID. Only filled in taker streams"
+          },
+          "taker": {
+            "type": "string",
+            "description": "Taker address. Only filled in the maker stream"
+          },
+          "rfq_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "RFQ ID. Only filled if available"
+          }
+        }
+      },
+      "StreamQuoteRequest": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Filter by addresses"
+            },
+            "description": "Filter by addresses"
+          },
+          "market_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Filter by market IDs"
+            },
+            "description": "Filter by market IDs"
+          }
+        }
+      },
+      "StreamQuoteResponse": {
+        "type": "object",
+        "properties": {
+          "quote": {
+            "$ref": "#/components/schemas/RFQProcessedQuoteType"
+          },
+          "stream_operation": {
+            "type": "string",
+            "description": "Operation type (insert, update, delete)"
+          }
+        }
+      },
+      "StreamRequestRequest": {
+        "type": "object",
+        "properties": {
+          "market_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Filter by market IDs"
+            },
+            "description": "Filter by market IDs"
+          }
+        }
+      },
+      "StreamRequestResponse": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RFQRequestType"
+          },
+          "stream_operation": {
+            "type": "string",
+            "description": "Operation type (insert, update, delete)"
+          }
+        }
+      },
+      "StreamSettlementRequest": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Filter by addresses"
+            },
+            "description": "Filter by addresses"
+          }
+        }
+      },
+      "StreamSettlementResponse": {
+        "type": "object",
+        "properties": {
+          "settlement": {
+            "$ref": "#/components/schemas/RFQSettlementType"
+          },
+          "stream_operation": {
+            "type": "string",
+            "description": "Operation type (insert, update, delete)"
+          }
+        }
+      },
+      "TakerStreamResponse": {
+        "type": "object",
+        "properties": {
+          "message_type": {
+            "type": "string",
+            "description": "Type: 'quote', 'request_ack', 'error', 'pong', 'conditional_order_ack', 'conditional_order_update'"
+          },
+          "quote": {
+            "$ref": "#/components/schemas/RFQQuoteType"
+          },
+          "request_ack": {
+            "$ref": "#/components/schemas/RequestStreamAck"
+          },
+          "error": {
+            "$ref": "#/components/schemas/StreamError"
+          },
+          "conditional_order_ack": {
+            "$ref": "#/components/schemas/ConditionalOrderAck"
+          },
+          "conditional_order": {
+            "$ref": "#/components/schemas/ConditionalOrderResponseType"
+          }
+        }
+      },
+      "TakerStreamStreamingRequest": {
+        "type": "object",
+        "description": "Message sent by taker in bidirectional stream",
+        "properties": {
+          "message_type": {
+            "type": "string",
+            "description": "Type: 'request', 'ping', 'conditional_order'"
+          },
+          "request": {
+            "$ref": "#/components/schemas/CreateRFQRequestType"
+          },
+          "conditional_order": {
+            "$ref": "#/components/schemas/ConditionalOrderInput"
+          },
+          "conditional_order_signature": {
+            "type": "string",
+            "description": "Signature for the conditional order"
+          },
+          "conditional_order_sign_mode": {
+            "type": "string",
+            "description": "Signature scheme for the conditional order: \"v1\" (raw JSON keccak256) or \"v2\" (EIP-712). Defaults to \"v1\" when omitted, for backward compatibility with pre-EIP-712 clients."
+          },
+          "conditional_order_evm_chain_id": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "EVM chain ID embedded in the EIP-712 domain for the conditional order. Required when conditional_order_sign_mode is \"v2\"."
+          }
+        }
+      }
+    }
+  }
+}
